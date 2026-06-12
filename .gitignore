@@ -28,3 +28,15 @@ __pycache__/
 .coverage/
 coverage.out
 batch_validation_report_examples.md
+
+
+data/
+
+# local temp
+CUserschaoJDesktopMModel-frontend-demo-temp/
+
+# generated artifacts
+outputs/
+
+# personal notes
+notes/
