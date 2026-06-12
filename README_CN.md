@@ -102,7 +102,8 @@ UModel 围绕 workspace-scoped object graph 运行本地服务：
 | 指南 | [模型编写](docs/zh/guides/model-authoring.md)、[实体与关系写入](docs/zh/guides/entity-relation-writes.md)、[Query Service](docs/zh/guides/query-service.md)、[Web UI](docs/zh/guides/web-ui.md)、[SDK 与客户端](docs/zh/guides/sdk-clients.md) |
 | 架构 | [架构总览](docs/zh/architecture/overview.md)、[运行时流程](docs/zh/architecture/runtime-flow.md)、[Query 与 Agent 架构](docs/zh/architecture/query-and-agent.md) |
 | 参考 | [CLI](docs/zh/reference/cli.md)、[MCP](docs/zh/reference/mcp.md)、[REST OpenAPI](api/openapi/openapi.yaml)、[MCP Tool 和 Resource Schema](api/mcp/tools.schema.json) |
-| 示例 | [多域 Quickstart 示例包](examples/quickstart-multidomain/README.zh-CN.md) |
+| 示例 | [多域 Quickstart 示例包](examples/quickstart-multidomain/README.zh-CN.md)、[故障排查 Demo（AI Agent）](examples/incident-investigation/README.zh-CN.md) |
+| Agent 技能 | [UModel Agent 技能](skills/README.zh-CN.md) —— 可加载给 MCP/CLI Agent 的技能：读实体/关系/模型数据，做模型引导的根因分析 |
 | 部署 | [Docker 与 Compose](deployments/README.zh-CN.md) |
 
 英文文档：[docs/en/README.md](docs/en/README.md)。

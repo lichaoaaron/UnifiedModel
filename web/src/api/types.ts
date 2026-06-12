@@ -129,6 +129,15 @@ export interface QueryRequest {
     to?: string
   }
   parameters?: Record<string, unknown>
+  entity_data?: EntityData
+  entityData?: EntityData
+  filterByEntities?: EntityData
+}
+
+export interface EntityData {
+  version?: number
+  header?: string[]
+  data?: Array<string[] | { values: string[] } | Record<string, unknown>>
 }
 
 export interface QueryExplain {
@@ -154,6 +163,22 @@ export interface QueryResult {
     page_token?: string
   }
   explain?: QueryExplain
+}
+
+export interface QueryExecuteResponse {
+  code: string
+  message: string
+  success: boolean
+  data: {
+    data: unknown[][]
+    header: string[]
+    responseStatus: {
+      result: string
+      retryPolicy: string
+      level: string
+      statusItem: unknown[]
+    }
+  }
 }
 
 export interface EntityWriteBatch {

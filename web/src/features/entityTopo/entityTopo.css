@@ -619,13 +619,33 @@
   color: var(--eto-accent);
 }
 
-.eto-timebar .eto-execute-button {
+.eto-timebar button.eto-execute-button:not(.om-icon-button) {
+  height: 24px;
+  min-height: 24px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-  padding: 0 9px;
-  color: var(--eto-accent);
-  font-weight: 700;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-accent);
+  color: #ffffff;
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.eto-timebar button.eto-execute-button:not(.om-icon-button):hover {
+  background: #5147bd;
+  color: #fff;
+  box-shadow: none;
+}
+
+.eto-timebar button.eto-execute-button:not(.om-icon-button):disabled {
+  border-color: var(--eto-border-strong);
+  background: var(--eto-surface-muted);
+  color: var(--eto-faint);
 }
 
 .eto-icon-button.om-icon-button,

@@ -8,6 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { useI18n, type TFunction } from '../../../i18n'
 import { CosmosEngine } from './cosmosEngine'
 import { CosmosLabels } from './cosmosLabels'
 import type {
@@ -182,6 +183,7 @@ interface HoverPanelInfo {
   lucideIcon?: string
   ringWidth?: number
   typeLabel?: string
+  domain?: string
   rows?: Array<[string, string]>
   source?: HoverEntityInfo
   target?: HoverEntityInfo
@@ -191,6 +193,7 @@ interface HoverEntityInfo {
   role: 'Source' | 'Target'
   title: string
   typeLabel: string
+  domain?: string
   color: string
   iconClass?: string
   iconUrl?: string
@@ -199,7 +202,7 @@ interface HoverEntityInfo {
   ringWidth?: number
 }
 
-function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'Target'): HoverEntityInfo {
+function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'Target', t: TFunction): HoverEntityInfo {
   const node = engine.getNodeById().get(nodeId)
   const raw = engine.getRawNode(nodeId) as any
   const style = raw?.data?.style ?? {}
@@ -210,10 +213,12 @@ function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'T
     style,
     fallbackColor: node?.iconFill || node?.color,
   })
+  const cluster = node?.cluster || raw?.data?.cluster || raw?.type || ''
   return {
     role,
     title: node?.title || raw?.title || raw?.data?.title || raw?.data?.name || nodeId,
-    typeLabel: node?.subTitle || raw?.data?.subTitle || node?.cluster || raw?.type || 'Entity',
+    typeLabel: node?.subTitle || raw?.data?.subTitle || cluster || t('entityTopoExplorer.detail.entity'),
+    domain: cluster.split('@')[0] || undefined,
     color: node?.iconFill || visual.iconFill,
     iconClass: node?.iconClass || visual.iconClass,
     iconUrl: node?.iconUrl || visual.iconUrl,
@@ -223,7 +228,7 @@ function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'T
   }
 }
 
-function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine): HoverPanelInfo | null {
+function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine, t: TFunction): HoverPanelInfo | null {
   if (hover.lockedNodeId || hover.lockedLinkIndex !== undefined) return null
   const pos = hover.screenPosition
   if (!pos || hover.hoverProgress <= 0) return null
@@ -233,7 +238,7 @@ function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine): HoverPane
     const raw = engine.getRawNode(hover.hoveredNodeId)
     if (!node) return null
     const degree = engine.getNeighbors().get(hover.hoveredNodeId)?.size ?? node.degree ?? 0
-    const entity = getEntityInfo(engine, hover.hoveredNodeId, 'Source')
+    const entity = getEntityInfo(engine, hover.hoveredNodeId, 'Source', t)
     return {
       kind: 'node',
       nodeId: hover.hoveredNodeId,
@@ -247,9 +252,10 @@ function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine): HoverPane
       lucideIcon: entity.lucideIcon,
       ringWidth: entity.ringWidth,
       typeLabel: entity.typeLabel,
+      domain: entity.domain,
       rows: [
-        ['Degree', String(degree)],
-        ['ID', raw?.data?.id ? String(raw.data.id) : node.id],
+        [t('entityTopoExplorer.detail.degree'), String(degree)],
+        [t('entityTopoExplorer.detail.id'), raw?.data?.id ? String(raw.data.id) : node.id],
       ],
     }
   }
@@ -263,9 +269,9 @@ function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine): HoverPane
       y: pos[1],
       title: focused.label,
       color: '#4f46e5',
-      typeLabel: 'Relation',
-      source: getEntityInfo(engine, focused.sourceId, 'Source'),
-      target: getEntityInfo(engine, focused.targetId, 'Target'),
+      typeLabel: t('entityTopoExplorer.detail.relationTitle'),
+      source: getEntityInfo(engine, focused.sourceId, 'Source', t),
+      target: getEntityInfo(engine, focused.targetId, 'Target', t),
     }
   }
 
@@ -281,6 +287,7 @@ function CosmosNodeGlyph({
   ringWidth,
   focusRing = false,
   label,
+  domain,
   size = 28,
   glow = true,
 }: {
@@ -292,11 +299,16 @@ function CosmosNodeGlyph({
   ringWidth?: number
   focusRing?: boolean
   label: string
+  domain?: string
   size?: number
   glow?: boolean
 }) {
   const iconId = getSvgIconId(iconClass)
-  const letter = (label || '?').trim().slice(0, 1).toUpperCase()
+  let effectiveLabel = (label || '?').trim()
+  if (domain && effectiveLabel.startsWith(domain + '.') && effectiveLabel.length > domain.length + 1) {
+    effectiveLabel = effectiveLabel.slice(domain.length + 1)
+  }
+  const letter = effectiveLabel.slice(0, 1).toUpperCase()
   const shouldUseSymbol = iconId && !isGenericIconClass(iconClass)
   const innerSize = Math.max(14, size * 0.52)
   const hasSvgSymbol = shouldUseSymbol && typeof document !== 'undefined' && document.getElementById(iconId)
@@ -491,6 +503,7 @@ function CosmosVectorIconOverlay({
             ringWidth={icon.ringWidth}
             focusRing={icon.active}
             label={icon.typeLabel || icon.label}
+            domain={icon.domain}
             size={icon.size}
             glow={false}
           />
@@ -501,7 +514,8 @@ function CosmosVectorIconOverlay({
 }
 
 function HoverEntityBlock({ entity }: { entity: HoverEntityInfo }) {
-  const roleLabel = entity.role === 'Source' ? 'Source entity' : 'Target entity'
+  const { t } = useI18n()
+  const roleLabel = entity.role === 'Source' ? t('entityTopoExplorer.detail.sourceEntity') : t('entityTopoExplorer.detail.targetEntity')
 
   return (
     <div
@@ -528,6 +542,7 @@ function HoverEntityBlock({ entity }: { entity: HoverEntityInfo }) {
           lucideIcon={entity.lucideIcon}
           ringWidth={entity.ringWidth}
           label={entity.typeLabel}
+          domain={entity.domain}
           size={26}
         />
         <div style={{ minWidth: 0, flex: 1 }}>
@@ -565,6 +580,7 @@ function CosmosHoverPanel({ info }: { info: HoverPanelInfo | null }) {
 }
 
 function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
+  const { t } = useI18n()
   const panelRef = useRef<HTMLDivElement | null>(null)
 
   const width = info.kind === 'edge' ? 338 : 312
@@ -574,7 +590,7 @@ function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
       : info.x + HOVER_PANEL_OFFSET
   const preferredTop = info.y + HOVER_PANEL_OFFSET
   const [position, setPosition] = useState({ left: preferredLeft, top: preferredTop })
-  const typeLabel = info.typeLabel || (info.kind === 'edge' ? 'Relation' : 'Entity')
+  const typeLabel = info.typeLabel || (info.kind === 'edge' ? t('entityTopoExplorer.detail.relationTitle') : t('entityTopoExplorer.detail.entity'))
 
   useLayoutEffect(() => {
     const panel = panelRef.current
@@ -628,6 +644,7 @@ function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
             lucideIcon={info.lucideIcon}
             ringWidth={info.ringWidth}
             label={typeLabel}
+            domain={info.domain}
             size={34}
           />
         ) : (
@@ -695,6 +712,7 @@ function CosmosNodeActionMenu({
   tick: number
   onIsolate: (nodeId: string) => void
 }) {
+  const { t } = useI18n()
   const [hoveredAction, setHoveredAction] = useState<string | null>(null)
   const info = useMemo<CosmosNodeActionInfo | null>(
     () => engine?.getLockedNodeAction() ?? null,
@@ -709,7 +727,7 @@ function CosmosNodeActionMenu({
   const actions = [
     {
       key: 'focus',
-      label: 'Focus',
+      label: t('entityTopoExplorer.filter.focus'),
       angle: -90,
       onClick: () => onIsolate(info.nodeId),
       icon: (
@@ -929,6 +947,7 @@ function buildMiniMapData(engine: CosmosEngine | null): MiniMapData | null {
 }
 
 function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: number }) {
+  const { t } = useI18n()
   const data = useMemo(() => buildMiniMapData(engine), [engine, Math.floor(tick / 5)])
   const mapRef = useRef<HTMLDivElement>(null)
   const draggingRef = useRef(false)
@@ -980,7 +999,7 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      <svg width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} viewBox={`0 0 ${MINI_MAP_WIDTH} ${MINI_MAP_HEIGHT}`} role="img" aria-label="Topology minimap">
+      <svg width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} viewBox={`0 0 ${MINI_MAP_WIDTH} ${MINI_MAP_HEIGHT}`} role="img" aria-label={t('entityTopoExplorer.graph.miniMap')}>
         <rect x="0" y="0" width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} fill="#fff" />
         {data.points.map((point, index) => (
           <circle key={index} cx={point.x} cy={point.y} r="1.15" fill={point.color} opacity="0.72" />
@@ -999,6 +1018,7 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
 
 export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'type'>>(
   (props, ref) => {
+    const { t } = useI18n()
     const hostRef = useRef<HTMLDivElement>(null)
     const engineRef = useRef<CosmosEngine | null>(null)
     const graphApiRef = useRef<ITopoGraph | null>(null)
@@ -1017,6 +1037,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
     const dataRef = useRef(data)
     const initialDataRef = useRef(props.data || emptyData)
     const layoutRef = useRef(layout)
+    const tRef = useRef(t)
     const renderDataRef = useRef<TopoData>(data)
     const lastLoadedDataRef = useRef<TopoData | null>(null)
     const isolatedNodeIdRef = useRef(isolatedNodeId)
@@ -1025,6 +1046,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
 
     dataRef.current = data
     layoutRef.current = layout
+    tRef.current = t
     isolatedNodeIdRef.current = isolatedNodeId
 
     const handleNodeClickRef = useRef(props.handleNodeClick)
@@ -1126,8 +1148,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
           },
           onHoverChange: (hover) => {
             if (!mountedRef.current) return
-            setHoverPanel(buildHoverPanelInfo(hover, engine as any))
-            requestTick()
+            setHoverPanel(buildHoverPanelInfo(hover, engine as any, tRef.current))
           },
         },
       })
@@ -1378,7 +1399,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
             <div style={graphRenderingOverlayStyle}>
               <div style={graphRenderingPillStyle}>
                 <span style={graphRenderingSpinnerStyle} />
-                <span>Rendering topology...</span>
+                <span>{t('entityTopoExplorer.graph.rendering')}</span>
               </div>
             </div>
           </>
@@ -1397,11 +1418,11 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
           tick={tick}
         />
         <CosmosHoverPanel info={hoverPanel} />
-        <CosmosNodeActionMenu engine={engineRef.current} tick={tick} onIsolate={isolateHoveredNode} />
+        {props.handleNodeIsolate && <CosmosNodeActionMenu engine={engineRef.current} tick={tick} onIsolate={isolateHoveredNode} />}
         {layout.showMiniMap !== false && <CosmosMiniMap engine={engineRef.current} tick={tick} />}
         {isolatedNodeId && (
           <div style={isolationBarStyle}>
-            <span style={{ fontWeight: 500 }}>Focus view</span>
+            <span style={{ fontWeight: 500 }}>{t('entityTopoExplorer.graph.focusView')}</span>
             <span style={{ color: '#9ca3af' }}>|</span>
             <span style={{ color: '#6b7280' }}>{isolatedNodeId}</span>
             <button
@@ -1414,7 +1435,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
                 finishRendering(seq)
               }}
             >
-              Exit
+              {t('entityTopoExplorer.action.exit')}
             </button>
           </div>
         )}

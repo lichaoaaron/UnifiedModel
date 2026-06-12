@@ -1,7 +1,9 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 )
@@ -261,13 +263,227 @@ type ExpireRequest struct {
 	Reason    string   `json:"reason,omitempty"`
 }
 
+// Response envelope format constants for QueryRequest.Format. See the Format
+// field doc comment for full semantics.
+const (
+	FormatAssistant = ""      // legacy assistant envelope (default)
+	FormatAgent     = "agent" // agent-native envelope (plan schema v1.1)
+)
+
+// AgentPlanResultColumn is the sentinel QueryResult column name that flags a
+// row whose only value is the agent-format plan map. The HTTP layer detects
+// this column to bypass the standard QueryExecuteResponse envelope and write
+// the plan object directly as the response body. See
+// model.IsAgentPlanResult for the detection helper.
+const AgentPlanResultColumn = "__agent_plan__"
+
+// IsAgentPlanResult reports whether result was produced for an
+// agent-format request and should be written as a top-level plan object
+// rather than wrapped in the standard QueryExecuteResponse envelope.
+func IsAgentPlanResult(result QueryResult) bool {
+	return len(result.Columns) == 1 && result.Columns[0] == AgentPlanResultColumn
+}
+
+// AgentPlanPayload returns the plan map carried by an agent-format result.
+// Returns nil if result is not an agent-format payload.
+func AgentPlanPayload(result QueryResult) map[string]any {
+	if !IsAgentPlanResult(result) || len(result.Rows) == 0 {
+		return nil
+	}
+	if plan, ok := result.Rows[0][AgentPlanResultColumn].(map[string]any); ok {
+		return plan
+	}
+	return nil
+}
+
 type QueryRequest struct {
-	Query     string         `json:"query"`
-	TimeRange TimeRange      `json:"time_range,omitempty"`
-	Format    string         `json:"format,omitempty"`
-	Limit     int            `json:"limit,omitempty"`
-	TimeoutMS int            `json:"timeout_ms,omitempty"`
-	Params    map[string]any `json:"parameters,omitempty"`
+	Query     string    `json:"query"`
+	TimeRange TimeRange `json:"time_range,omitempty"`
+	// Format selects the response envelope shape.
+	//
+	//   ""        FormatAssistant: legacy envelope. responseType=1 row, plan
+	//             JSON-encoded into the `query` column, wrapped by
+	//             NewQueryExecuteResponse into {code, data, message, success}.
+	//             Plan schema version "v1". Existing clients see no change.
+	//   "agent"   FormatAgent: plan returned as a JSON object at the top level
+	//             of the HTTP body, with data_source.* spec/config fields
+	//             folded to compact {ref, kind} refs. Plan schema version
+	//             "v1.1". Combine with ?include=spec to expand.
+	//
+	// unified-model supports only these two values; any other value is
+	// rejected at the service layer with INVALID_ARGUMENT.
+	Format           string         `json:"format,omitempty"`
+	Limit            int            `json:"limit,omitempty"`
+	TimeoutMS        int            `json:"timeout_ms,omitempty"`
+	Params           map[string]any `json:"parameters,omitempty"`
+	EntityData       *EntityData    `json:"entity_data,omitempty"`
+	EntityDataCamel  *EntityData    `json:"entityData,omitempty"`
+	FilterByEntities *EntityData    `json:"filterByEntities,omitempty"`
+	// Mode selects between returning a query plan and executing the plan against
+	// real storage. unified-model only supports "plan"; umodel-assistant supports
+	// "plan" and "data". Empty defaults to the server's default_mode (plan for OSS).
+	Mode string `json:"mode,omitempty"`
+	// IncludeSpec opts in to fully expanding folded fields under
+	// data_source.* (storage.config, data_link.spec, storage_link.spec) when
+	// Format is FormatAgent. No effect when Format is FormatAssistant.
+	IncludeSpec bool `json:"include_spec,omitempty"`
+}
+
+func (r QueryRequest) EntityFilterData() *EntityData {
+	for _, data := range []*EntityData{r.FilterByEntities, r.EntityDataCamel, r.EntityData} {
+		if data != nil && !data.Empty() {
+			return data
+		}
+	}
+	return nil
+}
+
+type EntityData struct {
+	Version int        `json:"version,omitempty"`
+	Header  []string   `json:"header,omitempty"`
+	Data    [][]string `json:"data,omitempty"`
+}
+
+func (e EntityData) Empty() bool {
+	return len(e.Header) == 0 || len(e.Data) == 0
+}
+
+func (e EntityData) ToArrayMap() []map[string]string {
+	if e.Empty() {
+		return nil
+	}
+	rows := make([]map[string]string, 0, len(e.Data))
+	for _, row := range e.Data {
+		item := make(map[string]string, len(e.Header))
+		for idx, field := range e.Header {
+			if field == "" || idx >= len(row) {
+				continue
+			}
+			item[field] = row[idx]
+		}
+		rows = append(rows, item)
+	}
+	return rows
+}
+
+func (e *EntityData) UnmarshalJSON(raw []byte) error {
+	if e == nil {
+		return nil
+	}
+	if string(raw) == "null" {
+		*e = EntityData{}
+		return nil
+	}
+	var table struct {
+		Version int             `json:"version,omitempty"`
+		Header  []string        `json:"header,omitempty"`
+		Data    json.RawMessage `json:"data,omitempty"`
+	}
+	if err := json.Unmarshal(raw, &table); err == nil && (len(table.Header) > 0 || len(table.Data) > 0) {
+		rows, header, err := decodeEntityDataRows(table.Data, table.Header)
+		if err != nil {
+			return err
+		}
+		*e = EntityData{Version: table.Version, Header: header, Data: rows}
+		return nil
+	}
+	rows, header, err := decodeEntityDataRows(raw, nil)
+	if err != nil {
+		return err
+	}
+	*e = EntityData{Header: header, Data: rows}
+	return nil
+}
+
+func decodeEntityDataRows(raw json.RawMessage, header []string) ([][]string, []string, error) {
+	if len(raw) == 0 || string(raw) == "null" {
+		return nil, append([]string(nil), header...), nil
+	}
+	var items []json.RawMessage
+	if err := json.Unmarshal(raw, &items); err != nil {
+		return nil, nil, err
+	}
+	outHeader := append([]string(nil), header...)
+	if len(outHeader) == 0 {
+		outHeader = inferEntityDataHeader(items)
+	}
+	rows := make([][]string, 0, len(items))
+	for _, item := range items {
+		row, err := decodeEntityDataRow(item, outHeader)
+		if err != nil {
+			return nil, nil, err
+		}
+		if len(row) != len(outHeader) {
+			return nil, nil, fmt.Errorf("entity_data row length %d does not match header length %d", len(row), len(outHeader))
+		}
+		rows = append(rows, row)
+	}
+	return rows, outHeader, nil
+}
+
+func inferEntityDataHeader(items []json.RawMessage) []string {
+	keys := map[string]struct{}{}
+	for _, item := range items {
+		var row map[string]any
+		if err := json.Unmarshal(item, &row); err != nil {
+			continue
+		}
+		if _, ok := row["values"]; ok {
+			continue
+		}
+		for key := range row {
+			keys[key] = struct{}{}
+		}
+	}
+	header := make([]string, 0, len(keys))
+	for key := range keys {
+		header = append(header, key)
+	}
+	sort.Strings(header)
+	return header
+}
+
+func decodeEntityDataRow(raw json.RawMessage, header []string) ([]string, error) {
+	var values []any
+	if err := json.Unmarshal(raw, &values); err == nil {
+		return entityDataValuesToStrings(values), nil
+	}
+	var wrapped struct {
+		Values []any `json:"values"`
+	}
+	if err := json.Unmarshal(raw, &wrapped); err == nil && wrapped.Values != nil {
+		return entityDataValuesToStrings(wrapped.Values), nil
+	}
+	var object map[string]any
+	if err := json.Unmarshal(raw, &object); err != nil {
+		return nil, err
+	}
+	row := make([]string, 0, len(header))
+	for _, field := range header {
+		row = append(row, entityDataCellString(object[field]))
+	}
+	return row, nil
+}
+
+func entityDataValuesToStrings(values []any) []string {
+	row := make([]string, 0, len(values))
+	for _, value := range values {
+		row = append(row, entityDataCellString(value))
+	}
+	return row
+}
+
+func entityDataCellString(value any) string {
+	switch typed := value.(type) {
+	case nil:
+		return ""
+	case string:
+		return typed
+	case fmt.Stringer:
+		return typed.String()
+	default:
+		return fmt.Sprint(typed)
+	}
 }
 
 type QueryResult struct {
@@ -277,19 +493,97 @@ type QueryResult struct {
 	Explain *QueryExplain    `json:"explain,omitempty"`
 }
 
+type QueryExecuteResponse struct {
+	Code    string           `json:"code"`
+	Data    QueryExecuteData `json:"data"`
+	Message string           `json:"message"`
+	Success bool             `json:"success"`
+}
+
+type QueryExecuteData struct {
+	Data           [][]any             `json:"data"`
+	Header         []string            `json:"header"`
+	ResponseStatus QueryResponseStatus `json:"responseStatus"`
+}
+
+type QueryResponseStatus struct {
+	Result      string `json:"result"`
+	RetryPolicy string `json:"retryPolicy"`
+	Level       string `json:"level"`
+	StatusItem  []any  `json:"statusItem"`
+}
+
+func NewQueryExecuteResponse(result QueryResult) QueryExecuteResponse {
+	header := queryMatrixHeader(result.Columns, result.Rows)
+	return QueryExecuteResponse{
+		Code:    "200",
+		Message: "successful",
+		Success: true,
+		Data: QueryExecuteData{
+			Header: header,
+			Data:   queryRowsAsMatrix(header, result.Rows),
+			ResponseStatus: QueryResponseStatus{
+				Result:      "Success",
+				RetryPolicy: "None",
+				Level:       "Info",
+				StatusItem:  []any{},
+			},
+		},
+	}
+}
+
+func queryMatrixHeader(columns []string, rows []map[string]any) []string {
+	header := append([]string(nil), columns...)
+	seen := make(map[string]struct{}, len(header))
+	for _, column := range header {
+		seen[column] = struct{}{}
+	}
+	extras := map[string]struct{}{}
+	for _, row := range rows {
+		for column := range row {
+			if _, ok := seen[column]; ok {
+				continue
+			}
+			extras[column] = struct{}{}
+		}
+	}
+	extraColumns := make([]string, 0, len(extras))
+	for column := range extras {
+		extraColumns = append(extraColumns, column)
+	}
+	sort.Strings(extraColumns)
+	return append(header, extraColumns...)
+}
+
+func queryRowsAsMatrix(columns []string, rows []map[string]any) [][]any {
+	out := make([][]any, 0, len(rows))
+	for _, row := range rows {
+		values := make([]any, 0, len(columns))
+		for _, column := range columns {
+			values = append(values, row[column])
+		}
+		out = append(out, values)
+	}
+	return out
+}
+
 type QueryExplain struct {
-	Source           string   `json:"source"`
-	Provider         string   `json:"provider,omitempty"`
-	StorageProvider  string   `json:"storage_provider,omitempty"`
-	CypherDialect    string   `json:"cypher_dialect,omitempty"`
-	CypherEngine     string   `json:"cypher_engine,omitempty"`
-	Pushdown         []string `json:"pushdown,omitempty"`
-	Fallback         []string `json:"fallback,omitempty"`
-	Operators        []string `json:"operators,omitempty"`
-	Depth            int      `json:"depth,omitempty"`
-	Limit            int      `json:"limit,omitempty"`
-	TimeoutMS        int      `json:"timeout_ms,omitempty"`
-	TimeRangeApplied bool     `json:"time_range_applied"`
+	Source           string          `json:"source"`
+	Provider         string          `json:"provider,omitempty"`
+	StorageProvider  string          `json:"storage_provider,omitempty"`
+	SearchProvider   string          `json:"search_provider,omitempty"`
+	EmbedModel       string          `json:"embed_model,omitempty"`
+	SearchMode       string          `json:"search_mode,omitempty"`
+	CypherDialect    string          `json:"cypher_dialect,omitempty"`
+	CypherEngine     string          `json:"cypher_engine,omitempty"`
+	EntityCall       *EntityCallPlan `json:"entity_call,omitempty"`
+	Pushdown         []string        `json:"pushdown,omitempty"`
+	Fallback         []string        `json:"fallback,omitempty"`
+	Operators        []string        `json:"operators,omitempty"`
+	Depth            int             `json:"depth,omitempty"`
+	Limit            int             `json:"limit,omitempty"`
+	TimeoutMS        int             `json:"timeout_ms,omitempty"`
+	TimeRangeApplied bool            `json:"time_range_applied"`
 }
 
 type QueryPredicate struct {
@@ -320,6 +614,23 @@ type GraphCallPlan struct {
 	Cypher    string              `json:"cypher,omitempty"`
 }
 
+type EntityCallParam struct {
+	Key         string `json:"key,omitempty"`
+	Type        string `json:"type,omitempty"`
+	DisplayName string `json:"display_name,omitempty"`
+	Description string `json:"description,omitempty"`
+	Required    bool   `json:"required,omitempty"`
+	Default     any    `json:"default,omitempty"`
+}
+
+type EntityCallPlan struct {
+	Name           string            `json:"name,omitempty"`
+	Arguments      []any             `json:"arguments,omitempty"`
+	NamedArguments map[string]any    `json:"named_arguments,omitempty"`
+	Parameters     map[string]any    `json:"parameters,omitempty"`
+	Signature      []EntityCallParam `json:"signature,omitempty"`
+}
+
 type QueryPipelineOperator struct {
 	Name       string          `json:"name,omitempty"`
 	Expression string          `json:"expression,omitempty"`
@@ -327,26 +638,31 @@ type QueryPipelineOperator struct {
 	Project    []string        `json:"project,omitempty"`
 	Sort       *QuerySort      `json:"sort,omitempty"`
 	GraphCall  *GraphCallPlan  `json:"graph_call,omitempty"`
+	EntityCall *EntityCallPlan `json:"entity_call,omitempty"`
 	Limit      int             `json:"limit,omitempty"`
 }
 
 type QueryPlan struct {
-	Workspace  string
-	Source     string
-	Query      string
-	Filters    map[string]any
-	Operators  []string
-	Pipeline   []QueryPipelineOperator
-	Predicates []QueryPredicate
-	Project    []string
-	Sort       []QuerySort
-	GraphCall  *GraphCallPlan
-	TopK       int
-	TimeRange  TimeRange
-	Params     map[string]any
-	Limit      int
-	Depth      int
-	TimeoutMS  int
+	Workspace   string
+	Source      string
+	Query       string
+	Filters     map[string]any
+	Operators   []string
+	Pipeline    []QueryPipelineOperator
+	Predicates  []QueryPredicate
+	Project     []string
+	Sort        []QuerySort
+	GraphCall   *GraphCallPlan
+	EntityCall  *EntityCallPlan
+	TopK        int
+	TimeRange   TimeRange
+	Params      map[string]any
+	EntityData  *EntityData
+	Limit       int
+	Depth       int
+	TimeoutMS   int
+	Format      string // mirrors QueryRequest.Format; threaded to the executor for envelope selection
+	IncludeSpec bool   // mirrors QueryRequest.IncludeSpec; threaded to the executor for spec expansion
 }
 
 type EntityQueryPlan = QueryPlan
@@ -366,6 +682,93 @@ type GraphStoreCapabilities struct {
 }
 
 type GraphStoreHealth struct {
+	Provider string `json:"provider"`
+	Status   string `json:"status"`
+	Message  string `json:"message,omitempty"`
+}
+
+// SearchRequest is the public input to SearchService.
+// It mirrors the SLS USearch SPL `with(...)` parameter set so the same SPL
+// can flow through both the open-source engine and the SLS backend.
+type SearchRequest struct {
+	Workspace  string             `json:"workspace,omitempty"`
+	Source     string             `json:"source"`
+	Domain     string             `json:"domain,omitempty"`
+	Kinds      []string           `json:"kinds,omitempty"`
+	Names      []string           `json:"names,omitempty"`
+	Query      string             `json:"query,omitempty"`
+	EmbedModel string             `json:"embed_model,omitempty"`
+	TopK       int                `json:"topk,omitempty"`
+	Origin     string             `json:"origin,omitempty"`
+	Filters    map[string]any     `json:"filters,omitempty"`
+	HybridK    int                `json:"hybrid_k,omitempty"`
+	Weights    map[string]float64 `json:"weights,omitempty"`
+}
+
+// SearchResult is the public output of SearchService.
+type SearchResult struct {
+	Rows []SearchRow `json:"rows"`
+}
+
+// SearchRow mirrors the SLS USearch result row shape. Field tags use the
+// `__field__` convention required by the SLS USearch contract.
+type SearchRow struct {
+	Type       string         `json:"__type__,omitempty"`
+	Domain     string         `json:"__domain__,omitempty"`
+	Kind       string         `json:"kind,omitempty"`
+	Name       string         `json:"name,omitempty"`
+	Metadata   map[string]any `json:"metadata,omitempty"`
+	Spec       map[string]any `json:"spec,omitempty"`
+	Score      float64        `json:"__score__"`
+	Provider   string         `json:"__provider__,omitempty"`
+	EmbedModel string         `json:"__embedding_model__,omitempty"`
+}
+
+// AsMap renders a SearchRow as a map for QueryResult.Rows.
+func (r SearchRow) AsMap() map[string]any {
+	m := map[string]any{
+		"__score__": r.Score,
+	}
+	if r.Type != "" {
+		m["__type__"] = r.Type
+	}
+	if r.Domain != "" {
+		m["__domain__"] = r.Domain
+	}
+	if r.Kind != "" {
+		m["kind"] = r.Kind
+	}
+	if r.Name != "" {
+		m["name"] = r.Name
+	}
+	if len(r.Metadata) > 0 {
+		m["metadata"] = r.Metadata
+	}
+	if len(r.Spec) > 0 {
+		m["spec"] = r.Spec
+	}
+	if r.Provider != "" {
+		m["__provider__"] = r.Provider
+	}
+	if r.EmbedModel != "" {
+		m["__embedding_model__"] = r.EmbedModel
+	}
+	return m
+}
+
+// SearchCapabilities advertises what a SearchService implementation supports.
+type SearchCapabilities struct {
+	VectorSearch         bool   `json:"vector_search"`
+	HybridSearch         bool   `json:"hybrid_search"`
+	FilteredVectorSearch bool   `json:"filtered_vector_search"`
+	RRF                  bool   `json:"rrf"`
+	ChunkChasing         bool   `json:"chunk_chasing"`
+	EmbedderType         string `json:"embedder_type,omitempty"`
+	MaxDim               int    `json:"max_dim,omitempty"`
+}
+
+// SearchHealth reports the runtime status of a SearchService implementation.
+type SearchHealth struct {
 	Provider string `json:"provider"`
 	Status   string `json:"status"`
 	Message  string `json:"message,omitempty"`

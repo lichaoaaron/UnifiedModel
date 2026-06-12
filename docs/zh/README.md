@@ -34,7 +34,14 @@ English: [UModel Documentation](../en/README.md)
 - [Query Service 指南](guides/query-service.md)
 - [Web UI 指南](guides/web-ui.md)
 - [SDK 与客户端指南](guides/sdk-clients.md) - REST、CLI、MCP、生成模型 SDK 和集成示例。
+- [Agent 集成指南](guides/agent-integration.md) - 接入 MCP 客户端、Agent 的工具/资源接口、Agent 使用的查询面，以及一个完整的故障排查样例。
+- [Agent 技能](../../skills/README.zh-CN.md) - 可加载给 MCP/CLI Agent 的 `SKILL.md`：读实体/关系/模型数据，做模型引导的根因分析。
 - [MCP 示例](../../examples/mcp/README.zh-CN.md) - stdio、Streamable HTTP、HTTP+SSE 和 TOON payload 示例。
+
+## 示例
+
+- [多域 Quickstart 示例包](../../examples/quickstart-multidomain/README.zh-CN.md) - 一个 workspace 里连接五个 domain；`make quickstart` 默认样例。
+- [故障排查 Demo](../../examples/incident-investigation/README.zh-CN.md) - 场景驱动、AI Agent 辅助的根因分析：跨业务、平台、运行时三个 domain 排查支付网关 SLO 违约，演示 runbook 引导的诊断路径。
 
 ## 架构
 
@@ -55,6 +62,12 @@ English: [UModel Documentation](../en/README.md)
 - [公共 Go Contracts](../../pkg/contract/contracts.go)
 - [公共领域模型](../../pkg/model/types.go)
 - [稳定错误码](../../pkg/errors/errors.go)
+
+## 规范
+
+跨实现的契约文档，同时约束 `unified-model`（开源）与 `umodel-assistant`（商业版）。任一方破坏视为 P0 回归。
+
+- [Plan Schema v1](spec/plan-schema-v1.md) - mode 协议、plan JSON 信封以及 `get_metrics` / `get_logs` 的对齐方法签名。
 
 ## 生成的 Schema 文档
 
