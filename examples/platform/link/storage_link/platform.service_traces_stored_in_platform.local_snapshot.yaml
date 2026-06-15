@@ -1,0 +1,25 @@
+kind: storage_link
+schema:
+  url: "umodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.service_traces_stored_in_platform.local_snapshot"
+  domain: platform
+  display_name:
+    en_us: "Service Traces in Local Snapshot"
+    zh_cn: "平台服务链路存储在本地快照"
+  description:
+    en_us: "Links platform service traces to the local file snapshot storage."
+    zh_cn: "将平台服务链路关联到本地文件快照存储。"
+spec:
+  src:
+    domain: platform
+    kind: trace_set
+    name: platform.service_traces
+  dest:
+    domain: platform
+    kind: external_storage
+    name: platform.local_snapshot
+  fields_mapping:
+    serviceName: serviceName
+    startTime: startTime

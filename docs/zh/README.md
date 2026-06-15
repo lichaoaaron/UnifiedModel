@@ -6,6 +6,10 @@ UModel 中文文档入口。中文文档与英文文档分别维护在 `docs/zh`
 
 English: [UModel Documentation](../en/README.md)
 
+## 学习导览
+
+- [UnifiedModel 学习导览](learning-guide/README.md) - 面向第一次系统理解项目的源码阅读入口、架构主线、调用链和实践路径。
+
 ## 入门
 
 - [项目 README](../../README_CN.md) - 项目定位、快速开始、架构和治理入口。

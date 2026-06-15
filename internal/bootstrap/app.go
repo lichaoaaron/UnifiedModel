@@ -17,6 +17,8 @@ import (
 	_ "github.com/alibaba/UnifiedModel/internal/graphstore/provider/ladybug"
 	"github.com/alibaba/UnifiedModel/internal/query"
 	"github.com/alibaba/UnifiedModel/internal/sampledata"
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
+	"github.com/alibaba/UnifiedModel/internal/telemetry/localfile"
 	"github.com/alibaba/UnifiedModel/internal/umodel"
 	"github.com/alibaba/UnifiedModel/internal/workspace"
 	"github.com/alibaba/UnifiedModel/pkg/contract"
@@ -77,7 +79,13 @@ func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig) (*A
 	umodelSvc := umodel.NewService(graph)
 	entitySvc := entitystore.NewService(graph, umodelSvc)
 	sampleSvc := sampledata.NewService(umodelSvc, entitySvc)
-	querySvc := query.NewService(graph)
+
+	// Wire telemetry providers. The local file provider resolves data paths
+	// relative to the data root directory.
+	providers := []telemetry.Provider{
+		localfile.New(config.DataRoot),
+	}
+	querySvc := query.NewServiceWithProviders(graph, providers)
 	agentSvc := agentgateway.NewService(querySvc, agentgateway.WithWriteServices(umodelSvc, entitySvc))
 
 	return &App{

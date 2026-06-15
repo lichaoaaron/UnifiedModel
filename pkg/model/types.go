@@ -278,18 +278,19 @@ type QueryResult struct {
 }
 
 type QueryExplain struct {
-	Source           string   `json:"source"`
-	Provider         string   `json:"provider,omitempty"`
-	StorageProvider  string   `json:"storage_provider,omitempty"`
-	CypherDialect    string   `json:"cypher_dialect,omitempty"`
-	CypherEngine     string   `json:"cypher_engine,omitempty"`
-	Pushdown         []string `json:"pushdown,omitempty"`
-	Fallback         []string `json:"fallback,omitempty"`
-	Operators        []string `json:"operators,omitempty"`
-	Depth            int      `json:"depth,omitempty"`
-	Limit            int      `json:"limit,omitempty"`
-	TimeoutMS        int      `json:"timeout_ms,omitempty"`
-	TimeRangeApplied bool     `json:"time_range_applied"`
+	Source           string           `json:"source"`
+	Provider         string           `json:"provider,omitempty"`
+	StorageProvider  string           `json:"storage_provider,omitempty"`
+	CypherDialect    string           `json:"cypher_dialect,omitempty"`
+	CypherEngine     string           `json:"cypher_engine,omitempty"`
+	Pushdown         []string         `json:"pushdown,omitempty"`
+	Fallback         []string         `json:"fallback,omitempty"`
+	Operators        []string         `json:"operators,omitempty"`
+	Depth            int              `json:"depth,omitempty"`
+	Limit            int              `json:"limit,omitempty"`
+	TimeoutMS        int              `json:"timeout_ms,omitempty"`
+	TimeRangeApplied bool             `json:"time_range_applied"`
+	Evidence         *EvidenceExplain `json:"evidence,omitempty"`
 }
 
 type QueryPredicate struct {
@@ -327,6 +328,7 @@ type QueryPipelineOperator struct {
 	Project    []string        `json:"project,omitempty"`
 	Sort       *QuerySort      `json:"sort,omitempty"`
 	GraphCall  *GraphCallPlan  `json:"graph_call,omitempty"`
+	Evidence   *EvidencePlan   `json:"evidence,omitempty"`
 	Limit      int             `json:"limit,omitempty"`
 }
 

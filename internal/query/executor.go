@@ -7,20 +7,32 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
 	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
 	"github.com/alibaba/UnifiedModel/pkg/model"
 )
 
 type Executor struct {
-	graph graphStore
+	graph     graphStore
+	evidence  *evidenceExecutor
 }
 
-func NewExecutor(graph graphStore) *Executor {
-	return &Executor{graph: graph}
+func NewExecutor(graph graphStore, providers []telemetry.Provider) *Executor {
+	return &Executor{
+		graph:    graph,
+		evidence: newEvidenceExecutor(graph, providers),
+	}
 }
 
 func (e *Executor) Execute(ctx context.Context, workspace string, plan model.QueryPlan) (model.QueryResult, error) {
 	plan.Workspace = workspace
+
+	// Check if this is an evidence query (.entity | evidence(...))
+	if plan.Source == ".entity" {
+		if evOp, ok := findEvidenceOperator(plan.Pipeline); ok {
+			return e.executeEntityEvidence(ctx, workspace, plan, evOp)
+		}
+	}
 
 	var result model.QueryResult
 	var err error
@@ -43,6 +55,156 @@ func (e *Executor) Execute(ctx context.Context, workspace string, plan model.Que
 	result.Columns = columns
 	result.Page = model.PageRequest{Limit: plan.Limit}
 	return result, nil
+}
+
+// executeEntityEvidence runs the entity portion of the plan, then executes evidence().
+// Post-evidence operators (project, sort, limit) are applied to the telemetry rows
+// AFTER evidence returns, so entity context fields are never stripped before evidence.
+func (e *Executor) executeEntityEvidence(ctx context.Context, workspace string, plan model.QueryPlan, evOp model.QueryPipelineOperator) (model.QueryResult, error) {
+	// Build a plan without the evidence operator for the entity query.
+	// Also strip post-evidence operators (project, sort, limit) so they don't affect
+	// entity retrieval.
+	entityPlan := entityPlanForEvidence(plan)
+	entityResult, err := e.graph.QueryEntities(ctx, model.EntityQueryPlan(entityPlan))
+	if err != nil {
+		return model.QueryResult{}, err
+	}
+
+	// Only apply with/where to filter entities. Never apply project/sort here,
+	// because that would strip __domain__, __entity_type__, display_name, etc.
+	entityRows := filterEntityRowsForEvidence(entityResult.Rows, plan)
+
+	result, evExplain, err := e.evidence.executeEvidence(ctx, workspace, entityRows, evOp, plan.Limit)
+	if err != nil {
+		return model.QueryResult{}, err
+	}
+
+	// Apply post-evidence operators (project, sort, limit) to the telemetry rows.
+	result.Rows, result.Columns = applyPostEvidencePipeline(result.Rows, result.Columns, plan)
+
+	// Attach evidence explain to the result for the service to pick up.
+	if evExplain != nil {
+		if result.Explain == nil {
+			result.Explain = &model.QueryExplain{}
+		}
+		result.Explain.Evidence = evExplain
+	}
+
+	return result, nil
+}
+
+// findEvidenceOperator returns the evidence operator from a pipeline, if present.
+func findEvidenceOperator(pipeline []model.QueryPipelineOperator) (model.QueryPipelineOperator, bool) {
+	for _, op := range pipeline {
+		if op.Name == "evidence" {
+			return op, true
+		}
+	}
+	return model.QueryPipelineOperator{}, false
+}
+
+// resolveEvidenceExplainForPlan is the explain-path entry point. It runs the entity
+// query (without streaming telemetry) and resolves the full evidence chain, returning
+// an EvidenceExplain for inclusion in explain output. Errors are treated as soft
+// failures by the caller.
+func (e *Executor) resolveEvidenceExplainForPlan(
+	ctx context.Context,
+	workspace string,
+	plan model.QueryPlan,
+	evOp model.QueryPipelineOperator,
+) (*model.EvidenceExplain, error) {
+	entityPlan := entityPlanForEvidence(plan)
+	entityResult, err := e.graph.QueryEntities(ctx, model.EntityQueryPlan(entityPlan))
+	if err != nil {
+		return nil, err
+	}
+	entityRows := filterEntityRowsForEvidence(entityResult.Rows, plan)
+	return e.evidence.resolveEvidenceExplain(ctx, workspace, entityRows, evOp)
+}
+
+// entityPlanForEvidence builds the plan used for the pre-evidence entity query.
+// It removes the evidence operator and all post-evidence operators (project, sort,
+// limit) so they do not affect entity retrieval or strip required entity fields.
+func entityPlanForEvidence(plan model.QueryPlan) model.QueryPlan {
+	p := plan
+	pipeline := make([]model.QueryPipelineOperator, 0, len(plan.Pipeline))
+	operators := make([]string, 0, len(plan.Operators))
+
+	// Include only with/where operators that appear before the evidence operator.
+	seenEvidence := false
+	for i, op := range plan.Pipeline {
+		if op.Name == "evidence" {
+			seenEvidence = true
+			continue
+		}
+		if seenEvidence {
+			// Operators after evidence are post-evidence; skip them for entity retrieval.
+			continue
+		}
+		if op.Name == "project" || op.Name == "sort" || op.Name == "limit" {
+			// project/sort/limit before evidence would strip entity fields; skip.
+			continue
+		}
+		pipeline = append(pipeline, op)
+		if i < len(plan.Operators) {
+			operators = append(operators, plan.Operators[i])
+		}
+	}
+	p.Pipeline = pipeline
+	p.Operators = operators
+	// Use a generous limit for entity retrieval so we can validate count.
+	p.Limit = 100
+	return p
+}
+
+// filterEntityRowsForEvidence applies only with/where filters to entity rows.
+// project/sort are intentionally excluded to preserve all entity fields for evidence.
+func filterEntityRowsForEvidence(rows []map[string]any, plan model.QueryPlan) []map[string]any {
+	if !hasOperator(plan.Pipeline, "with") && len(plan.Filters) > 0 {
+		rows = filterRows(plan.Source, rows, plan.Filters)
+	}
+	for _, operator := range plan.Pipeline {
+		if operator.Name == "evidence" {
+			break // stop at evidence; everything after is post-evidence
+		}
+		switch operator.Name {
+		case "with":
+			rows = filterRows(plan.Source, rows, plan.Filters)
+		case "where":
+			if operator.Predicate != nil {
+				rows = filterPredicate(rows, *operator.Predicate)
+			}
+		// project/sort/limit intentionally skipped — they must not touch entity rows
+		}
+	}
+	return rows
+}
+
+// applyPostEvidencePipeline applies project/sort/limit operators that appear after
+// the evidence operator in the pipeline, to the telemetry rows returned by evidence.
+func applyPostEvidencePipeline(rows []map[string]any, columns []string, plan model.QueryPlan) ([]map[string]any, []string) {
+	seenEvidence := false
+	for _, operator := range plan.Pipeline {
+		if operator.Name == "evidence" {
+			seenEvidence = true
+			continue
+		}
+		if !seenEvidence {
+			continue
+		}
+		switch operator.Name {
+		case "project":
+			rows, columns = projectRows(rows, operator.Project)
+		case "sort":
+			if operator.Sort != nil {
+				sortRows(rows, *operator.Sort)
+			}
+		case "limit":
+			rows = limitRows(rows, operator.Limit)
+		}
+	}
+	rows = limitRows(rows, plan.Limit)
+	return rows, columns
 }
 
 func (e *Executor) executeUModel(ctx context.Context, workspace string, plan model.QueryPlan) (model.QueryResult, error) {

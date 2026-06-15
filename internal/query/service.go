@@ -3,6 +3,7 @@ package query
 import (
 	"context"
 
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
 	"github.com/alibaba/UnifiedModel/pkg/model"
 )
 
@@ -20,11 +21,22 @@ type Service struct {
 	executor *Executor
 }
 
+// NewService creates a Query Service without telemetry providers.
 func NewService(graph graphStore) *Service {
 	return &Service{
 		graph:    graph,
 		planner:  Planner{},
-		executor: NewExecutor(graph),
+		executor: NewExecutor(graph, nil),
+	}
+}
+
+// NewServiceWithProviders creates a Query Service with a set of TelemetryProviders
+// for evidence() operator execution.
+func NewServiceWithProviders(graph graphStore, providers []telemetry.Provider) *Service {
+	return &Service{
+		graph:    graph,
+		planner:  Planner{},
+		executor: NewExecutor(graph, providers),
 	}
 }
 
@@ -38,6 +50,10 @@ func (s *Service) Execute(ctx context.Context, workspace string, req model.Query
 		return model.QueryResult{}, err
 	}
 	explain := buildExplain(plan, caps, health)
+	// Preserve evidence explain set by the executor
+	if result.Explain != nil && result.Explain.Evidence != nil {
+		explain.Evidence = result.Explain.Evidence
+	}
 	result.Explain = &explain
 	return result, nil
 }
@@ -47,7 +63,22 @@ func (s *Service) Explain(ctx context.Context, workspace string, req model.Query
 	if err != nil {
 		return model.QueryExplain{}, err
 	}
-	return buildExplain(plan, caps, health), nil
+	explain := buildExplain(plan, caps, health)
+
+	// For evidence queries, resolve the full chain so callers can see the
+	// DataLink → DataSet → StorageLink → Storage → Provider path.
+	if plan.Source == ".entity" {
+		if evOp, ok := findEvidenceOperator(plan.Pipeline); ok {
+			evExplain, resolveErr := s.executor.resolveEvidenceExplainForPlan(ctx, workspace, plan, evOp)
+			if resolveErr == nil && evExplain != nil {
+				explain.Evidence = evExplain
+			}
+			// If resolution fails (e.g. entity not found), return explain without evidence
+			// section rather than surfacing an error — the query itself may still be valid.
+		}
+	}
+
+	return explain, nil
 }
 
 func (s *Service) Examples(ctx context.Context) ([]string, error) {

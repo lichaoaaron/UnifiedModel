@@ -1,0 +1,34 @@
+[
+  {
+    "serviceName": "redisHcZ4a",
+    "resource.attributes.service@name": "redisHcZ4a",
+    "name": "redis_active_defrag_running",
+    "kind": "GAUGE",
+    "time": "2026-06-03T01:00:00Z",
+    "value": 0.0
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "name": "jvm_heap_used",
+    "kind": "GAUGE",
+    "time": "2026-06-03T01:00:01Z",
+    "value": 512000000.0
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "name": "http_requests_total",
+    "kind": "COUNTER",
+    "time": "2026-06-03T01:00:02Z",
+    "value": 1024.0
+  },
+  {
+    "serviceName": "ais-consumer",
+    "resource.attributes.service@name": "ais-consumer",
+    "name": "consumer_messages_total",
+    "kind": "COUNTER",
+    "time": "2026-06-03T01:00:03Z",
+    "value": 500.0
+  }
+]

@@ -250,6 +250,15 @@ func parsePipelineSegment(ast *AST, segment string) error {
 			return apperrors.New(apperrors.CodeQueryParseError, "graph-match requires a path expression")
 		}
 		ast.Operators = append(ast.Operators, model.QueryPipelineOperator{Name: "graph-match", Expression: expression})
+	case strings.HasPrefix(segment, "evidence("):
+		if ast.Source != ".entity" {
+			return apperrors.New(apperrors.CodeQueryParseError, "evidence(...) is only supported for .entity")
+		}
+		evidencePlan, err := parseEvidence(segment)
+		if err != nil {
+			return err
+		}
+		ast.Operators = append(ast.Operators, model.QueryPipelineOperator{Name: "evidence", Evidence: &evidencePlan})
 	default:
 		return apperrors.WithDetails(apperrors.CodeQueryParseError, "unsupported query operator", map[string]string{"operator": firstWord(segment)})
 	}
@@ -873,4 +882,63 @@ func firstWord(value string) string {
 		return ""
 	}
 	return fields[0]
+}
+
+// parseEvidence parses evidence(kind='...', from='...', to='...') into an EvidencePlan.
+func parseEvidence(segment string) (model.EvidencePlan, error) {
+	start := strings.Index(segment, "evidence(")
+	if start < 0 {
+		return model.EvidencePlan{}, apperrors.New(apperrors.CodeQueryParseError, "evidence(...) is malformed")
+	}
+	start += len("evidence(")
+	end := matchingParen(segment, start-1)
+	if end < 0 {
+		return model.EvidencePlan{}, apperrors.New(apperrors.CodeQueryParseError, "evidence(...) is not closed")
+	}
+	rest := strings.TrimSpace(segment[end+1:])
+	if rest != "" {
+		return model.EvidencePlan{}, apperrors.New(apperrors.CodeQueryParseError, "evidence(...) has unexpected trailing content")
+	}
+
+	params := map[string]string{}
+	for _, part := range splitTopLevel(segment[start:end], ',') {
+		part = strings.TrimSpace(part)
+		if part == "" {
+			continue
+		}
+		key, raw, ok := cutTopLevel(part, '=')
+		if !ok {
+			return model.EvidencePlan{}, apperrors.New(apperrors.CodeQueryParseError, "evidence(...) parameters must use key=value")
+		}
+		k := strings.TrimSpace(key)
+		v := strings.TrimSpace(raw)
+		// Strip surrounding quotes
+		if len(v) >= 2 && (v[0] == '\'' || v[0] == '"') && v[len(v)-1] == v[0] {
+			v = v[1 : len(v)-1]
+		}
+		params[k] = v
+	}
+
+	kind := params["kind"]
+	if kind == "" {
+		return model.EvidencePlan{}, apperrors.New(apperrors.CodeQueryParseError, "evidence(...) requires kind parameter")
+	}
+	switch kind {
+	case "metric_set", "log_set", "trace_set":
+	default:
+		return model.EvidencePlan{}, apperrors.WithDetails(apperrors.CodeQueryParseError, "evidence kind must be metric_set, log_set, or trace_set", map[string]string{"kind": kind})
+	}
+
+	plan := model.EvidencePlan{Kind: kind}
+
+	if from, ok := params["from"]; ok && from != "" {
+		s := from
+		plan.From = &s
+	}
+	if to, ok := params["to"]; ok && to != "" {
+		s := to
+		plan.To = &s
+	}
+
+	return plan, nil
 }

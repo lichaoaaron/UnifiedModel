@@ -1,0 +1,16 @@
+[
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "time": "2026-06-03T01:00:30Z",
+    "severityText": "DEBUG",
+    "body": "iam-manage log entry file2"
+  },
+  {
+    "serviceName": "redisHcZ4a",
+    "resource.attributes.service@name": "redisHcZ4a",
+    "time": "2026-06-03T01:00:30Z",
+    "severityText": "INFO",
+    "body": "redis log entry"
+  }
+]
