@@ -6,7 +6,7 @@ Public domain and contract layer.
 
 | Directory | Description |
 |---|---|
-| `model/` | Domain model types for workspace, UModel, entities, relations, and query. |
+| `model/` | Domain model types for workspace, MModel, entities, relations, and query. |
 | `contract/` | Service interface contracts such as GraphStore and workspace management. |
 | `errors/` | Shared error envelope and stable error codes. |
 

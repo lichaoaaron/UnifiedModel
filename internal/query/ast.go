@@ -1,6 +1,6 @@
 package query
 
-import "github.com/alibaba/UnifiedModel/pkg/model"
+import "github.com/alibaba/MModel/pkg/model"
 
 type AST struct {
 	Source    string

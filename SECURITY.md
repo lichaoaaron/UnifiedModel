@@ -4,7 +4,7 @@ Security reports are welcome and should be handled privately before public discl
 
 ## Supported Versions
 
-UModel Open Source is maintained on the main development line until stable release branches are published. Security fixes are accepted there first and should be backported once versioned release branches exist.
+MModel Open Source is maintained on the main development line until stable release branches are published. Security fixes are accepted there first and should be backported once versioned release branches exist.
 
 | Version | Supported |
 |---|---:|

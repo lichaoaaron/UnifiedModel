@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UModel Manifest 一致性检查
+MModel Manifest 一致性检查
 
 检查 schemas/manifest.yaml 中声明的 models 与 schemas/core/ 下实际存在的
 schema 文件是否一致。

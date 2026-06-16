@@ -5,17 +5,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	querysvc "github.com/alibaba/UnifiedModel/internal/query"
-	"github.com/alibaba/UnifiedModel/internal/umodel"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/internal/mmodel"
+	querysvc "github.com/alibaba/MModel/internal/query"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestWriteEntitiesValidatesCMS2Payload(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	_, err := svc.WriteEntities(ctx, "demo", model.EntityWriteBatch{
 		Entities: []model.EntityPayload{{
@@ -50,7 +50,7 @@ func TestWriteEntitiesValidatesCMS2Payload(t *testing.T) {
 func TestWriteEntitiesPartialSuccessAndIdempotency(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	result, err := svc.WriteEntities(ctx, "demo", model.EntityWriteBatch{
 		PartialSuccess: true,
@@ -105,7 +105,7 @@ func TestWriteEntitiesPartialSuccessAndIdempotency(t *testing.T) {
 func TestWriteEntitiesCRUDVisibilityThroughQuery(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 	query := querysvc.NewService(graph)
 
 	if _, err := svc.WriteEntities(ctx, "demo", model.EntityWriteBatch{
@@ -191,7 +191,7 @@ func TestWriteEntitiesCRUDVisibilityThroughQuery(t *testing.T) {
 func TestExpireEntitiesUsesStableKey(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	if _, err := svc.WriteEntities(ctx, "demo", model.EntityWriteBatch{
 		Entities: []model.EntityPayload{validEntityWithMethod("54013ba69c196820e56801f1ef5aad54", "Create")},
@@ -210,7 +210,7 @@ func TestExpireEntitiesUsesStableKey(t *testing.T) {
 func TestWriteRelationsValidatesCMS2Payload(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	_, err := svc.WriteRelations(ctx, "demo", model.RelationWriteBatch{
 		Relations: []model.RelationPayload{{
@@ -244,7 +244,7 @@ func TestWriteRelationsValidatesCMS2Payload(t *testing.T) {
 func TestWriteRelationsPartialSuccessAndIdempotency(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	result, err := svc.WriteRelations(ctx, "demo", model.RelationWriteBatch{
 		PartialSuccess: true,
@@ -296,7 +296,7 @@ func TestWriteRelationsPartialSuccessAndIdempotency(t *testing.T) {
 func TestWriteRelationsCRUDVisibilityThroughQuery(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 	query := querysvc.NewService(graph)
 
 	if _, err := svc.WriteRelations(ctx, "demo", model.RelationWriteBatch{
@@ -385,7 +385,7 @@ func TestWriteRelationsCRUDVisibilityThroughQuery(t *testing.T) {
 func TestRunTTLDoesNotMutateWithoutExpiredData(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	svc := NewService(graph, umodel.NewService(graph))
+	svc := NewService(graph, mmodel.NewService(graph))
 
 	result, err := svc.RunTTL(ctx, "demo", time.Unix(1_000, 0))
 	if err != nil {

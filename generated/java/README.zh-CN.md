@@ -1,12 +1,12 @@
-# UModel Java SDK
+# MModel Java SDK
 
 English version: [README.md](README.md)
 
-本目录包含由 UModel schema 生成的 Java SDK 资产。
+本目录包含由 MModel schema 生成的 Java SDK 资产。
 
 ## 用途
 
-- 在 Java 项目中构造和处理 UModel schema model 对象。
+- 在 Java 项目中构造和处理 MModel schema model 对象。
 - 验证 schema 生成器对 Java 类型映射的输出。
 - 作为多语言 SDK 兼容性检查的一部分。
 

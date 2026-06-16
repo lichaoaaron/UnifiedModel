@@ -40,7 +40,7 @@ type WorkspaceMetadata struct {
 	ResourceVersion uint64            `json:"resource_version"`
 }
 
-type UModelElement struct {
+type MModelElement struct {
 	Kind    string         `json:"kind"`
 	Domain  string         `json:"domain"`
 	Name    string         `json:"name"`
@@ -65,17 +65,17 @@ type ValidationResult struct {
 	Valid bool `json:"valid"`
 }
 
-type UModelImportRequest struct {
+type MModelImportRequest struct {
 	Path              string   `json:"path"`
 	CommonSchemaPacks []string `json:"common_schema_packs,omitempty"`
 }
 
-type UModelImportResult struct {
+type MModelImportResult struct {
 	Workspace string          `json:"workspace"`
 	Source    string          `json:"source"`
 	Imported  int             `json:"imported"`
 	Skipped   int             `json:"skipped"`
-	Elements  []UModelElement `json:"elements,omitempty"`
+	Elements  []MModelElement `json:"elements,omitempty"`
 }
 
 type QueryRequest struct {
@@ -150,21 +150,21 @@ func (c *Client) CreateWorkspace(ctx context.Context, req CreateWorkspaceRequest
 	return out, err
 }
 
-func (c *Client) PutUModelElements(ctx context.Context, workspace string, elements []UModelElement) (WriteResult, error) {
+func (c *Client) PutMModelElements(ctx context.Context, workspace string, elements []MModelElement) (WriteResult, error) {
 	var out WriteResult
-	err := c.do(ctx, http.MethodPost, "/api/v1/umodel/"+escape(workspace)+"/elements", map[string]any{"elements": elements}, &out)
+	err := c.do(ctx, http.MethodPost, "/api/v1/mmodel/"+escape(workspace)+"/elements", map[string]any{"elements": elements}, &out)
 	return out, err
 }
 
-func (c *Client) ValidateUModel(ctx context.Context, workspace string, elements []UModelElement) (ValidationResult, error) {
+func (c *Client) ValidateMModel(ctx context.Context, workspace string, elements []MModelElement) (ValidationResult, error) {
 	var out ValidationResult
-	err := c.do(ctx, http.MethodPost, "/api/v1/umodel/"+escape(workspace)+"/validate", map[string]any{"elements": elements}, &out)
+	err := c.do(ctx, http.MethodPost, "/api/v1/mmodel/"+escape(workspace)+"/validate", map[string]any{"elements": elements}, &out)
 	return out, err
 }
 
-func (c *Client) ImportUModel(ctx context.Context, workspace string, req UModelImportRequest) (UModelImportResult, error) {
-	var out UModelImportResult
-	err := c.do(ctx, http.MethodPost, "/api/v1/umodel/"+escape(workspace)+"/import", req, &out)
+func (c *Client) ImportMModel(ctx context.Context, workspace string, req MModelImportRequest) (MModelImportResult, error) {
+	var out MModelImportResult
+	err := c.do(ctx, http.MethodPost, "/api/v1/mmodel/"+escape(workspace)+"/import", req, &out)
 	return out, err
 }
 
@@ -242,7 +242,7 @@ func (c *Client) do(ctx context.Context, method, path string, payload any, out a
 		return readErr
 	}
 	if resp.StatusCode >= 400 {
-		return fmt.Errorf("umodel service returned %s: %s", resp.Status, strings.TrimSpace(string(raw)))
+		return fmt.Errorf("mmodel service returned %s: %s", resp.Status, strings.TrimSpace(string(raw)))
 	}
 	if out == nil || len(bytes.TrimSpace(raw)) == 0 {
 		return nil

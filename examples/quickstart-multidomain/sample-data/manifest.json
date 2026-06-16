@@ -2,7 +2,7 @@
   "sample": "multi-domain-quickstart",
   "title": "Multi-domain quickstart sample",
   "schema_pack": "examples/quickstart-multidomain",
-  "source_hint": "Enterprise demo domains reuse EntitySet and EntitySetLink topology from Demo/umodel-demo-2/umodel; dataset, storage, metric, and log definitions are intentionally excluded.",
+  "source_hint": "Enterprise demo domains reuse EntitySet and EntitySetLink topology from Demo/mmodel-demo-2/mmodel; dataset, storage, metric, and log definitions are intentionally excluded.",
   "domains": [
     "devops",
     "k8s",

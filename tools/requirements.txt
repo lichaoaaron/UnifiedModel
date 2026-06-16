@@ -1,4 +1,4 @@
-# UModel 开发依赖
+# MModel 开发依赖
 # 运行 schema 展开、代码生成、验证器所需
 
 PyYAML>=6.0

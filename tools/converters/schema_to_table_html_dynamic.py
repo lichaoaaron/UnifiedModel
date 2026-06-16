@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Schema to Table HTML Documentation Generator (Dynamic Version)
-动态版本的 umodel schema 到 HTML 表格文档转换器
+动态版本的 mmodel schema 到 HTML 表格文档转换器
 基于 base.yaml 元数据定义动态生成，减少硬编码
 """
 
@@ -1954,7 +1954,7 @@ function restoreColumnWidths() {
 
 def main():
     parser = argparse.ArgumentParser(
-        description='动态版本的 umodel schema 到 HTML 表格文档转换器'
+        description='动态版本的 mmodel schema 到 HTML 表格文档转换器'
     )
     parser.add_argument('input', help='输入的 YAML 文件路径')
     parser.add_argument('-o', '--output', help='输出的 HTML 文件路径')

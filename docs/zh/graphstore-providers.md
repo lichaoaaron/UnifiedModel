@@ -2,7 +2,7 @@
 
 English: [GraphStore Providers](../en/graphstore-providers.md)
 
-UModel 通过 `GraphStore` 接口保存和查询 UModel elements、CMS 2.0 实体以及拓扑关系。运行时通过 `--graphstore` 选择 provider。
+MModel 通过 `GraphStore` 接口保存和查询 MModel elements、CMS 2.0 实体以及拓扑关系。运行时通过 `--graphstore` 选择 provider。
 
 
 ## Providers
@@ -16,7 +16,7 @@ UModel 通过 `GraphStore` 接口保存和查询 UModel elements、CMS 2.0 实�
 启动示例：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 当前 provider 位置：
@@ -32,7 +32,7 @@ go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
 <data-root>/graphstore/file-memory/
 └── workspaces/
     └── demo/
-        ├── umodels.json
+        ├── mmodels.json
         ├── entities.json
         └── relations.json
 ```
@@ -47,13 +47,13 @@ Workspace 元数据单独保存在：
 
 - `file.memory` 面向单本地进程，不要让多个 writer 写同一个目录。
 - JSON 文件服务于检查和演示，不是长期兼容性存储合约。
-- 运行时读取仍通过 Query Service，不应绕过 `.umodel`、`.entity`、`.topo`。
+- 运行时读取仍通过 Query Service，不应绕过 `.mmodel`、`.entity`、`.topo`。
 
 ## 烟测
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data /tmp/umodel-demo --graphstore file.memory
-go run ./cmd/umctl --addr http://localhost:8080 umodel put demo '{"id":"devops.service","kind":"entity_set","domain":"devops","name":"devops.service"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-find /tmp/umodel-demo/graphstore/file-memory -maxdepth 4 -type f
+go run ./cmd/mmodel-server --addr :8080 --data /tmp/mmodel-demo --graphstore file.memory
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel put demo '{"id":"devops.service","kind":"entity_set","domain":"devops","name":"devops.service"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+find /tmp/mmodel-demo/graphstore/file-memory -maxdepth 4 -type f
 ```

@@ -3,8 +3,8 @@ package query
 import (
 	"testing"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const plannerCartNode = "(:\"apm@apm.service\" {__entity_id__: '54013ba69c196820e56801f1ef5aad54'})"

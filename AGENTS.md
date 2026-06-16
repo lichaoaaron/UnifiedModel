@@ -4,7 +4,7 @@ Repository guide for AI coding agents.
 
 ## Project In One Minute
 
-UModel is an open-source object graph semantic layer for observability and operations data.
+MModel is an open-source object graph semantic layer for observability and operations data.
 
 It turns model definitions, runtime entities, telemetry links, and topology relations into a workspace-scoped graph that humans and agents can inspect through one local service.
 
@@ -13,10 +13,10 @@ Think in five layers:
 1. Model packs define the vocabulary: `EntitySet`, `DataSet`, `Link`, `Storage`, relation semantics.
 2. EntityStore writes runtime entity and relation records.
 3. GraphStore providers persist model graph and runtime graph data.
-4. Query Service is the single read path through `.umodel`, `.entity`, and `.topo`.
+4. Query Service is the single read path through `.mmodel`, `.entity`, and `.topo`.
 5. REST, CLI, Web UI, SDKs, AgentGateway, and MCP expose the same public contracts.
 
-Do not describe UModel as an MVP, skeleton, prototype, toy, or internal demo.
+Do not describe MModel as an MVP, skeleton, prototype, toy, or internal demo.
 
 ## First Files To Read
 
@@ -36,16 +36,16 @@ For Chinese documentation work, read and update the matching `docs/zh/**` file.
 
 | Path | Purpose |
 |---|---|
-| `cmd/umodel-server` | Local REST server and optional UI serving entrypoint. |
-| `cmd/umctl` | Public CLI for workspaces, model import, entity writes, topology writes, query, and agent metadata. |
-| `cmd/umodel-mcp` | stdio MCP server for agent clients. |
+| `cmd/mmodel-server` | Local REST server and optional UI serving entrypoint. |
+| `cmd/mmctl` | Public CLI for workspaces, model import, entity writes, topology writes, query, and agent metadata. |
+| `cmd/mmodel-mcp` | stdio MCP server for agent clients. |
 | `api/openapi` | REST OpenAPI contract. |
 | `api/mcp` | MCP tool/resource schema. |
 | `internal/bootstrap` | Wires services, providers, routes, sample loading, and UI serving. |
 | `internal/workspace` | Workspace metadata service. |
-| `internal/umodel` | UModel validation, import, write, delete, export, and indexing. |
+| `internal/mmodel` | MModel validation, import, write, delete, export, and indexing. |
 | `internal/entitystore` | Runtime entity and relation write/expire/delete behavior. |
-| `internal/query` | Parser, planner, explain, and execution for `.umodel`, `.entity`, `.topo`. |
+| `internal/query` | Parser, planner, explain, and execution for `.mmodel`, `.entity`, `.topo`. |
 | `internal/agentgateway` | Agent discovery, tools, resources, query examples, and MCP-facing semantics. |
 | `internal/graphstore` | Provider-neutral persistence and graph access contracts. |
 | `pkg/contract` | Public service interfaces. |
@@ -75,8 +75,8 @@ Default quickstart settings:
 User journey after quickstart:
 
 - Web UI: select `demo`, inspect Explorer, Query, Data Store, and Agent views.
-- Query Service: run `.umodel`, `.entity`, `.topo`.
-- Agent integration: inspect AgentGateway, then connect through `umodel-mcp`.
+- Query Service: run `.mmodel`, `.entity`, `.topo`.
+- Agent integration: inspect AgentGateway, then connect through `mmodel-mcp`.
 - SDK or REST: use public contracts, not server internals.
 
 ## Architecture Invariants
@@ -84,10 +84,10 @@ User journey after quickstart:
 Preserve these boundaries:
 
 - Workspace service owns workspace metadata only.
-- UModel service owns model validation/import/write/delete/export/index behavior.
+- MModel service owns model validation/import/write/delete/export/index behavior.
 - EntityStore owns runtime entity and relation writes, expires, and deletes.
 - Query Service is the only public read path for model, entity, relation, and topology data.
-- Public query sources are `.umodel`, `.entity`, and `.topo`.
+- Public query sources are `.mmodel`, `.entity`, and `.topo`.
 - AgentGateway resources expose metadata, templates, and capabilities.
 - AgentGateway tools return runtime rows through Query Service.
 - GraphStore providers stay behind provider-neutral contracts.
@@ -108,7 +108,7 @@ Run `make guard` after touching routing, public APIs, service boundaries, query 
 
 ## Documentation Rules
 
-- Root README is for external users. It should explain what UModel does, how to start quickstart, and where to go next.
+- Root README is for external users. It should explain what MModel does, how to start quickstart, and where to go next.
 - Do not add internal module inventory tables to the root README.
 - Put implementation details in `docs/en/architecture/**` and `docs/zh/architecture/**`.
 - English and Chinese docs are separate files.
@@ -191,13 +191,13 @@ Quickstart or sample task:
 Query task:
 
 - Work under `internal/query`.
-- Preserve `.umodel`, `.entity`, `.topo` as the public read sources.
+- Preserve `.mmodel`, `.entity`, `.topo` as the public read sources.
 - Update Query Service docs and CLI examples when behavior changes.
 - Run `make guard` and `make test-service`.
 
 Agent or MCP task:
 
-- Work under `internal/agentgateway`, `cmd/umodel-mcp`, and `api/mcp`.
+- Work under `internal/agentgateway`, `cmd/mmodel-mcp`, and `api/mcp`.
 - Keep resources metadata-oriented.
 - Keep runtime rows behind query tools.
 - Update MCP reference when schema or behavior changes.

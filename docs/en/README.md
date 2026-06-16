@@ -1,8 +1,8 @@
-# UModel Documentation
+# MModel Documentation
 
-中文：[UModel 中文文档](../zh/README.md)
+中文：[MModel 中文文档](../zh/README.md)
 
-UModel English documentation entry. English and Chinese documentation are maintained as separate documents under `docs/en` and `docs/zh`, with matching structure and aligned examples, commands, and public contract references.
+MModel English documentation entry. English and Chinese documentation are maintained as separate documents under `docs/en` and `docs/zh`, with matching structure and aligned examples, commands, and public contract references.
 
 Documentation root: [docs/README.md](../README.md)
 
@@ -17,7 +17,7 @@ Documentation root: [docs/README.md](../README.md)
 ## Concepts
 
 - [Concepts Index](concepts/index.md) - recommended reading order and concept map.
-- [Object Graph Semantic Layer](concepts/object-graph-semantic-layer.md) - why UModel exists and how it relates to enterprise data, telemetry, runtime systems, and agent context.
+- [Object Graph Semantic Layer](concepts/object-graph-semantic-layer.md) - why MModel exists and how it relates to enterprise data, telemetry, runtime systems, and agent context.
 - [Workspaces And Domains](concepts/workspaces-and-domains.md) - isolation, naming, and local persistence boundaries.
 - [Model Elements](concepts/model-elements.md) - common model envelope and supported model kinds.
 - [Entity Sets](concepts/entity-sets.md) - object type definitions and runtime entity relationship.
@@ -25,7 +25,7 @@ Documentation root: [docs/README.md](../README.md)
 - [Links And Field Mappings](concepts/links-and-field-mappings.md) - DataLink, EntitySetLink, StorageLink, and `fields_mapping`.
 - [Storage And GraphStore Providers](concepts/storage-and-graphstore.md) - modeled storage versus runtime providers.
 - [Entities And Relations](concepts/entities-and-relations.md) - runtime graph records and lifecycle.
-- [Query Surfaces](concepts/query-surfaces.md) - `.umodel`, `.entity`, `.topo`, explain, and agent usage.
+- [Query Surfaces](concepts/query-surfaces.md) - `.mmodel`, `.entity`, `.topo`, explain, and agent usage.
 
 ## Guides
 
@@ -49,7 +49,7 @@ Documentation root: [docs/README.md](../README.md)
 - [CLI Reference](reference/cli.md)
 - [MCP Reference](reference/mcp.md)
 - [Web UI API Map](ui-api.md)
-- [UModel SDK Specification](umodel-sdk-specification.md)
+- [MModel SDK Specification](mmodel-sdk-specification.md)
 - [REST OpenAPI](../../api/openapi/openapi.yaml)
 - [MCP Tool And Resource Schema](../../api/mcp/tools.schema.json)
 - [Public Go Contracts](../../pkg/contract/contracts.go)

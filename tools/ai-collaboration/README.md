@@ -6,7 +6,7 @@ Suggested skill ownership:
 
 | Skill | Scope |
 |---|---|
-| `umodel-architecture-guard` | Review module boundaries and forbidden APIs |
+| `mmodel-architecture-guard` | Review module boundaries and forbidden APIs |
 | `graphstore-provider-dev` | Implement GraphStore providers behind the storage port |
 | `cms2-entity-relation-compat` | Keep EntityStore payloads compatible with CMS 2.0 |
 | `spl-query-dev` | Maintain unified SPL parsing, planning, execution, and explain |

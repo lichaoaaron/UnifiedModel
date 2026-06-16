@@ -5,10 +5,10 @@ package ladybug
 import (
 	"context"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/pkg/contract"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/pkg/contract"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type Provider struct{}
@@ -31,12 +31,12 @@ func (p *Provider) EnsureSchema(ctx context.Context, workspace string) error {
 	return unavailable()
 }
 
-func (p *Provider) PutUModelElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error) {
+func (p *Provider) PutMModelElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error) {
 	return model.WriteResult{}, unavailable()
 }
 
-func (p *Provider) GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error) {
-	return model.UModelSnapshot{}, unavailable()
+func (p *Provider) GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error) {
+	return model.MModelSnapshot{}, unavailable()
 }
 
 func (p *Provider) WriteEntities(ctx context.Context, batch model.EntityWriteBatch) (model.WriteResult, error) {

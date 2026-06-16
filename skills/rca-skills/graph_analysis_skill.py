@@ -66,9 +66,9 @@ class GraphAnalysisSkill(BaseSkill):
         mmodel_relation_count = len(relations)
 
         logger.info(
-            "[Graph] source=domain_model use_umodel_reference=false "
+            "[Graph] source=domain_model use_mmodel_reference=false "
             "mmodel_entity_types_count=%d mmodel_relation_types_count=%d "
-            "umodel_entity_sets_skipped=true",
+            "mmodel_entity_sets_skipped=true",
             mmodel_entity_type_count, mmodel_relation_type_count,
         )
         execution_log.append(
@@ -263,7 +263,7 @@ class GraphAnalysisSkill(BaseSkill):
             duration_ms=duration_ms,
             input={
                 "graph_source": "backend/data/mmodel/runtime_domain_model.yaml",
-                "use_umodel_reference": False,
+                "use_mmodel_reference": False,
                 "runtime_sources": ["trace", "log", "metric", "entity_binding", "root_cause"],
             },
             output=ctx.graph_result,

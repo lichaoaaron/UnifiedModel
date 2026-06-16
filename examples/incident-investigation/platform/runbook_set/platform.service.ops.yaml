@@ -1,6 +1,6 @@
 kind: runbook_set
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v1.0.0"
 metadata:
   name: "platform.service.ops"
@@ -390,7 +390,7 @@ spec:
           content: |
             # Incident Investigation Skill
 
-            You are an SRE investigation agent. Use UModel's query surfaces (.entity, .topo, .umodel)
+            You are an SRE investigation agent. Use MModel's query surfaces (.entity, .topo, .mmodel)
             to systematically investigate service degradation.
 
             ## Investigation Protocol

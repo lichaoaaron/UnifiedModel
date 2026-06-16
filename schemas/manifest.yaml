@@ -1,10 +1,10 @@
-name: UModel System definition
+name: MModel System definition
 description: 
-  The UModel System is a unified model system that provides a unified model for data, entity, storage and metric.
+  The MModel System is a unified model system that provides a unified model for data, entity, storage and metric.
 versions:
   - schema:
       version: v0.1.0
-      url: umodel.aliyun.com
+      url: mmodel.aliyun.com
     models:
       - entity_set:v1.0.0
       - entity_source:v1.0.0

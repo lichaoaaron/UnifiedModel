@@ -2,7 +2,7 @@
 
 English: [Extension Points](../../en/architecture/extension-points.md)
 
-UModel 支持贡献者扩展模型包、Schema kind、Provider、客户端和查询能力，同时保持公共契约稳定。
+MModel 支持贡献者扩展模型包、Schema kind、Provider、客户端和查询能力，同时保持公共契约稳定。
 
 
 ## Model Packs
@@ -36,9 +36,9 @@ Schema 源文件位于 [schemas/](../../../schemas)。
 Provider 应保持：
 
 - Workspace 隔离。
-- UModel element 写入和读取。
+- MModel element 写入和读取。
 - Entity 与 Relation 写入。
-- `.umodel`、`.entity`、`.topo` 查询语义。
+- `.mmodel`、`.entity`、`.topo` 查询语义。
 - Explain 中展示 active provider。
 
 参考：[GraphStore Providers](../graphstore-providers.md)。

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to UModel Open Source should be documented in this file.
+All notable changes to MModel Open Source should be documented in this file.
 
 The project follows a simple changelog structure until stable releases are published:
 
@@ -15,15 +15,15 @@ The project follows a simple changelog structure until stable releases are publi
 
 ### Added
 
-- Local single-process UModel service.
+- Local single-process MModel service.
 - Workspace metadata management.
-- UModel import, validate, write, delete, and index paths.
+- MModel import, validate, write, delete, and index paths.
 - CMS 2.0 compatible entity and relation write/expire paths.
-- Unified Query Service for `.umodel`, `.entity`, and `.topo`.
+- Unified Query Service for `.mmodel`, `.entity`, and `.topo`.
 - AgentGateway discovery, safe query tools, resources, and MCP stdio server.
-- `umctl` CLI for workspace, UModel, EntityStore, topology, query, and agent workflows.
+- `mmctl` CLI for workspace, MModel, EntityStore, topology, query, and agent workflows.
 - `memory`, `file.memory`, and optional `local.ladybug` GraphStore providers.
-- React/Vite OpenUModel Web UI.
+- React/Vite OpenMModel Web UI.
 - REST OpenAPI and MCP tool/resource schemas.
 - Generated Go, Python, and Java model SDK assets.
 - APM common example pack and sample import endpoint.

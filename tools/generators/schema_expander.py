@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UModel Schema Expander
+MModel Schema Expander
 
 这个脚本用于解析schemas目录中的所有YAML文件，展开其中的extends和type_ref引用，
 生成完整的schema定义，便于独立验证每个schema的有效性。
@@ -469,7 +469,7 @@ class SchemaExpander:
     def generate_summary_report(self, expanded_schemas: Dict[str, Dict[str, Any]]) -> str:
         """生成展开结果的摘要报告"""
         report = []
-        report.append("# UModel Schema 展开报告\n")
+        report.append("# MModel Schema 展开报告\n")
         
         report.append(f"## 📊 统计信息")
         report.append(f"- 共处理schema文件: {len(expanded_schemas)}")
@@ -497,7 +497,7 @@ class SchemaExpander:
 
 def main():
     """主函数"""
-    print("🚀 UModel Schema Expander 启动")
+    print("🚀 MModel Schema Expander 启动")
     print("=" * 50)
     
     # 配置路径

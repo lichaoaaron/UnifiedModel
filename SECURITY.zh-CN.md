@@ -6,7 +6,7 @@ English version: [SECURITY.md](SECURITY.md)
 
 ## 支持版本
 
-在稳定 release branches 发布前，UModel Open Source 的安全修复优先进入主开发线。存在版本化 release branches 后，应按需要 backport。
+在稳定 release branches 发布前，MModel Open Source 的安全修复优先进入主开发线。存在版本化 release branches 后，应按需要 backport。
 
 | Version | Supported |
 |---|---:|

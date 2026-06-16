@@ -1,4 +1,4 @@
-# UModel Documentation
+# MModel Documentation
 
 Choose a language:
 

@@ -10,7 +10,7 @@ Query Service owns runtime reads. AgentGateway exposes those reads to tools, res
 ```mermaid
 flowchart LR
   REST["REST clients"]
-  CLI["umctl"]
+  CLI["mmctl"]
   Web["Web UI"]
   SDK["SDK"]
   MCP["MCP client"]
@@ -29,7 +29,7 @@ flowchart LR
 
 Runtime read sources:
 
-- `.umodel`
+- `.mmodel`
 - `.entity`
 - `.topo`
 
@@ -49,7 +49,7 @@ It does not own a separate data access layer. Runtime rows should come from Quer
 
 ## MCP Server
 
-`umodel-mcp` wires local GraphStore configuration and exposes AgentGateway-compatible tools/resources to MCP clients.
+`mmodel-mcp` wires local GraphStore configuration and exposes AgentGateway-compatible tools/resources to MCP clients.
 
 Supported transports:
 
@@ -60,13 +60,13 @@ Supported transports:
 Local stdio command:
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 HTTP command:
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 The MCP JSON-RPC envelope stays JSON. Tool and resource content text uses `text/toon`; clients that need JSON can consume `structuredContent` on tool results.
@@ -84,9 +84,9 @@ POST /api/v1/agent/{workspace}/resources:read
 CLI examples:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent discover demo
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".umodel | limit 5"}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent discover demo
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".mmodel | limit 5"}'
 ```
 
 ## Safety Model

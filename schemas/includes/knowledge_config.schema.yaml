@@ -70,8 +70,8 @@ versions:
                     type: string
         content_type:
           description: 
-            zh_cn: 内容类型，支持markdown、html、url、pdf等。UModel 内置支持的类型为 markdown。
-            en_us: Content type such as markdown, html, url, pdf. UModel built-in supported type is markdown.
+            zh_cn: 内容类型，支持markdown、html、url、pdf等。MModel 内置支持的类型为 markdown。
+            en_us: Content type such as markdown, html, url, pdf. MModel built-in supported type is markdown.
           type: string
           constraint:
             required: true

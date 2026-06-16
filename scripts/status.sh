@@ -2,11 +2,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-API_ADDR="${API_ADDR:-${UMODEL_API_ADDR:-:8080}}"
-API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
-WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
-DATA_ROOT="${DATA_ROOT:-${UMODEL_DATA:-data}}"
-GRAPHSTORE="${GRAPHSTORE:-${UMODEL_GRAPHSTORE:-file.memory}}"
+API_ADDR="${API_ADDR:-${MMODEL_API_ADDR:-:8080}}"
+API_URL="${API_URL:-${MMODEL_API_URL:-http://localhost:8080}}"
+WEB_PORT="${WEB_PORT:-${MMODEL_WEB_PORT:-5173}}"
+DATA_ROOT="${DATA_ROOT:-${MMODEL_DATA:-data}}"
+GRAPHSTORE="${GRAPHSTORE:-${MMODEL_GRAPHSTORE:-file.memory}}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
 LOG_DIR="${LOG_DIR:-${PID_DIR}/logs}"
 
@@ -101,7 +101,7 @@ if [[ -z "${API_PORT}" ]]; then
 fi
 
 cat <<EOF
-UModel status
+MModel status
   graphstore: ${GRAPHSTORE}
   data root: ${DATA_ROOT}
   pid dir: ${PID_DIR}
@@ -109,9 +109,9 @@ UModel status
 
 Processes
 EOF
-show_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid" "${LOG_DIR}/dev-api.log"
-show_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid" "${LOG_DIR}/dev-web.log"
-show_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid" "${LOG_DIR}/deploy.log"
+show_pid_file "dev api" "${PID_DIR}/openmmodel-dev-api.pid" "${LOG_DIR}/dev-api.log"
+show_pid_file "dev web" "${PID_DIR}/openmmodel-dev-web.pid" "${LOG_DIR}/dev-web.log"
+show_pid_file "deploy" "${PID_DIR}/openmmodel-deploy.pid" "${LOG_DIR}/deploy.log"
 
 cat <<EOF
 

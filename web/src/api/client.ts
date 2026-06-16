@@ -13,9 +13,9 @@ import type {
   QueryResult,
   RelationWriteBatch,
   SampleImportResult,
-  UModelElement,
-  UModelImportRequest,
-  UModelImportResult,
+  MModelElement,
+  MModelImportRequest,
+  MModelImportResult,
   UpdateWorkspaceRequest,
   ValidationResult,
   WorkspaceMetadata,
@@ -38,7 +38,7 @@ export class ApiError extends Error {
   }
 }
 
-export class UModelApi {
+export class MModelApi {
   readonly baseUrl: string
 
   constructor(baseUrl = '') {
@@ -95,12 +95,12 @@ export class UModelApi {
     })
   }
 
-  listUModel(workspace: string, limit = 100): Promise<QueryResult> {
-    return this.query(workspace, { query: `.umodel | sort name | limit ${limit}`, limit })
+  listMModel(workspace: string, limit = 100): Promise<QueryResult> {
+    return this.query(workspace, { query: `.mmodel | sort name | limit ${limit}`, limit })
   }
 
-  importUModel(workspace: string, payload: UModelImportRequest): Promise<UModelImportResult> {
-    return this.request(`/api/v1/umodel/${encodeURIComponent(workspace)}/import`, {
+  importMModel(workspace: string, payload: MModelImportRequest): Promise<MModelImportResult> {
+    return this.request(`/api/v1/mmodel/${encodeURIComponent(workspace)}/import`, {
       method: 'POST',
       body: payload,
     })
@@ -113,22 +113,22 @@ export class UModelApi {
     })
   }
 
-  validateUModel(workspace: string, elements: UModelElement[]): Promise<ValidationResult> {
-    return this.request(`/api/v1/umodel/${encodeURIComponent(workspace)}/validate`, {
+  validateMModel(workspace: string, elements: MModelElement[]): Promise<ValidationResult> {
+    return this.request(`/api/v1/mmodel/${encodeURIComponent(workspace)}/validate`, {
       method: 'POST',
       body: { elements },
     })
   }
 
-  putUModel(workspace: string, elements: UModelElement[]): Promise<WriteResult> {
-    return this.request(`/api/v1/umodel/${encodeURIComponent(workspace)}/elements`, {
+  putMModel(workspace: string, elements: MModelElement[]): Promise<WriteResult> {
+    return this.request(`/api/v1/mmodel/${encodeURIComponent(workspace)}/elements`, {
       method: 'POST',
       body: { elements },
     })
   }
 
-  deleteUModel(workspace: string, ids: string[]): Promise<WriteResult> {
-    return this.request(`/api/v1/umodel/${encodeURIComponent(workspace)}/elements`, {
+  deleteMModel(workspace: string, ids: string[]): Promise<WriteResult> {
+    return this.request(`/api/v1/mmodel/${encodeURIComponent(workspace)}/elements`, {
       method: 'DELETE',
       body: { ids },
     })

@@ -1,4 +1,4 @@
-# UModel Schema 展开报告
+# MModel Schema 展开报告
 
 ## 📊 统计信息
 - 共处理schema文件: 20

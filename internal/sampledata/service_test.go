@@ -5,12 +5,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/entitystore"
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/internal/query"
-	"github.com/alibaba/UnifiedModel/internal/umodel"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/entitystore"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/internal/mmodel"
+	"github.com/alibaba/MModel/internal/query"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestLookupSampleCanonicalizesAliases(t *testing.T) {
@@ -32,9 +32,9 @@ func TestLookupSampleCanonicalizesAliases(t *testing.T) {
 
 func TestImportUnknownSampleListsAvailableSamples(t *testing.T) {
 	graph := graphstore.NewMemoryStore()
-	umodelSvc := umodel.NewService(graph)
-	entitySvc := entitystore.NewService(graph, umodelSvc)
-	svc := NewService(umodelSvc, entitySvc)
+	mmodelSvc := mmodel.NewService(graph)
+	entitySvc := entitystore.NewService(graph, mmodelSvc)
+	svc := NewService(mmodelSvc, entitySvc)
 
 	_, err := svc.Import(context.Background(), "demo", "missing-sample")
 	coded, ok := apperrors.As(err)
@@ -49,15 +49,15 @@ func TestImportUnknownSampleListsAvailableSamples(t *testing.T) {
 func TestImportMultiDomainQuickStartWritesSchemaEntitiesAndTopology(t *testing.T) {
 	ctx := context.Background()
 	graph := graphstore.NewMemoryStore()
-	umodelSvc := umodel.NewService(graph)
-	entitySvc := entitystore.NewService(graph, umodelSvc)
-	svc := NewService(umodelSvc, entitySvc)
+	mmodelSvc := mmodel.NewService(graph)
+	entitySvc := entitystore.NewService(graph, mmodelSvc)
+	svc := NewService(mmodelSvc, entitySvc)
 
 	result, err := svc.Import(ctx, "demo", MultiDomainQuickStartSample)
 	if err != nil {
 		t.Fatalf("import sample: %v", err)
 	}
-	if result.Sample != MultiDomainQuickStartSample || result.UModel.Imported == 0 {
+	if result.Sample != MultiDomainQuickStartSample || result.MModel.Imported == 0 {
 		t.Fatalf("expected multi-domain sample import, got %+v", result)
 	}
 	if result.EntityCount == 0 || result.Entities.Accepted != result.EntityCount {
@@ -70,7 +70,7 @@ func TestImportMultiDomainQuickStartWritesSchemaEntitiesAndTopology(t *testing.T
 	querySvc := query.NewService(graph)
 	for _, kind := range []string{"metric_set", "log_set", "trace_set", "event_set", "profile_set", "runbook_set", "data_link", "storage_link"} {
 		rows, err := querySvc.Execute(ctx, "demo", model.QueryRequest{
-			Query: ".umodel with(kind='" + kind + "') | limit 1",
+			Query: ".mmodel with(kind='" + kind + "') | limit 1",
 		})
 		if err != nil {
 			t.Fatalf("query excluded kind %s: %v", kind, err)

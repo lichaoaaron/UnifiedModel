@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { CheckCircle2, DatabaseZap, FileInput, Send, Sparkles, UploadCloud } from 'lucide-react'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Badge, Button, Field, JsonEditor, Panel, Tabs, TextInput } from '../../design/components'
 import { asArray, formatError, parseJson, stringify } from '../../lib/json'
-import { parseUModelElementsFromJson } from '../explorer/ExplorerPage'
+import { parseMModelElementsFromJson } from '../explorer/ExplorerPage'
 
-type ImportMode = 'path' | 'umodel' | 'entity' | 'expire'
+type ImportMode = 'path' | 'mmodel' | 'entity' | 'expire'
 
 const sampleElement = `[
   {
@@ -59,7 +59,7 @@ export function ImportsPage({
   workspaceId,
   onChanged,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
   onChanged: () => void
 }) {
@@ -85,17 +85,17 @@ export function ImportsPage({
         setResult(next)
         onChanged()
       } else if (action === 'import') {
-        const next = await api.importUModel(workspaceId, {
+        const next = await api.importMModel(workspaceId, {
           path,
           common_schema_packs: commonPacks.trim() ? parseJson<string[]>(commonPacks, 'Common schema packs JSON') : undefined,
         })
         setResult(next)
         onChanged()
-      } else if (mode === 'umodel') {
-        const elements = parseUModelElementsFromJson(elementsJson)
+      } else if (mode === 'mmodel') {
+        const elements = parseMModelElementsFromJson(elementsJson)
         const next = action === 'validate'
-          ? await api.validateUModel(workspaceId, elements)
-          : await api.putUModel(workspaceId, elements)
+          ? await api.validateMModel(workspaceId, elements)
+          : await api.putMModel(workspaceId, elements)
         setResult(next)
         if (action === 'write') onChanged()
       } else if (mode === 'entity') {
@@ -128,7 +128,7 @@ export function ImportsPage({
             onChange={setMode}
             items={[
               { value: 'path', label: 'Path', icon: <FileInput size={14} /> },
-              { value: 'umodel', label: 'UModel', icon: <UploadCloud size={14} /> },
+              { value: 'mmodel', label: 'MModel', icon: <UploadCloud size={14} /> },
               { value: 'entity', label: 'EntityStore', icon: <DatabaseZap size={14} /> },
               { value: 'expire', label: 'Expire', icon: <CheckCircle2 size={14} /> },
             ]}
@@ -157,9 +157,9 @@ export function ImportsPage({
             </>
           )}
 
-          {mode === 'umodel' && (
+          {mode === 'mmodel' && (
             <>
-              <Field label="UModel elements JSON">
+              <Field label="MModel elements JSON">
                 <JsonEditor value={elementsJson} onChange={setElementsJson} minHeight={420} />
               </Field>
               <div className="toolbar">

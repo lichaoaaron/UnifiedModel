@@ -1,6 +1,6 @@
-# UModel Schema 概述
+# MModel Schema 概述
 
-UModel Schema，作为UModel实体元数据的语法体系，封装了一套全面且精确的定义语法，旨在赋能开发者构造任意复杂的UModel模型。
+MModel Schema，作为MModel实体元数据的语法体系，封装了一套全面且精确的定义语法，旨在赋能开发者构造任意复杂的MModel模型。
 
 ## 📋 目录结构
 
@@ -39,7 +39,7 @@ schemas/
 
 ### Schema层次结构
 
-UModel Schema采用分层设计，包含以下几个层次：
+MModel Schema采用分层设计，包含以下几个层次：
 
 1. **基础层 (base.yaml)**: 定义Schema的元数据规范和基础类型
 2. **组件层 (includes/)**: 定义可复用的通用组件，如字段、指标、链接等
@@ -140,7 +140,7 @@ models:
 
 ## 🔗 相关资源
 
-- [UModel项目主页](../README.md)
+- [MModel项目主页](../README.md)
 
 ## 📝 版本历史
 

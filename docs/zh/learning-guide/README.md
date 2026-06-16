@@ -1,10 +1,10 @@
-# UnifiedModel 学习导览
+# MModel 学习导览
 
-这组文档面向第一次系统理解 UnifiedModel 的读者。目标不是覆盖每一行代码，而是先建立稳定的心智模型，再把你带到最关键的源码入口、调用链和验证命令上。
+这组文档面向第一次系统理解 MModel 的读者。目标不是覆盖每一行代码，而是先建立稳定的心智模型，再把你带到最关键的源码入口、调用链和验证命令上。
 
 ## 这组文档回答什么
 
-- UnifiedModel 想解决什么问题。
+- MModel 想解决什么问题。
 - 运行时对象图由哪些概念组成。
 - 服务、存储、查询、Agent 和 Web UI 如何连起来。
 - 一次模型导入、实体写入、查询执行分别经过哪些包。
@@ -33,7 +33,7 @@
 flowchart LR
   A["Model packs\n定义词汇"] --> B["EntityStore\n写入运行时实体与关系"]
   B --> C["GraphStore\n持久化模型图与运行时图"]
-  C --> D["Query Service\n统一读取 .umodel / .entity / .topo"]
+  C --> D["Query Service\n统一读取 .mmodel / .entity / .topo"]
   D --> E["REST / CLI / Web UI / AgentGateway / MCP\n暴露公共能力"]
 ```
 
@@ -43,9 +43,9 @@ flowchart LR
 
 ```bash
 make quickstart
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | limit 5"
 ```
 
 ## 配套参考

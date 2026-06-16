@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/bootstrap"
 )
 
 func TestCapabilityGate(t *testing.T) {
@@ -27,35 +27,35 @@ func TestCapabilityGate(t *testing.T) {
 
 	t.Run("ModelDiscovery", func(t *testing.T) {
 		allEntitySets := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-			"query": ".umodel with(kind='entity_set') | limit 100",
+			"query": ".mmodel with(kind='entity_set') | limit 100",
 		})
 		if got := len(rows(t, allEntitySets)); got < 35 {
 			t.Fatalf("expected >=35 entity_sets, got %d", got)
 		}
 
 		allLinks := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-			"query": ".umodel with(kind='entity_set_link') | limit 100",
+			"query": ".mmodel with(kind='entity_set_link') | limit 100",
 		})
 		if got := len(rows(t, allLinks)); got < 42 {
 			t.Fatalf("expected >=42 entity_set_links, got %d", got)
 		}
 
 		devopsEntitySets := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-			"query": ".umodel with(kind='entity_set') | where domain = 'devops' | limit 100",
+			"query": ".mmodel with(kind='entity_set') | where domain = 'devops' | limit 100",
 		})
 		if got := len(rows(t, devopsEntitySets)); got != 10 {
 			t.Fatalf("expected 10 devops entity_sets, got %d", got)
 		}
 
 		k8sEntitySets := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-			"query": ".umodel with(kind='entity_set') | where domain = 'k8s' | limit 100",
+			"query": ".mmodel with(kind='entity_set') | where domain = 'k8s' | limit 100",
 		})
 		if got := len(rows(t, k8sEntitySets)); got != 7 {
 			t.Fatalf("expected 7 k8s entity_sets, got %d", got)
 		}
 
 		pipeline := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-			"query": ".umodel with(kind='entity_set') | where domain = 'devops' | project domain,name,kind | sort name | limit 3",
+			"query": ".mmodel with(kind='entity_set') | where domain = 'devops' | project domain,name,kind | sort name | limit 3",
 		})
 		pipelineRows := rows(t, pipeline)
 		if len(pipelineRows) != 3 {
@@ -222,7 +222,7 @@ func TestCapabilityGate(t *testing.T) {
 
 		toolExecute := post(t, server.URL+"/api/v1/agent/demo/tools:execute", map[string]any{
 			"name":      "query_spl_execute",
-			"arguments": map[string]any{"query": ".umodel with(kind='entity_set') | limit 5"},
+			"arguments": map[string]any{"query": ".mmodel with(kind='entity_set') | limit 5"},
 		})
 		if toolExecute["ok"] != true {
 			t.Fatalf("expected query_spl_execute success: %+v", toolExecute)
@@ -230,7 +230,7 @@ func TestCapabilityGate(t *testing.T) {
 
 		toolExplain := post(t, server.URL+"/api/v1/agent/demo/tools:execute", map[string]any{
 			"name":      "query_spl_explain",
-			"arguments": map[string]any{"query": ".umodel | limit 1"},
+			"arguments": map[string]any{"query": ".mmodel | limit 1"},
 		})
 		if toolExplain["ok"] != true {
 			t.Fatalf("expected query_spl_explain success: %+v", toolExplain)
@@ -263,12 +263,12 @@ func TestCapabilityGate(t *testing.T) {
 			t.Fatalf("unexpected topo explain: %+v", topoExplain)
 		}
 
-		umodelExplain := post(t, server.URL+"/api/v1/query/demo/explain", map[string]any{
-			"query": ".umodel with(kind='entity_set') | where domain = 'devops' | project domain,name | sort name | limit 5",
+		mmodelExplain := post(t, server.URL+"/api/v1/query/demo/explain", map[string]any{
+			"query": ".mmodel with(kind='entity_set') | where domain = 'devops' | project domain,name | sort name | limit 5",
 		})
-		operators, ok := umodelExplain["operators"].([]any)
+		operators, ok := mmodelExplain["operators"].([]any)
 		if !ok || len(operators) < 4 {
-			t.Fatalf("expected at least 4 operators in umodel explain: %+v", umodelExplain)
+			t.Fatalf("expected at least 4 operators in mmodel explain: %+v", mmodelExplain)
 		}
 	})
 
@@ -289,7 +289,7 @@ func TestCapabilityGate(t *testing.T) {
 	t.Run("AllDomains", func(t *testing.T) {
 		for _, domain := range []string{"devops", "k8s", "automaker", "game", "supplier"} {
 			result := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-				"query": ".umodel with(kind='entity_set') | where domain = '" + domain + "' | limit 100",
+				"query": ".mmodel with(kind='entity_set') | where domain = '" + domain + "' | limit 100",
 			})
 			if got := len(rows(t, result)); got == 0 {
 				t.Fatalf("expected entity_sets for domain %s, got 0", domain)

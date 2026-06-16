@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"umodel_go_cli/umodel"
+	"mmodel_go_cli/mmodel"
 
 	"gopkg.in/yaml.v3"
 )
@@ -97,7 +97,7 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println("UModel CLI - UModel文件格式转换工具")
+	fmt.Println("MModel CLI - MModel文件格式转换工具")
 	fmt.Println("\n用法:")
 	fmt.Printf("  %s -i <输入文件> [选项]\n", os.Args[0])
 	fmt.Println("\n选项:")
@@ -146,18 +146,18 @@ func detectFormat(filename string, data []byte) string {
 
 func parseFile(data []byte, format string, schemaType string) (interface{}, error) {
 
-	var result umodel.UModelCoreObject
+	var result mmodel.MModelCoreObject
 	var err error
 
 	// 解析数据
 	switch format {
 	case "json":
-		result, err = umodel.ParseJsonUModel(data)
+		result, err = mmodel.ParseJsonMModel(data)
 		if err != nil {
 			return nil, fmt.Errorf("JSON解析错误: %v", err)
 		}
 	case "yaml":
-		result, err = umodel.ParseYamlUModel(data)
+		result, err = mmodel.ParseYamlMModel(data)
 		if err != nil {
 			return nil, fmt.Errorf("YAML解析错误: %v", err)
 		}

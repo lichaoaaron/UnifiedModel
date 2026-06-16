@@ -24,10 +24,10 @@ GO_RUN_TAGS = $(if $(strip $(GO_TAGS)),-tags "$(GO_TAGS)")
 export GOCACHE
 
 help:
-	@echo "UModel open-source service"
+	@echo "MModel open-source service"
 	@echo ""
 	@echo "Service:"
-	@echo "  build-service          Build umodel-server, umctl, and umodel-mcp"
+	@echo "  build-service          Build mmodel-server, mmctl, and mmodel-mcp"
 	@echo "  build-ui               Build the web UI under web/"
 	@echo "  test-service           Run root Go tests"
 	@echo "  test-ui                Type-check and build the web UI"
@@ -36,14 +36,14 @@ help:
 	@echo "  deploy                 Build UI and start the production-style server in the background"
 	@echo "  status                 Show local dev/deploy process, port, and health status"
 	@echo "  stop-all               Stop local API, web dev, and deploy servers"
-	@echo "  serve-ui               Build UI and serve it from umodel-server in the foreground"
-	@echo "  test-ladybug           Run local.ladybug provider and E2E tests when UMODEL_TEST_LADYBUG=1"
+	@echo "  serve-ui               Build UI and serve it from mmodel-server in the foreground"
+	@echo "  test-ladybug           Run local.ladybug provider and E2E tests when MMODEL_TEST_LADYBUG=1"
 	@echo "  guard                  Run architecture guard"
 	@echo ""
 	@echo "Schema and SDK assets:"
 	@echo "  expand                 Expand schemas and regenerate SDK assets"
 	@echo "  doc                    Generate schema HTML docs"
-	@echo "  example-validate       Validate example UModel files"
+	@echo "  example-validate       Validate example MModel files"
 	@echo "  verify                 Verify generated SDKs"
 	@echo "  verify-go              Verify Go model SDK"
 	@echo "  verify-python          Verify Python model SDK"
@@ -91,7 +91,7 @@ deploy: build-ui
 	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/deploy.sh
 
 dev-api:
-	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
+	go run $(GO_RUN_TAGS) ./cmd/mmodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
 
 dev-web:
 	@API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PNPM="$(PNPM)" bash ./scripts/env.sh web-dev
@@ -109,7 +109,7 @@ status:
 	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/status.sh
 
 serve-ui: build-ui
-	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" --ui-dir web/dist $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
+	go run $(GO_RUN_TAGS) ./cmd/mmodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" --ui-dir web/dist $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
 
 test-service:
 	go test ./...
@@ -127,8 +127,8 @@ test-quickstart-health:
 	go test -v -run TestQuickstartHealth ./tests/integration/
 
 test-ladybug:
-	@if [ "$$UMODEL_TEST_LADYBUG" != "1" ]; then \
-		echo "Skipping local.ladybug provider and E2E tests; set UMODEL_TEST_LADYBUG=1 and provide liblbug to run them."; \
+	@if [ "$$MMODEL_TEST_LADYBUG" != "1" ]; then \
+		echo "Skipping local.ladybug provider and E2E tests; set MMODEL_TEST_LADYBUG=1 and provide liblbug to run them."; \
 	else \
 		go test -tags ladybug ./...; \
 	fi
@@ -151,14 +151,14 @@ expand:
 	@$(MAKE) schemas-embed
 
 schemas-embed:
-	@echo "Mirroring expanded schemas into internal/umodel/schemaspec/data/..."
-	@mkdir -p internal/umodel/schemaspec/data
-	@cp expanded_schemas/*.expanded.yaml internal/umodel/schemaspec/data/
+	@echo "Mirroring expanded schemas into internal/mmodel/schemaspec/data/..."
+	@mkdir -p internal/mmodel/schemaspec/data
+	@cp expanded_schemas/*.expanded.yaml internal/mmodel/schemaspec/data/
 
 schemas-embed-check:
-	@if ! diff -r expanded_schemas/ internal/umodel/schemaspec/data/ --exclude='*.md' >/dev/null 2>&1; then \
-		echo "Embedded schemas under internal/umodel/schemaspec/data/ differ from expanded_schemas/. Run 'make schemas-embed' and commit."; \
-		diff -r expanded_schemas/ internal/umodel/schemaspec/data/ --exclude='*.md' | head -40; \
+	@if ! diff -r expanded_schemas/ internal/mmodel/schemaspec/data/ --exclude='*.md' >/dev/null 2>&1; then \
+		echo "Embedded schemas under internal/mmodel/schemaspec/data/ differ from expanded_schemas/. Run 'make schemas-embed' and commit."; \
+		diff -r expanded_schemas/ internal/mmodel/schemaspec/data/ --exclude='*.md' | head -40; \
 		exit 1; \
 	fi
 
@@ -166,7 +166,7 @@ doc:
 	@bash ./tools/converters/batch_convert_html.sh
 
 example-validate:
-	@$(PYTHON) ./tools/validators/umodel_validator.py --batch examples
+	@$(PYTHON) ./tools/validators/mmodel_validator.py --batch examples
 
 verify:
 	@bash ./tools/verify/verify_all.sh

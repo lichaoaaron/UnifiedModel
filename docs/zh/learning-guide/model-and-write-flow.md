@@ -1,25 +1,25 @@
 # 模型导入与运行时写入
 
-这篇把“数据如何进入 UnifiedModel”讲清楚。写路径主要分成两类：模型写入和运行时写入。
+这篇把“数据如何进入 MModel”讲清楚。写路径主要分成两类：模型写入和运行时写入。
 
 ## 模型导入链路
 
 ```mermaid
 sequenceDiagram
   participant Client
-  participant REST as umodel-server
+  participant REST as mmodel-server
   participant Bootstrap as internal/bootstrap
-  participant UModel as internal/umodel.Service
+  participant MModel as internal/mmodel.Service
   participant Validator as schemaspec validator
   participant Graph as GraphStore
 
-  Client->>REST: POST /api/v1/umodel/{workspace}/import
-  REST->>UModel: Import(...)
-  UModel->>Validator: Validate(elements)
-  Validator-->>UModel: validation result
-  UModel->>Graph: PutUModelElements(...)
-  Graph-->>UModel: write result
-  UModel-->>Client: import result
+  Client->>REST: POST /api/v1/mmodel/{workspace}/import
+  REST->>MModel: Import(...)
+  MModel->>Validator: Validate(elements)
+  Validator-->>MModel: validation result
+  MModel->>Graph: PutMModelElements(...)
+  Graph-->>MModel: write result
+  MModel-->>Client: import result
 ```
 
 ## 运行时实体与关系写入链路
@@ -27,15 +27,15 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
   participant Client
-  participant REST as umodel-server
+  participant REST as mmodel-server
   participant EntityStore as internal/entitystore.Service
-  participant UModel as internal/umodel.Service
+  participant MModel as internal/mmodel.Service
   participant Graph as GraphStore
 
   Client->>REST: entities:write / relations:write
   REST->>EntityStore: WriteEntities / WriteRelations
-  EntityStore->>UModel: ValidateEntityPayload / ValidateRelationPayload
-  UModel-->>EntityStore: validation result
+  EntityStore->>MModel: ValidateEntityPayload / ValidateRelationPayload
+  MModel-->>EntityStore: validation result
   EntityStore->>Graph: WriteEntities / WriteRelations
   Graph-->>EntityStore: write result
   EntityStore-->>Client: accepted / failed items
@@ -45,7 +45,7 @@ sequenceDiagram
 
 路由入口在：
 
-- `internal/bootstrap/app.go` 的 `handleUModel`
+- `internal/bootstrap/app.go` 的 `handleMModel`
 
 核心动作：
 
@@ -55,7 +55,7 @@ sequenceDiagram
 
 服务实现：
 
-- `internal/umodel/service.go`
+- `internal/mmodel/service.go`
 
 先看这几个函数：
 
@@ -63,9 +63,9 @@ sequenceDiagram
 - `PutElements`
 - `RebuildIndex`
 
-## 2. UModel Service 在写路径中的角色
+## 2. MModel Service 在写路径中的角色
 
-UModel Service 做三件事：
+MModel Service 做三件事：
 
 1. 校验元素是否满足 schema。
 2. 把合法元素写入 GraphStore。
@@ -74,7 +74,7 @@ UModel Service 做三件事：
 阅读提示：
 
 - `Validate` 是 schema 驱动入口。
-- `PutElements` 调用了 `Validate` 和 `graph.PutUModelElements`。
+- `PutElements` 调用了 `Validate` 和 `graph.PutMModelElements`。
 - `ResolveEntitySet` 与 `ResolveRelationType` 说明它也承担了“schema resolver”的角色。
 
 ## 3. EntityStore 在写路径中的角色
@@ -113,7 +113,7 @@ EntityStore 是运行时写入服务，不直接公开读取能力。
 
 1. `LoadQuickStart` 确保 `demo` workspace 存在。
 2. `Samples.Import` 解析样例名。
-3. `umodel.Import` 导入样例模型。
+3. `mmodel.Import` 导入样例模型。
 4. `entityStore.WriteEntities` 写入实体 JSON。
 5. `entityStore.WriteRelations` 写入关系 JSON。
 
@@ -123,8 +123,8 @@ EntityStore 是运行时写入服务，不直接公开读取能力。
 
 如果你在做不同类型的改动，可以先定位到这里：
 
-- 调整模型元素校验：`internal/umodel` 和 `internal/umodel/schemaspec`
-- 调整运行时 payload 校验：`internal/umodel/service.go`
+- 调整模型元素校验：`internal/mmodel` 和 `internal/mmodel/schemaspec`
+- 调整运行时 payload 校验：`internal/mmodel/service.go`
 - 调整写入批处理逻辑：`internal/entitystore/service.go`
 - 调整样例导入：`internal/sampledata/service.go`
 - 调整 HTTP 写接口：`internal/bootstrap/app.go`
@@ -139,9 +139,9 @@ EntityStore 是运行时写入服务，不直接公开读取能力。
 
 ```bash
 make quickstart
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | limit 5"
 ```
 
 如果你修改了 quickstart 样例：

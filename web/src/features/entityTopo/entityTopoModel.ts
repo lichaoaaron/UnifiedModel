@@ -1,4 +1,4 @@
-import type { QueryResult, UModelElement } from '../../api/types'
+import type { QueryResult, MModelElement } from '../../api/types'
 
 export const ENTITY_TOPO_LIMIT = 100
 export const ENTITY_PROPERTY_LIMIT = ENTITY_TOPO_LIMIT
@@ -159,10 +159,10 @@ const typePalette: TopoTypeVisual[] = [
 
 export function buildEntityTopoData(
   result: QueryResult,
-  umodelElements: UModelElement[],
+  mmodelElements: MModelElement[],
   entityRows: Array<Record<string, unknown>> = [],
 ): EntityTopoData {
-  const umodelIndex = createUModelEntityIndex(umodelElements)
+  const mmodelIndex = createMModelEntityIndex(mmodelElements)
   const entityIndex = createEntityRowIndex(entityRows)
   const nodeMap = new Map<string, EntityTopoNode>()
   const edgeMap = new Map<string, EntityTopoEdge>()
@@ -173,8 +173,8 @@ export function buildEntityTopoData(
     const target = endpointFromRow(row, 'dest')
     if (!source || !target) return
 
-    const sourceNode = ensureNode(nodeMap, source, umodelIndex, entityIndex)
-    const targetNode = ensureNode(nodeMap, target, umodelIndex, entityIndex)
+    const sourceNode = ensureNode(nodeMap, source, mmodelIndex, entityIndex)
+    const targetNode = ensureNode(nodeMap, target, mmodelIndex, entityIndex)
     sourceNode.outDegree += 1
     targetNode.inDegree += 1
     sourceNode.relationCount += 1
@@ -203,7 +203,7 @@ export function buildEntityTopoData(
   })
 
   const nodeValues = [...nodeMap.values()]
-  const clusters = buildClusterMetas(nodeValues, umodelIndex)
+  const clusters = buildClusterMetas(nodeValues, mmodelIndex)
 
   const visualByCluster = new Map(clusters.map((cluster) => [cluster.cluster, cluster.visual]))
   const nodes = nodeValues
@@ -317,12 +317,12 @@ export function formatTopoValue(value: unknown): string {
 function ensureNode(
   nodeMap: Map<string, EntityTopoNode>,
   endpoint: EntityEndpoint,
-  umodelIndex: Map<string, { displayName: string }>,
+  mmodelIndex: Map<string, { displayName: string }>,
   entityIndex: Map<string, Record<string, unknown>>,
 ) {
   const existing = nodeMap.get(endpoint.id)
   if (existing) return existing
-  const meta = umodelIndex.get(endpoint.cluster)
+  const meta = mmodelIndex.get(endpoint.cluster)
   const properties = entityIndex.get(endpoint.id) || {}
   const titleMeta = titleFromProperties(properties, endpoint)
   const visual = visualForCluster(endpoint.cluster, meta?.displayName)
@@ -504,7 +504,7 @@ function shortenEntityId(value: string) {
   return `${value.slice(0, 8)}...${value.slice(-6)}`
 }
 
-function buildClusterMetas(nodes: EntityTopoNode[], umodelIndex: Map<string, { displayName: string }>) {
+function buildClusterMetas(nodes: EntityTopoNode[], mmodelIndex: Map<string, { displayName: string }>) {
   const counts = new Map<string, number>()
   for (const node of nodes) counts.set(node.endpoint.cluster, (counts.get(node.endpoint.cluster) || 0) + 1)
   return [...counts.keys()]
@@ -512,7 +512,7 @@ function buildClusterMetas(nodes: EntityTopoNode[], umodelIndex: Map<string, { d
     .map((cluster, index) => {
       const count = counts.get(cluster) || 0
       const [domain, entityType] = splitCluster(cluster)
-      const meta = umodelIndex.get(cluster)
+      const meta = mmodelIndex.get(cluster)
       const visual = visualForCluster(cluster, meta?.displayName, index)
       return {
         cluster,
@@ -530,15 +530,15 @@ function buildClusterMetas(nodes: EntityTopoNode[], umodelIndex: Map<string, { d
     .sort((left, right) => right.count - left.count || left.displayName.localeCompare(right.displayName))
 }
 
-function createUModelEntityIndex(elements: UModelElement[]) {
+function createMModelEntityIndex(elements: MModelElement[]) {
   const index = new Map<string, { displayName: string }>()
   for (const element of elements) {
     if (element.kind !== 'entity_set') continue
-    const displayName = displayNameForUModel(element)
+    const displayName = displayNameForMModel(element)
     const domain = element.domain || 'unknown'
     const name = element.name || ''
     const keys = [
-      umodelElementKey(element),
+      mmodelElementKey(element),
       `${domain}@${name}`,
       `${domain}/${name}`,
       name,
@@ -548,11 +548,11 @@ function createUModelEntityIndex(elements: UModelElement[]) {
   return index
 }
 
-function umodelElementKey(element: UModelElement) {
+function mmodelElementKey(element: MModelElement) {
   return [element.domain, element.name, element.kind].filter(Boolean).join('/')
 }
 
-function displayNameForUModel(element: UModelElement) {
+function displayNameForMModel(element: MModelElement) {
   const metadata = (element as unknown as Record<string, unknown>).metadata as Record<string, unknown> | undefined
   const spec = element.spec || {}
   const displayName =
@@ -561,7 +561,7 @@ function displayNameForUModel(element: UModelElement) {
     localizedText(metadata?.description) ||
     localizedText((spec as Record<string, unknown>).description) ||
     element.name ||
-    umodelElementKey(element)
+    mmodelElementKey(element)
   return String(displayName)
 }
 

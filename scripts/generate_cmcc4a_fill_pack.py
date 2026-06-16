@@ -11,7 +11,7 @@ from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 
 
-ROOT = pathlib.Path(r"C:\Users\chaoJ\Desktop\UnifiedModel")
+ROOT = pathlib.Path(r"C:\Users\chaoJ\Desktop\MModel")
 DATA_DIR = ROOT / "data"
 OUTPUTS_DIR = ROOT / "outputs"
 DESKTOP_DIR = pathlib.Path(r"C:\Users\chaoJ\Desktop")
@@ -323,12 +323,12 @@ def build_workbook():
         cell.fill = PatternFill("solid", fgColor="D9EAF7")
 
     readme_rows = [
-        ["目标", "这份文件把 UnifiedModel 最小本体构建所需信息，整理成一份可直接补空的填报包。"],
+        ["目标", "这份文件把 MModel 最小本体构建所需信息，整理成一份可直接补空的填报包。"],
         ["已结合的输入", f"1) 代码仓库 {ROOT} 里的 schema/example；2) 专家表 {expert_path.name}；3) data 目录下的真实 log/metric/trace 导出。"],
         ["建议先做的最小实体", "cmcc4a.service / cmcc4a.redis / cmcc4a.database / cmcc4a.mq / cmcc4a.gateway，账号实体先保留为候选。"],
         ["建议先做的最小数据集", "1个应用日志集 + 1个 APM 调用链集 + Redis/DB/MQ/Gateway 4个指标集。"],
         ["你主要要补的内容", "统一命名、主键粒度、真实生产查询入口，以及专家对象到真实 serviceName 的映射。"],
-        ["注意", "metadata.name 这类技术字段仍需遵守 UnifiedModel 命名规则；本文件中多数名字都是候选值，可以直接调整。"],
+        ["注意", "metadata.name 这类技术字段仍需遵守 MModel 命名规则；本文件中多数名字都是候选值，可以直接调整。"],
     ]
     for row in readme_rows:
         ws0.append(row)
@@ -355,11 +355,11 @@ def build_workbook():
     add_sheet(wb, "10_ExpertRulesAndCases", ["Source Row", "Scene/Case", "Symptom", "Main Object", "Object Type/Root Cause Type", "Evidence", "Join Keys", "Rule/Conclusion", "Common Root Cause", "Action", "Notes"], rule_rows)
     add_sheet(wb, "11_OpenQuestions", ["ID", "Topic", "Question", "Why It Matters", "Owner"], open_questions)
 
-    output_xlsx = OUTPUTS_DIR / "cmcc4a_unifiedmodel_ontology_fill_pack.xlsx"
+    output_xlsx = OUTPUTS_DIR / "cmcc4a_mmodel_ontology_fill_pack.xlsx"
     try:
         wb.save(output_xlsx)
     except PermissionError:
-        output_xlsx = OUTPUTS_DIR / "cmcc4a_unifiedmodel_ontology_fill_pack.zh.xlsx"
+        output_xlsx = OUTPUTS_DIR / "cmcc4a_mmodel_ontology_fill_pack.zh.xlsx"
         wb.save(output_xlsx)
 
     summary = {
@@ -375,7 +375,7 @@ def build_workbook():
             kind: source_stats[kind]["services"].most_common(20) for kind in source_stats
         },
     }
-    output_json = OUTPUTS_DIR / "cmcc4a_unifiedmodel_ontology_fill_pack.summary.json"
+    output_json = OUTPUTS_DIR / "cmcc4a_mmodel_ontology_fill_pack.summary.json"
     output_json.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
 
     return output_xlsx, output_json

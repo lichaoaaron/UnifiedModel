@@ -17,7 +17,7 @@ REST 面向需要直接控制 HTTP 的集成。
 
 ```http
 POST /api/v1/workspaces
-POST /api/v1/umodel/{workspace}/import
+POST /api/v1/mmodel/{workspace}/import
 POST /api/v1/entitystore/{workspace}/entities:write
 POST /api/v1/query/{workspace}/execute
 GET  /api/v1/agent/{workspace}/discover
@@ -25,11 +25,11 @@ GET  /api/v1/agent/{workspace}/discover
 
 ## CLI
 
-`umctl` 覆盖本地开发、示例和文档工作流：
+`mmctl` 覆盖本地开发、示例和文档工作流：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 参考：[CLI 参考](../reference/cli.md)。
@@ -51,7 +51,7 @@ if err != nil {
 }
 
 result, err := client.Query(ctx, "demo", service.QueryRequest{
-    Query: ".umodel | limit 5",
+    Query: ".mmodel | limit 5",
 })
 if err != nil {
     return err
@@ -68,10 +68,10 @@ go test ./service
 
 ## 生成的模型 SDK
 
-生成的模型 SDK 表示 UModel schema 类型：
+生成的模型 SDK 表示 MModel schema 类型：
 
-- Go：[sdk/go/umodel](../../../sdk/go/umodel/README.md)
-- Python：[sdk/python/umodel](../../../sdk/python/umodel/README.zh-CN.md)
+- Go：[sdk/go/mmodel](../../../sdk/go/mmodel/README.md)
+- Python：[sdk/python/mmodel](../../../sdk/python/mmodel/README.zh-CN.md)
 - Java：[generated/java](../../../generated/java)
 
 重新生成和验证：
@@ -95,7 +95,7 @@ make verify
 
 ### Go 中解析并校验模型文件
 
-仓库内 `sdk/go` 示例使用 `umodel_go_cli` 模块路径。外部工程将该路径替换为发布或 vendored 的 SDK 模块路径。
+仓库内 `sdk/go` 示例使用 `mmodel_go_cli` 模块路径。外部工程将该路径替换为发布或 vendored 的 SDK 模块路径。
 
 ```go
 package main
@@ -104,7 +104,7 @@ import (
     "fmt"
     "os"
 
-    umodel "umodel_go_cli/umodel"
+    mmodel "mmodel_go_cli/mmodel"
 )
 
 func main() {
@@ -113,7 +113,7 @@ func main() {
         panic(err)
     }
 
-    obj, err := umodel.ParseYamlUModel(data)
+    obj, err := mmodel.ParseYamlMModel(data)
     if err != nil {
         panic(err)
     }
@@ -133,15 +133,15 @@ func main() {
 ```python
 from pathlib import Path
 
-from umodel import (
+from mmodel import (
     get_link_endpoints,
     get_object_metadata,
     is_link_object,
-    parse_umodel_yaml,
+    parse_mmodel_yaml,
 )
 
 for path in Path("examples/quickstart-multidomain").rglob("*.yaml"):
-    obj = parse_umodel_yaml(path.read_bytes())
+    obj = parse_mmodel_yaml(path.read_bytes())
     metadata = get_object_metadata(obj)
 
     if is_link_object(obj):
@@ -170,7 +170,7 @@ if err != nil {
     return err
 }
 
-_, err = client.ImportUModel(ctx, "demo", service.UModelImportRequest{
+_, err = client.ImportMModel(ctx, "demo", service.MModelImportRequest{
     Path: "examples/quickstart-multidomain",
 })
 if err != nil {
@@ -178,7 +178,7 @@ if err != nil {
 }
 
 result, err := client.Query(ctx, "demo", service.QueryRequest{
-    Query: ".umodel with(kind='entity_set') | limit 5",
+    Query: ".mmodel with(kind='entity_set') | limit 5",
 })
 if err != nil {
     return err
@@ -197,16 +197,16 @@ _ = result
 
 ## MCP
 
-MCP 服务需要 UModel discovery、resources、query examples 或 query tools 的 Agent client。
+MCP 服务需要 MModel discovery、resources、query examples 或 query tools 的 Agent client。
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 当 client 需要 HTTP MCP server 时，使用 Streamable HTTP：
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 MCP envelope 保持 JSON-RPC。Tool/resource 文本 payload 使用 TOON（`text/toon`），tool call 同时返回 `structuredContent` 供偏 JSON 的 client 使用。

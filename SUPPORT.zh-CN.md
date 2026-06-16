@@ -20,7 +20,7 @@ English version: [SUPPORT.md](SUPPORT.md)
 ```bash
 go version
 make status
-go run ./cmd/umctl --addr http://localhost:8080 query examples
+go run ./cmd/mmctl --addr http://localhost:8080 query examples
 ```
 
 如果涉及 Web UI，请包含：

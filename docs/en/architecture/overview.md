@@ -2,7 +2,7 @@
 
 中文：[架构总览](../../zh/architecture/overview.md)
 
-UModel: local-first service with public API, CLI, Web UI, SDK, and MCP surfaces over one set of domain services.
+MModel: local-first service with public API, CLI, Web UI, SDK, and MCP surfaces over one set of domain services.
 
 
 ## System View
@@ -12,12 +12,12 @@ flowchart LR
   Developer["Developer / SRE"]
   Agent["MCP client / Agent"]
   Web["Web UI"]
-  CLI["umctl"]
+  CLI["mmctl"]
   SDK["SDK clients"]
-  MCP["umodel-mcp"]
+  MCP["mmodel-mcp"]
   REST["REST API"]
   Workspace["Workspace Service"]
-  UModel["UModel Service"]
+  MModel["MModel Service"]
   EntityStore["EntityStore"]
   Query["Query Service"]
   AgentGateway["AgentGateway"]
@@ -33,11 +33,11 @@ flowchart LR
   SDK --> REST
   MCP --> AgentGateway
   REST --> Workspace
-  REST --> UModel
+  REST --> MModel
   REST --> EntityStore
   REST --> Query
   REST --> AgentGateway
-  UModel --> GraphStore
+  MModel --> GraphStore
   EntityStore --> GraphStore
   Query --> GraphStore
   AgentGateway --> Query
@@ -48,9 +48,9 @@ flowchart LR
 
 | Layer | Paths | Responsibility |
 |---|---|---|
-| Entry | `cmd/umodel-server`, `cmd/umctl`, `cmd/umodel-mcp` | Processes, flags, local runtime entry points. |
+| Entry | `cmd/mmodel-server`, `cmd/mmctl`, `cmd/mmodel-mcp` | Processes, flags, local runtime entry points. |
 | API adapters | `api/openapi`, `api/mcp`, `internal/bootstrap` | REST routing, MCP schema exposure, server wiring. |
-| Application services | `internal/workspace`, `internal/umodel`, `internal/entitystore`, `internal/query`, `internal/agentgateway` | Use-case logic for workspaces, model writes, runtime writes, reads, and agent access. |
+| Application services | `internal/workspace`, `internal/mmodel`, `internal/entitystore`, `internal/query`, `internal/agentgateway` | Use-case logic for workspaces, model writes, runtime writes, reads, and agent access. |
 | Contracts | `pkg/contract`, `pkg/model`, `pkg/errors` | Public service interfaces, shared types, stable error envelopes. |
 | Storage abstraction | `internal/graphstore` | Provider-neutral persistence and graph access. |
 | Providers | `memory`, `file.memory`, `local.ladybug` | Runtime storage implementations. |
@@ -73,7 +73,7 @@ Implementation packages can change more freely than these surfaces. When a publi
 - Workspace-scoped operations keep local data isolated.
 - Query Service is the only public read path for model, entity, and topology data.
 - EntityStore writes runtime objects and relations; it does not expose public read APIs.
-- UModel Service writes and validates model definitions.
+- MModel Service writes and validates model definitions.
 - AgentGateway uses Query Service for runtime rows and keeps resources metadata-oriented.
 - GraphStore providers hide persistence details from application services.
 

@@ -7,17 +7,17 @@
 ```mermaid
 flowchart LR
   Dev["开发者 / SRE"] --> Web["Web UI"]
-  Dev --> CLI["umctl"]
+  Dev --> CLI["mmctl"]
   Dev --> SDK["SDK"]
-  Agent["MCP Client / Agent"] --> MCP["umodel-mcp"]
+  Agent["MCP Client / Agent"] --> MCP["mmodel-mcp"]
 
-  Web --> REST["umodel-server REST"]
+  Web --> REST["mmodel-server REST"]
   CLI --> REST
   SDK --> REST
   MCP --> AG["AgentGateway"]
 
   REST --> WS["Workspace Service"]
-  REST --> UM["UModel Service"]
+  REST --> UM["MModel Service"]
   REST --> ES["EntityStore"]
   REST --> QS["Query Service"]
   REST --> AG
@@ -37,8 +37,8 @@ flowchart LR
 
 关键文件：
 
-- `cmd/umodel-server/main.go`
-- `cmd/umodel-mcp/main.go`
+- `cmd/mmodel-server/main.go`
+- `cmd/mmodel-mcp/main.go`
 
 你会看到：
 
@@ -60,7 +60,7 @@ flowchart LR
 
 - `workspace.NewService`
 - `graphstore.NewProvider`
-- `umodel.NewService`
+- `mmodel.NewService`
 - `entitystore.NewService`
 - `query.NewServiceWithProviders`
 - `agentgateway.NewService`
@@ -74,7 +74,7 @@ flowchart LR
 关键包：
 
 - `internal/workspace`
-- `internal/umodel`
+- `internal/mmodel`
 - `internal/entitystore`
 - `internal/query`
 - `internal/agentgateway`
@@ -112,7 +112,7 @@ flowchart TD
 仓库文档和 guard 共同强调这些边界：
 
 - Workspace Service 只管 workspace 元数据。
-- UModel Service 只管模型校验、导入、写入、索引。
+- MModel Service 只管模型校验、导入、写入、索引。
 - EntityStore 只管运行时实体和关系写入、过期。
 - Query Service 是唯一公共读路径。
 - AgentGateway 的资源偏元数据，运行时行数据通过工具返回。
@@ -133,7 +133,7 @@ flowchart TD
 
 如果只给你 20 分钟：
 
-1. 读 `cmd/umodel-server/main.go`
+1. 读 `cmd/mmodel-server/main.go`
 2. 读 `internal/bootstrap/app.go`
 3. 读 `pkg/contract/contracts.go`
 4. 读 `internal/query/service.go`

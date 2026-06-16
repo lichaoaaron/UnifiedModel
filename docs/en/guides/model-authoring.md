@@ -7,7 +7,7 @@ Model pack authoring and import workflow.
 
 ## Model Pack Shape
 
-A model pack is a directory of YAML or JSON UModel elements. The multi-domain quickstart example uses this shape:
+A model pack is a directory of YAML or JSON MModel elements. The multi-domain quickstart example uses this shape:
 
 ```text
 examples/quickstart-multidomain/
@@ -40,7 +40,7 @@ Keep categories separated for reviewable diffs. The quickstart pack is intention
 ```yaml
 kind: entity_set
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "demo.service"
@@ -58,7 +58,7 @@ spec:
 ```yaml
 kind: entity_set_link
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "demo.service_calls_demo.service"
@@ -93,14 +93,14 @@ make verify
 ## Import Into A Workspace
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 umodel import demo examples/quickstart-multidomain
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel import demo examples/quickstart-multidomain
 ```
 
 ## Inspect The Model
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | sort kind,name | limit 50"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | sort kind,name | limit 50"
 ```
 
 ## Review Checklist

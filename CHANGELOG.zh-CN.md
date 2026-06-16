@@ -2,7 +2,7 @@
 
 English version: [CHANGELOG.md](CHANGELOG.md)
 
-所有值得关注的 UModel Open Source 变更都应记录在这里。
+所有值得关注的 MModel Open Source 变更都应记录在这里。
 
 在稳定版本发布前，项目使用简单的变更日志结构：
 
@@ -17,15 +17,15 @@ English version: [CHANGELOG.md](CHANGELOG.md)
 
 ### Added
 
-- 本地单进程 UModel 服务。
+- 本地单进程 MModel 服务。
 - Workspace 元数据管理。
-- UModel 导入、校验、写入、删除和索引路径。
+- MModel 导入、校验、写入、删除和索引路径。
 - CMS 2.0 兼容的实体与关系写入/过期路径。
-- 面向 `.umodel`、`.entity`、`.topo` 的统一 Query Service。
+- 面向 `.mmodel`、`.entity`、`.topo` 的统一 Query Service。
 - AgentGateway discovery、安全查询工具、resources 和 MCP stdio server。
-- `umctl` CLI，覆盖 workspace、UModel、EntityStore、topology、query 和 agent 工作流。
+- `mmctl` CLI，覆盖 workspace、MModel、EntityStore、topology、query 和 agent 工作流。
 - `memory`、`file.memory` 和可选 `local.ladybug` GraphStore providers。
-- React/Vite OpenUModel Web UI。
+- React/Vite OpenMModel Web UI。
 - REST OpenAPI 和 MCP tool/resource schemas。
 - 生成的 Go、Python、Java model SDK 资产。
 - APM common example pack 和 sample import endpoint。

@@ -1,10 +1,10 @@
 # 查询执行链路
 
-如果说 UnifiedModel 有一条最值得反复记住的主线，那就是：公共读取统一走 Query Service。
+如果说 MModel 有一条最值得反复记住的主线，那就是：公共读取统一走 Query Service。
 
 ## 三个公共查询源
 
-- `.umodel`：读取模型定义
+- `.mmodel`：读取模型定义
 - `.entity`：读取运行时实体
 - `.topo`：读取运行时拓扑关系
 
@@ -13,7 +13,7 @@
 ```mermaid
 sequenceDiagram
   participant Client
-  participant REST as umodel-server / Web / CLI
+  participant REST as mmodel-server / Web / CLI
   participant Query as Query Service
   participant Planner as Planner
   participant Executor as Executor
@@ -24,7 +24,7 @@ sequenceDiagram
   Query->>Planner: Plan(request, capabilities)
   Planner-->>Query: QueryPlan
   Query->>Executor: Execute(workspace, plan)
-  Executor->>Graph: GetUModelSnapshot / QueryEntities / QueryTopo
+  Executor->>Graph: GetMModelSnapshot / QueryEntities / QueryTopo
   Graph-->>Executor: rows
   Executor-->>Query: QueryResult
   Query-->>Client: rows + explain
@@ -90,7 +90,7 @@ Planner 的作用不是直接查数据，而是把 SPL 转成受限、可验证�
 
 Executor 会按查询源分发：
 
-- `.umodel` -> `GetUModelSnapshot`
+- `.mmodel` -> `GetMModelSnapshot`
 - `.entity` -> `QueryEntities`
 - `.topo` -> `QueryTopo`
 
@@ -106,9 +106,9 @@ Executor 会按查询源分发：
 
 “GraphStore 负责提供基础结果集，Executor 负责完成统一查询层的剩余加工。”
 
-## 5. `.umodel`、`.entity`、`.topo` 的差异
+## 5. `.mmodel`、`.entity`、`.topo` 的差异
 
-### `.umodel`
+### `.mmodel`
 
 读取模型快照，常用于：
 
@@ -137,7 +137,7 @@ Executor 会按查询源分发：
 `explain` 是学习代码和调试查询时最好用的工具之一。
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 它能帮你确认：
@@ -164,10 +164,10 @@ go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with
 ## 推荐验证命令
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 10"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | limit 10"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 10"
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 5`)"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 5`)"
 ```
 
 ## 配套参考

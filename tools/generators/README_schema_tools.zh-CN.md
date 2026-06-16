@@ -2,7 +2,7 @@
 
 English version: [README_schema_tools.md](README_schema_tools.md)
 
-本文档对应 UModel schema 工具链，包括 schema 展开、代码生成、文档生成和校验流程。
+本文档对应 MModel schema 工具链，包括 schema 展开、代码生成、文档生成和校验流程。
 
 ## 工具链职责
 

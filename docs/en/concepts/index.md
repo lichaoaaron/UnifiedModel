@@ -58,7 +58,7 @@ flowchart LR
 | Scope | Workspace, domain | Keeps model and runtime data isolated and nameable. |
 | Model definitions | EntitySet, DataSet, Storage, Link | Describes the semantic contract before runtime data is written. |
 | Runtime graph | Entity, relation | Provides the actual object graph that Query Service can read. |
-| Read surface | `.umodel`, `.entity`, `.topo` | Gives REST, CLI, Web UI, SDK, and MCP one aligned query path. |
+| Read surface | `.mmodel`, `.entity`, `.topo` | Gives REST, CLI, Web UI, SDK, and MCP one aligned query path. |
 | Storage abstraction | GraphStore provider | Lets the same public service run against memory, file-backed, or Ladybug-backed stores. |
 
 ## Source References

@@ -1,7 +1,7 @@
 """
 EntityBindingSkill: maps trace/log/metric fields to MModel entities.
 Reads backend/data/mmodel/runtime_domain_model.yaml (via OntologyConfigAdapter) and binding_rules.yaml.
-examples/ontology/umodel_data/ is UModel reference material and is NOT used for entity binding.
+examples/ontology/mmodel_data/ is MModel reference material and is NOT used for entity binding.
 """
 import time as _time
 from datetime import datetime, timezone

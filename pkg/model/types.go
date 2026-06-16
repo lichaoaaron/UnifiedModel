@@ -94,7 +94,7 @@ type WriteResult struct {
 	Warnings []ErrorDetail     `json:"warnings,omitempty"`
 }
 
-type UModelElement struct {
+type MModelElement struct {
 	Kind    string         `json:"kind"`
 	Domain  string         `json:"domain"`
 	Name    string         `json:"name"`
@@ -102,55 +102,55 @@ type UModelElement struct {
 	Spec    map[string]any `json:"spec,omitempty"`
 }
 
-func UModelElementKey(element UModelElement) string {
-	return UModelElementRefKey(element.Domain, element.Name, element.Kind)
+func MModelElementKey(element MModelElement) string {
+	return MModelElementRefKey(element.Domain, element.Name, element.Kind)
 }
 
-func UModelElementRefKey(domain, name, kind string) string {
+func MModelElementRefKey(domain, name, kind string) string {
 	if domain == "" || name == "" || kind == "" {
 		return ""
 	}
 	return strings.Join([]string{domain, name, kind}, "/")
 }
 
-type UModelElementBatch struct {
+type MModelElementBatch struct {
 	Workspace string          `json:"workspace"`
-	Elements  []UModelElement `json:"elements"`
+	Elements  []MModelElement `json:"elements"`
 }
 
-type UModelImportRequest struct {
+type MModelImportRequest struct {
 	Path              string   `json:"path"`
 	CommonSchemaPacks []string `json:"common_schema_packs,omitempty"`
 }
 
-type UModelImportResult struct {
+type MModelImportResult struct {
 	Workspace string          `json:"workspace"`
 	Source    string          `json:"source"`
 	Imported  int             `json:"imported"`
 	Skipped   int             `json:"skipped"`
-	Elements  []UModelElement `json:"elements,omitempty"`
+	Elements  []MModelElement `json:"elements,omitempty"`
 	Errors    []ErrorDetail   `json:"errors,omitempty"`
 }
 
 type SampleImportResult struct {
 	Workspace     string             `json:"workspace"`
 	Sample        string             `json:"sample"`
-	UModel        UModelImportResult `json:"umodel"`
+	MModel        MModelImportResult `json:"mmodel"`
 	Entities      WriteResult        `json:"entities"`
 	Relations     WriteResult        `json:"relations"`
 	EntityCount   int                `json:"entity_count"`
 	RelationCount int                `json:"relation_count"`
 }
 
-type UModelSnapshotRequest struct {
+type MModelSnapshotRequest struct {
 	Workspace string `json:"workspace"`
 	Version   string `json:"version,omitempty"`
 }
 
-type UModelSnapshot struct {
+type MModelSnapshot struct {
 	Workspace string          `json:"workspace"`
 	Version   string          `json:"version"`
-	Elements  []UModelElement `json:"elements"`
+	Elements  []MModelElement `json:"elements"`
 }
 
 type ValidationResult struct {

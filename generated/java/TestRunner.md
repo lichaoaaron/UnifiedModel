@@ -1,17 +1,17 @@
-# UModel Java SDK 测试指南
+# MModel Java SDK 测试指南
 
 ## 概述
 
-这份文档说明了如何运行 UModel Java SDK 的测试用例，以验证生成的 Java 代码的功能正确性。
+这份文档说明了如何运行 MModel Java SDK 的测试用例，以验证生成的 Java 代码的功能正确性。
 
 ## 测试结构
 
-测试代码位于 `src/test/java/com/umodel/` 目录下，包含以下测试类：
+测试代码位于 `src/test/java/com/mmodel/` 目录下，包含以下测试类：
 
 ### 1. 基础测试类
 
 - **BaseTypesTest**: 测试基础类型（SemanticString、LinkEndpoint）的功能
-- **UModelTest**: 测试主包 UModel 类的功能，包括 JSON 解析和工具函数
+- **MModelTest**: 测试主包 MModel 类的功能，包括 JSON 解析和工具函数
 - **SchemaTest**: 测试所有 schema 类的基本功能和接口实现
 - **SharedTypesTest**: 测试 shared 包中的共享类型
 
@@ -72,9 +72,9 @@ mvn test -Dtest=AllTestSuite
    - 验证接口实现正确
 
 2. **接口继承关系**
-   - 验证 UModelObject、UModelCoreObject、UModelLinkObject 接口实现
+   - 验证 MModelObject、MModelCoreObject、MModelLinkObject 接口实现
    - 验证 getKind() 方法返回正确的类型标识
-   - 验证 Link 类型对象实现了 UModelLinkObject 接口
+   - 验证 Link 类型对象实现了 MModelLinkObject 接口
 
 3. **JSON 解析功能**
    - 验证从 JSON 字符串解析为具体类型
@@ -91,9 +91,9 @@ mvn test -Dtest=AllTestSuite
    - 验证 Map 类型字段解析
 
 5. **工具函数**
-   - 验证 UModel.isCoreObject() 和 UModel.isLinkObject()
-   - 验证 UModel.getObjectMetadata() 和 UModel.getObjectSchema()
-   - 验证 UModel.getLinkEndpoints() 函数
+   - 验证 MModel.isCoreObject() 和 MModel.isLinkObject()
+   - 验证 MModel.getObjectMetadata() 和 MModel.getObjectSchema()
+   - 验证 MModel.getLinkEndpoints() 函数
 
 ### 性能测试
 
@@ -181,4 +181,4 @@ mvn test -Dtest=AllTestSuite
 3. 验证新功能的正确性
 4. 更新这份文档
 
-通过这些测试，可以确保 UModel Java SDK V2 生成的代码完全符合预期，所有特性都能正常工作。 
+通过这些测试，可以确保 MModel Java SDK V2 生成的代码完全符合预期，所有特性都能正常工作。

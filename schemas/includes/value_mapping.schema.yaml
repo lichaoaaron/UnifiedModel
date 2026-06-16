@@ -9,9 +9,9 @@ versions:
       properties:
         name:
           description: 
-            zh_cn: 在 UModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
+            zh_cn: 在 MModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
             en_us: >
-              The name of the Element in UModel System. The value cannot be empty.The value format is lowercase alphanumeric characters.
+              The name of the Element in MModel System. The value cannot be empty.The value format is lowercase alphanumeric characters.
           type: string
           constraint:
             pattern: '^[a-zA-Z][a-zA-Z0-9-_\.]{0,127}$'
@@ -20,16 +20,16 @@ versions:
             max_len: 127
         display_name:
           description: 
-            zh_cn: 在 UModel 系统中的显示名称。值不能为空。
-            en_us: The display name of the Element in UModel System. The value cannot be empty.
+            zh_cn: 在 MModel 系统中的显示名称。值不能为空。
+            en_us: The display name of the Element in MModel System. The value cannot be empty.
           type: semantic_string
         description:
           description: 
-            zh_cn: 在 UModel 系统中的描述。
-            en_us: The description of the Element in UModel System.
+            zh_cn: 在 MModel 系统中的描述。
+            en_us: The description of the Element in MModel System.
           type: semantic_string
         short_description:
           description: 
-            zh_cn: 在 UModel 系统中的简短描述。
-            en_us: The short description of the Element in UModel System.
+            zh_cn: 在 MModel 系统中的简短描述。
+            en_us: The short description of the Element in MModel System.
           type: semantic_string

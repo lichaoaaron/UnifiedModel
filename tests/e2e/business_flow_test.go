@@ -11,7 +11,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/bootstrap"
 )
 
 func TestRESTBusinessFlowCoversCoreScenarios(t *testing.T) {
@@ -43,34 +43,34 @@ func TestRESTBusinessFlowCoversCoreScenarios(t *testing.T) {
 		t.Fatalf("expected one active workspace, got %+v", listed)
 	}
 
-	validate := e2ePost(t, server.URL+"/api/v1/umodel/demo/validate", map[string]any{"elements": []map[string]any{{
+	validate := e2ePost(t, server.URL+"/api/v1/mmodel/demo/validate", map[string]any{"elements": []map[string]any{{
 		"kind":   "entity_set",
 		"domain": "e2e",
 		"name":   "custom",
 	}}})
 	if validate["valid"] != true {
-		t.Fatalf("expected valid UModel element, got %+v", validate)
+		t.Fatalf("expected valid MModel element, got %+v", validate)
 	}
-	put := e2ePost(t, server.URL+"/api/v1/umodel/demo/elements", map[string]any{"elements": []map[string]any{{
+	put := e2ePost(t, server.URL+"/api/v1/mmodel/demo/elements", map[string]any{"elements": []map[string]any{{
 		"kind":   "entity_set",
 		"domain": "e2e",
 		"name":   "custom",
 	}}})
 	if put["accepted"] != float64(1) {
-		t.Fatalf("expected custom UModel put accepted, got %+v", put)
+		t.Fatalf("expected custom MModel put accepted, got %+v", put)
 	}
 
-	imported := e2ePost(t, server.URL+"/api/v1/umodel/demo/import", map[string]any{
+	imported := e2ePost(t, server.URL+"/api/v1/mmodel/demo/import", map[string]any{
 		"path": filepath.Join("..", "..", "examples", "quickstart-multidomain"),
 	})
 	if imported["imported"].(float64) < 20 {
 		t.Fatalf("expected quickstart import to load schemas, got %+v", imported)
 	}
-	umodelRows := e2ePost(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-		"query": ".umodel with(kind='entity_set', domain='devops', name='devops.service') | project domain,name,kind | limit 5",
+	mmodelRows := e2ePost(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
+		"query": ".mmodel with(kind='entity_set', domain='devops', name='devops.service') | project domain,name,kind | limit 5",
 	})
-	if got := e2eRows(t, umodelRows); len(got) != 1 || got[0]["domain"] != "devops" || got[0]["name"] != "devops.service" || got[0]["kind"] != "entity_set" {
-		t.Fatalf("expected imported devops.service row, got %+v", umodelRows)
+	if got := e2eRows(t, mmodelRows); len(got) != 1 || got[0]["domain"] != "devops" || got[0]["name"] != "devops.service" || got[0]["kind"] != "entity_set" {
+		t.Fatalf("expected imported devops.service row, got %+v", mmodelRows)
 	}
 
 	e2ePost(t, server.URL+"/api/v1/entitystore/demo/entities:write", map[string]any{"entities": []map[string]any{
@@ -182,7 +182,7 @@ func TestRESTBusinessFlowCoversCoreScenarios(t *testing.T) {
 	}
 	queryTool := e2ePost(t, server.URL+"/api/v1/agent/demo/tools:execute", map[string]any{
 		"name":      "query_spl_execute",
-		"arguments": map[string]any{"query": ".umodel with(kind='entity_set') | limit 1"},
+		"arguments": map[string]any{"query": ".mmodel with(kind='entity_set') | limit 1"},
 	})
 	if queryTool["ok"] != true {
 		t.Fatalf("expected query_spl_execute success, got %+v", queryTool)

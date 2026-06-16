@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestFileMemoryStorePersistsAcrossReopen(t *testing.T) {
@@ -21,9 +21,9 @@ func TestFileMemoryStorePersistsAcrossReopen(t *testing.T) {
 	if err := store.OpenWorkspace(ctx, model.WorkspaceMetadata{ID: "demo"}); err != nil {
 		t.Fatalf("open workspace: %v", err)
 	}
-	if _, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	if _, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{{
+		Elements: []model.MModelElement{{
 			Kind:    "entity_set",
 			Domain:  "apm",
 			Name:    "apm.service",
@@ -31,7 +31,7 @@ func TestFileMemoryStorePersistsAcrossReopen(t *testing.T) {
 			Spec:    map[string]any{"display_name": "APM Service"},
 		}},
 	}); err != nil {
-		t.Fatalf("put umodel: %v", err)
+		t.Fatalf("put mmodel: %v", err)
 	}
 	if _, err := store.WriteEntities(ctx, model.EntityWriteBatch{
 		Workspace: "demo",
@@ -46,7 +46,7 @@ func TestFileMemoryStorePersistsAcrossReopen(t *testing.T) {
 		t.Fatalf("write relation: %v", err)
 	}
 
-	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "umodels.json"))
+	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "mmodels.json"))
 	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "entities.json"))
 	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "relations.json"))
 
@@ -62,7 +62,7 @@ func TestFileMemoryStorePersistsAcrossReopen(t *testing.T) {
 		t.Fatalf("expected file memory provider health, got %+v", health)
 	}
 
-	snapshot, err := reopened.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: "demo"})
+	snapshot, err := reopened.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
 	if err != nil {
 		t.Fatalf("snapshot: %v", err)
 	}
@@ -104,7 +104,7 @@ func TestFileMemoryStoreMigratesLegacySingleFileState(t *testing.T) {
 	}
 	data, err := json.Marshal(fileMemoryState{
 		Version: fileMemoryStateVersion,
-		UModels: map[string]map[string]model.UModelElement{
+		MModels: map[string]map[string]model.MModelElement{
 			"demo": {
 				"apm/apm.service/entity_set": {
 					Kind:    "entity_set",
@@ -137,11 +137,11 @@ func TestFileMemoryStoreMigratesLegacySingleFileState(t *testing.T) {
 	if err != nil {
 		t.Fatalf("new file memory store: %v", err)
 	}
-	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "umodels.json"))
+	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "mmodels.json"))
 	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "entities.json"))
 	assertFileExists(t, filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo", "relations.json"))
 
-	snapshot, err := store.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: "demo"})
+	snapshot, err := store.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
 	if err != nil {
 		t.Fatalf("snapshot: %v", err)
 	}
@@ -159,6 +159,83 @@ func TestFileMemoryStoreMigratesLegacySingleFileState(t *testing.T) {
 	if len(entityRows.Rows) != 1 || entityRows.Rows[0]["display_name"] != "cart service" {
 		t.Fatalf("unexpected migrated entity rows: %+v", entityRows.Rows)
 	}
+}
+
+func TestFileMemoryStoreLoadsLegacyMModelCollectionName(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	workspaceDir := filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo")
+	if err := os.MkdirAll(workspaceDir, 0o755); err != nil {
+		t.Fatalf("create workspace dir: %v", err)
+	}
+	if err := writeFileMemoryCollection(filepath.Join(workspaceDir, "umodels.json"), map[string]model.MModelElement{
+		"apm/apm.service/entity_set": {
+			Kind:    "entity_set",
+			Domain:  "apm",
+			Name:    "apm.service",
+			Version: "v1",
+			Spec:    map[string]any{"display_name": "APM Service"},
+		},
+	}); err != nil {
+		t.Fatalf("write legacy mmodel collection: %v", err)
+	}
+
+	store, err := NewFileMemoryStore(ProviderConfig{DataRoot: root})
+	if err != nil {
+		t.Fatalf("new file memory store: %v", err)
+	}
+	if _, err := store.PutMModelElements(ctx, model.MModelElementBatch{
+		Workspace: "demo",
+		Elements: []model.MModelElement{{
+			Kind:    "entity_set",
+			Domain:  "apm",
+			Name:    "apm.database",
+			Version: "v1",
+		}},
+	}); err != nil {
+		t.Fatalf("put mmodel after legacy load: %v", err)
+	}
+
+	assertFileExists(t, filepath.Join(workspaceDir, "mmodels.json"))
+	snapshot, err := store.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
+	if err != nil {
+		t.Fatalf("snapshot: %v", err)
+	}
+	if len(snapshot.Elements) != 2 {
+		t.Fatalf("expected legacy and new elements, got %+v", snapshot.Elements)
+	}
+}
+
+func TestFileMemoryStoreWritesMModelWhenWorkspaceHasOnlyRuntimeCollections(t *testing.T) {
+	ctx := context.Background()
+	root := t.TempDir()
+	workspaceDir := filepath.Join(root, "graphstore", "file-memory", "workspaces", "demo")
+	if err := os.MkdirAll(workspaceDir, 0o755); err != nil {
+		t.Fatalf("create workspace dir: %v", err)
+	}
+	if err := writeFileMemoryCollection(filepath.Join(workspaceDir, "entities.json"), map[string]model.EntityPayload{
+		"apm/apm.service/54013ba69c196820e56801f1ef5aad54": entityPayload("54013ba69c196820e56801f1ef5aad54", "Create", 100, 200, nil),
+	}); err != nil {
+		t.Fatalf("write entities collection: %v", err)
+	}
+
+	store, err := NewFileMemoryStore(ProviderConfig{DataRoot: root})
+	if err != nil {
+		t.Fatalf("new file memory store: %v", err)
+	}
+	if _, err := store.PutMModelElements(ctx, model.MModelElementBatch{
+		Workspace: "demo",
+		Elements: []model.MModelElement{{
+			Kind:    "entity_set",
+			Domain:  "apm",
+			Name:    "apm.service",
+			Version: "v1",
+		}},
+	}); err != nil {
+		t.Fatalf("put mmodel after runtime-only load: %v", err)
+	}
+
+	assertFileExists(t, filepath.Join(workspaceDir, "mmodels.json"))
 }
 
 func assertFileExists(t *testing.T, path string) {

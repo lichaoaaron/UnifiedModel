@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestLoadQuickStartCreatesWorkspaceAndImportsSample(t *testing.T) {
@@ -18,7 +18,7 @@ func TestLoadQuickStartCreatesWorkspaceAndImportsSample(t *testing.T) {
 	if result.Workspace != DefaultQuickStartWorkspaceID || result.Sample != DefaultQuickStartSample {
 		t.Fatalf("unexpected quickstart result: %+v", result)
 	}
-	if result.UModel.Imported == 0 || result.EntityCount == 0 || result.RelationCount == 0 {
+	if result.MModel.Imported == 0 || result.EntityCount == 0 || result.RelationCount == 0 {
 		t.Fatalf("quickstart should import model, entity, and topology data: %+v", result)
 	}
 
@@ -26,7 +26,7 @@ func TestLoadQuickStartCreatesWorkspaceAndImportsSample(t *testing.T) {
 	if err != nil {
 		t.Fatalf("get quickstart workspace: %v", err)
 	}
-	if workspace.Name != DefaultQuickStartWorkspaceName || workspace.Labels["umodel.io/quickstart"] != "true" {
+	if workspace.Name != DefaultQuickStartWorkspaceName || workspace.Labels["mmodel.io/quickstart"] != "true" {
 		t.Fatalf("unexpected quickstart workspace metadata: %+v", workspace)
 	}
 

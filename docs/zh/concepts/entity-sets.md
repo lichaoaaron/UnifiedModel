@@ -49,7 +49,7 @@ spec:
 | EntitySet | `devops.service` | 定义对象类型和字段。 |
 | Entity record | 某个 checkout 服务 | 存储运行时对象实例。 |
 
-Entity record 通过 EntityStore API 写入，通过 `.entity` 查询读取。EntitySet 作为 UModel element 导入，通过 `.umodel` 查询读取。
+Entity record 通过 EntityStore API 写入，通过 `.entity` 查询读取。EntitySet 作为 MModel element 导入，通过 `.mmodel` 查询读取。
 
 ## 设计规则
 
@@ -64,11 +64,11 @@ Entity record 通过 EntityStore API 写入，通过 `.entity` 查询读取。En
 列出 EntitySet definitions：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 20"
 ```
 
 列出运行时 service entities：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
 ```

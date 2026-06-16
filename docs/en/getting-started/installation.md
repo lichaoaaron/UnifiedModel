@@ -2,7 +2,7 @@
 
 中文：[安装与本地环境](../../zh/getting-started/installation.md)
 
-Local development setup for UModel.
+Local development setup for MModel.
 
 
 ## Requirements
@@ -45,9 +45,9 @@ make build-service
 
 This builds:
 
-- `umodel-server`
-- `umctl`
-- `umodel-mcp`
+- `mmodel-server`
+- `mmctl`
+- `mmodel-mcp`
 
 ## Start Local Development Services
 
@@ -87,7 +87,7 @@ make stop-all
 ## Run The API Without The Web UI
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 ## Run The Web UI
@@ -105,19 +105,19 @@ make dev-web
 Normal local development:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 Short-lived tests:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --graphstore memory
+go run ./cmd/mmodel-server --addr :8080 --graphstore memory
 ```
 
 Ladybug runtime:
 
 ```bash
-go run -tags ladybug ./cmd/umodel-server --addr :8080 --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-server --addr :8080 --data data --graphstore local.ladybug
 ```
 
 ## Verify The Checkout

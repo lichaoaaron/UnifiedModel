@@ -1,6 +1,6 @@
 kind: external_storage
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "platform.local_snapshot"

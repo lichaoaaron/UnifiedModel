@@ -7,12 +7,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/bootstrap"
 )
 
 func TestLadybugOptionalBusinessFlowPersistsAcrossRestart(t *testing.T) {
-	if os.Getenv("UMODEL_TEST_LADYBUG") != "1" {
-		t.Skip("set UMODEL_TEST_LADYBUG=1 and provide liblbug to run local.ladybug E2E tests")
+	if os.Getenv("MMODEL_TEST_LADYBUG") != "1" {
+		t.Skip("set MMODEL_TEST_LADYBUG=1 and provide liblbug to run local.ladybug E2E tests")
 	}
 
 	dataRoot := t.TempDir()
@@ -21,7 +21,7 @@ func TestLadybugOptionalBusinessFlowPersistsAcrossRestart(t *testing.T) {
 	defer server.Close()
 
 	e2ePost(t, server.URL+"/api/v1/workspaces", map[string]any{"id": "ladybug-demo"})
-	e2ePost(t, server.URL+"/api/v1/umodel/ladybug-demo/elements", map[string]any{"elements": []map[string]any{{
+	e2ePost(t, server.URL+"/api/v1/mmodel/ladybug-demo/elements", map[string]any{"elements": []map[string]any{{
 		"kind":   "entity_set",
 		"domain": "devops",
 		"name":   "devops.service",
@@ -34,9 +34,9 @@ func TestLadybugOptionalBusinessFlowPersistsAcrossRestart(t *testing.T) {
 	}})
 
 	if rows := e2eRows(t, e2ePost(t, server.URL+"/api/v1/query/ladybug-demo/execute", map[string]any{
-		"query": ".umodel with(kind='entity_set', domain='devops', name='devops.service') | limit 5",
+		"query": ".mmodel with(kind='entity_set', domain='devops', name='devops.service') | limit 5",
 	})); len(rows) != 1 {
-		t.Fatalf("expected ladybug umodel row before restart, got %+v", rows)
+		t.Fatalf("expected ladybug mmodel row before restart, got %+v", rows)
 	}
 	if closer, ok := app.GraphStore.(interface{ Close() }); ok {
 		closer.Close()
@@ -52,11 +52,11 @@ func TestLadybugOptionalBusinessFlowPersistsAcrossRestart(t *testing.T) {
 		}
 	}()
 
-	umodelRows := e2eRows(t, e2ePost(t, reopenedServer.URL+"/api/v1/query/ladybug-demo/execute", map[string]any{
-		"query": ".umodel with(kind='entity_set', domain='devops', name='devops.service') | limit 5",
+	mmodelRows := e2eRows(t, e2ePost(t, reopenedServer.URL+"/api/v1/query/ladybug-demo/execute", map[string]any{
+		"query": ".mmodel with(kind='entity_set', domain='devops', name='devops.service') | limit 5",
 	}))
-	if len(umodelRows) != 1 {
-		t.Fatalf("expected persisted ladybug umodel row after restart, got %+v", umodelRows)
+	if len(mmodelRows) != 1 {
+		t.Fatalf("expected persisted ladybug mmodel row after restart, got %+v", mmodelRows)
 	}
 	entityRows := e2eRows(t, e2ePost(t, reopenedServer.URL+"/api/v1/query/ladybug-demo/execute", map[string]any{
 		"query": ".entity with(domain='devops', name='devops.*', ids=['54013ba69c196820e56801f1ef5aad54'], query='cart') | limit 5",

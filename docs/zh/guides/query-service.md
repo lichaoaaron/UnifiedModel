@@ -2,12 +2,12 @@
 
 English: [Query Service Guide](../../en/guides/query-service.md)
 
-Query Service 是 UModel 定义、实体、关系和拓扑的唯一公共读取路径。它接受以 `.umodel`、`.entity` 或 `.topo` 开头的 SPL 字符串。
+Query Service 是 MModel 定义、实体、关系和拓扑的唯一公共读取路径。它接受以 `.mmodel`、`.entity` 或 `.topo` 开头的 SPL 字符串。
 
 
 ## 为什么读取统一走 Query Service
 
-UModel 不暴露分散的公共读取 API，例如 entity lookup、relation lookup、graph traversal 或 model search endpoint。统一读取面让 CLI、Web UI、REST API、MCP tools 和 SDK 保持一致。
+MModel 不暴露分散的公共读取 API，例如 entity lookup、relation lookup、graph traversal 或 model search endpoint。统一读取面让 CLI、Web UI、REST API、MCP tools 和 SDK 保持一致。
 
 ## 入口
 
@@ -21,22 +21,22 @@ POST /api/v1/query/{workspace}/explain
 CLI：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".mmodel | limit 5"
 ```
 
 Agent tool：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_execute '{"query":".umodel | limit 5"}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_execute '{"query":".mmodel | limit 5"}'
 ```
 
-## `.umodel`
+## `.mmodel`
 
-读取 UModel 定义：
+读取 MModel 定义：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 20"
 ```
 
 常见读取：
@@ -50,7 +50,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kin
 读取运行时实体：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | project __entity_id__,display_name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | project __entity_id__,display_name | limit 20"
 ```
 
 Agent 和 REST 调用方可以把命名参数绑定到 `with(...)` filters 和 `where` predicates：
@@ -69,7 +69,7 @@ Agent 和 REST 调用方可以把命名参数绑定到 `with(...)` filters 和 `
 读取运行时拓扑关系：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 20"
 ```
 
 `.topo` 支持 graph-call 风格的拓扑操作。`memory`、`file.memory` 和可选的 `local.ladybug` provider 都通过共享的 Go engine 支持受控只读 Cypher 兼容查询。`local.ladybug` 在使用 `-tags ladybug` 和本地 Ladybug runtime 构建时，仍然把图数据持久化到 Ladybug。
@@ -77,7 +77,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 Cypher 可以在一次查询里返回完整实体属性和关系属性：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 20`)"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 20`)"
 ```
 
 调用方如果希望显式表达属性 map 返回形态，可以使用 `properties(src)`、`properties(r)` 和 `properties(dest)`。
@@ -93,13 +93,13 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 查看内置示例：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query examples
+go run ./cmd/mmctl --addr http://localhost:8080 query examples
 ```
 
 ## Explain
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 Explain 输出包含 source、provider、storage provider、filters 和 limits。
@@ -147,7 +147,7 @@ Entity → DataLink → DataSet → StorageLink → Storage → TelemetryProvide
 ### 执行链路
 
 1. 实体查询正常运行，必须返回恰好一行。
-2. 执行器读取 UModel 快照，找到满足以下条件的 `data_link` 元素：
+2. 执行器读取 MModel 快照，找到满足以下条件的 `data_link` 元素：
    - `spec.src.domain` 和 `spec.src.name` 与实体类型匹配。
    - `spec.dest.kind` 与请求的 `kind` 匹配。
 3. `data_link` spec 中的 `fields_mapping` 提供实体字段到数据集字段的映射。执行器从实体读取映射的字段值（例如 `display_name`），得到 serviceName 过滤条件。
@@ -232,13 +232,92 @@ spec:
 
 ### 扩展 OpenSearch Provider
 
-要新增 OpenSearch Provider，在新包中实现 `telemetry.Provider` 接口，然后在 `internal/bootstrap/app.go` 中注册：
+MModel 现已支持 `spec.type: opensearch`，仍然通过 `telemetry.Provider`
+扩展点接入，查询语法保持不变：
+
+```spl
+.entity with(domain='platform', name='platform.service', ids=('ENTITY_ID'))
+| evidence(kind='log_set', from='2026-06-03T01:00:00Z', to='2026-06-03T01:02:00Z')
+| project serviceName,time,severityText
+| limit 5
+```
+
+Provider 选择机制仍由 `storage.spec.type` 决定：
+
+- `local_file` -> 本地 JSON 快照流式 provider。
+- `opensearch` -> 在线 OpenSearch `_search` provider。
+
+`skills/os-query` 只作为 DSL 与 OTEL 字段经验的设计参考，不是运行时依赖。
+
+要让两种 provider 并存，在 `internal/bootstrap/app.go` 中同时注册：
 
 ```go
 providers := []telemetry.Provider{
     localfile.New(config.DataRoot),
-    opensearch.New(opensearchConfig),
+  opensearch.New(),
 }
 ```
 
-Query Service 核心和 evidence 执行器无需修改。Storage 元素中的 storage type 字符串在运行时选择对应 Provider。
+### OpenSearch Storage Properties
+
+当 `spec.type: opensearch` 时，`spec.properties` 建议使用：
+
+必填：
+
+- `endpoint`
+- `username`
+- `password`
+- `log_index`
+- `metric_index`
+- `trace_index`
+
+可选（带默认值）：
+
+- `time_field_log`（默认 `time`）
+- `time_field_metric`（默认 `time`）
+- `time_field_trace`（默认 `startTime`）
+- `service_name_field_log`（默认 `serviceName`）
+- `service_name_field_metric`（默认 `serviceName`）
+- `service_name_field_trace`（默认 `serviceName`）
+- `verify_tls`（默认 `true`）
+- `request_timeout_ms`（默认 `10000`）
+- `headers_json`（可选 JSON 对象字符串）
+
+### 从 local_file 切换到 opensearch
+
+可以在同一个模型包中并存两种 storage 示例，并通过 storage_link 目标进行切换：
+
+- `platform.local_snapshot`（`type: local_file`）
+- `platform.opensearch_live`（`type: opensearch`）
+
+不需要改写 SPL 查询。
+
+### OpenSearch 查询行为（最小实现）
+
+对 `log_set`、`trace_set`、`metric_set`，provider 会调用 OpenSearch
+`POST /{index}/_search`，最小行为包括：
+
+- 按配置的 service 字段做等值过滤
+- 按配置的时间字段做可选范围过滤
+- `size = limit`
+- 按时间字段升序，再按 `_doc` 稳定排序
+
+### OpenSearch 错误与安全
+
+- 凭据来自 storage properties 或外部配置注入，不在 Query Service / evidence 中硬编码。
+- password 为空会返回明确错误。
+- HTTP `401`、`403` 映射为 `PROVIDER_UNAVAILABLE`。
+- HTTP `404` 映射为 `NOT_FOUND`。
+- 超时映射为 `TIMEOUT`。
+- explain 只返回 endpoint/index/字段等安全信息，不泄露凭据。
+
+### OpenSearch Evidence Explain 字段
+
+当 `storage_type` 为 `opensearch` 时，`evidence` explain 额外包含：
+
+- `endpoint`
+- `index_name`
+- `service_field`
+- `time_field`
+
+这些字段用于描述实际请求形态，且不包含敏感信息。

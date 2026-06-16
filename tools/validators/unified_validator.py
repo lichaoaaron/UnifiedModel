@@ -11,9 +11,9 @@ import io
 
 sys.path.append(str(Path(__file__).parent))
 from schema_validator import SchemaValidator
-from umodel_lint import UModelLint, ValidationResult
-from umodel_validator import ConfigValidator
-from common_schema_index import UModelIndexManager
+from mmodel_lint import MModelLint, ValidationResult
+from mmodel_validator import ConfigValidator
+from common_schema_index import MModelIndexManager
 
 # 常量定义
 COLORS = {
@@ -179,12 +179,12 @@ class CombinedValidator:
         self.expanded_schemas_dir = expanded_schemas_dir
         self.base_schema_path = base_schema_path
         self.config_validator = ConfigValidator(expanded_schemas_dir, base_schema_path, console_log=False)
-        self.umodel_lint = UModelLint(definitions_dir, rules_config_path)
+        self.mmodel_lint = MModelLint(definitions_dir, rules_config_path)
         self.domain_stats: Dict[str, DomainStats] = {}
         self.entity_reports: List[EntityReport] = []
         self.config_validation_results: Dict[str, Any] = {}
         hash_file = os.path.join(definitions_dir , ".common_schema.index")
-        self.changed_files = UModelIndexManager(work_dir=definitions_dir, quiet=True).get_validation_files(index_file=hash_file, source_dir=definitions_dir, focus_all=focus_all)
+        self.changed_files = MModelIndexManager(work_dir=definitions_dir, quiet=True).get_validation_files(index_file=hash_file, source_dir=definitions_dir, focus_all=focus_all)
         self.focus_all = focus_all
 
     def run(self, quiet: bool = False) -> bool:
@@ -241,8 +241,8 @@ class CombinedValidator:
 
     def _run_lint_validation(self, changed_files: List[str] = None) -> bool:
         try:
-            if self.umodel_lint.load_files(changed_files):
-                self.lint_results = self.umodel_lint.validate_all()
+            if self.mmodel_lint.load_files(changed_files):
+                self.lint_results = self.mmodel_lint.validate_all()
                 return True
         except:
             pass
@@ -414,13 +414,13 @@ class CombinedValidator:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UModel 验证报告</title>
+    <title>MModel 验证报告</title>
     <style>{CSS_STYLES}</style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔍 UModel 验证报告</h1>
+            <h1>🔍 MModel 验证报告</h1>
             <div class="timestamp">生成时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
 
@@ -606,7 +606,7 @@ class CombinedValidator:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="UModel Combined Validator")
+    parser = argparse.ArgumentParser(description="MModel Combined Validator")
     parser.add_argument('--definitions-dir', '-d', required=True, help='定义文件目录')
     parser.add_argument('--expanded-schemas-dir', default='expanded_schemas', help='展开schema目录')
     parser.add_argument('--base-schema-path', default='schemas/base.yaml', help='base.yaml路径')

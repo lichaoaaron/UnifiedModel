@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/telemetry"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 // evidenceExecutor resolves the evidence() operator chain and queries a TelemetryProvider.
@@ -56,10 +56,10 @@ func (e *evidenceExecutor) executeEvidence(
 	entityType := stringValue(entity["__entity_type__"])
 	entityDomain := stringValue(entity["__domain__"])
 
-	// Load UModel snapshot to resolve links
-	snapshot, err := e.graph.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: workspace})
+	// Load MModel snapshot to resolve links
+	snapshot, err := e.graph.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: workspace})
 	if err != nil {
-		return model.QueryResult{}, nil, fmt.Errorf("load umodel snapshot: %w", err)
+		return model.QueryResult{}, nil, fmt.Errorf("load mmodel snapshot: %w", err)
 	}
 
 	// Find DataLink: src.domain=entityDomain, src.name=entityType, dest.kind=plan.Kind
@@ -130,14 +130,16 @@ func (e *evidenceExecutor) executeEvidence(
 		timeTo = *plan.To
 	}
 
-	qr, err := provider.Query(ctx, telemetry.QueryRequest{
+	tReq := telemetry.QueryRequest{
 		Kind:              telemetry.Kind(plan.Kind),
 		ServiceName:       entityFieldValue,
 		TimeFrom:          timeFrom,
 		TimeTo:            timeTo,
 		Limit:             limit,
 		StorageProperties: storageProperties,
-	})
+	}
+
+	qr, err := provider.Query(ctx, tReq)
 	if err != nil {
 		return model.QueryResult{}, nil, err
 	}
@@ -159,6 +161,7 @@ func (e *evidenceExecutor) executeEvidence(
 		ScannedFiles:     qr.ScannedFiles,
 		ReturnedRows:     len(qr.Rows),
 	}
+	applyProviderExplainMetadata(evExplain, qr.Metadata)
 
 	result := model.QueryResult{
 		Columns: evidenceColumns(plan.Kind),
@@ -202,9 +205,9 @@ func (e *evidenceExecutor) resolveEvidenceExplain(
 	entityType := stringValue(entity["__entity_type__"])
 	entityDomain := stringValue(entity["__domain__"])
 
-	snapshot, err := e.graph.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: workspace})
+	snapshot, err := e.graph.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: workspace})
 	if err != nil {
-		return nil, fmt.Errorf("load umodel snapshot: %w", err)
+		return nil, fmt.Errorf("load mmodel snapshot: %w", err)
 	}
 
 	dataLink, err := findDataLink(snapshot.Elements, entityDomain, entityType, plan.Kind)
@@ -240,6 +243,7 @@ func (e *evidenceExecutor) resolveEvidenceExplain(
 
 	storageSpec := specMap(storage.Spec)
 	storageType := stringFromMap(storageSpec, "type")
+	storageProperties := stringMapValue(storageSpec, "properties")
 
 	providerName := storageType // provider name equals storage type when registered
 	if _, ok := e.providers[storageType]; !ok {
@@ -254,7 +258,22 @@ func (e *evidenceExecutor) resolveEvidenceExplain(
 		timeTo = *plan.To
 	}
 
-	return &model.EvidenceExplain{
+	tReq := telemetry.QueryRequest{
+		Kind:              telemetry.Kind(plan.Kind),
+		ServiceName:       entityFieldValue,
+		TimeFrom:          timeFrom,
+		TimeTo:            timeTo,
+		StorageProperties: storageProperties,
+	}
+
+	var providerMeta map[string]string
+	if provider, ok := e.providers[storageType]; ok {
+		if mProvider, ok := provider.(telemetry.ExplainMetadataProvider); ok {
+			providerMeta, _ = mProvider.ExplainMetadata(tReq)
+		}
+	}
+
+	evExplain := &model.EvidenceExplain{
 		EntityID:         entityID,
 		EntityType:       entityType,
 		EntityFieldValue: entityFieldValue,
@@ -269,7 +288,19 @@ func (e *evidenceExecutor) resolveEvidenceExplain(
 		TimeFrom:         timeFrom,
 		TimeTo:           timeTo,
 		// ScannedFiles and ReturnedRows are not populated for explain-only paths.
-	}, nil
+	}
+	applyProviderExplainMetadata(evExplain, providerMeta)
+	return evExplain, nil
+}
+
+func applyProviderExplainMetadata(ev *model.EvidenceExplain, metadata map[string]string) {
+	if ev == nil || len(metadata) == 0 {
+		return
+	}
+	ev.Endpoint = metadata["endpoint"]
+	ev.IndexName = metadata["index"]
+	ev.ServiceField = metadata["service_field"]
+	ev.TimeField = metadata["time_field"]
 }
 
 // evidenceColumns returns a default column set for a telemetry kind.
@@ -288,7 +319,7 @@ func evidenceColumns(kind string) []string {
 
 // findDataLink locates the DataLink that connects an entity_set (by domain+name) to a
 // DataSet of the requested kind.
-func findDataLink(elements []model.UModelElement, entityDomain, entityType, datasetKind string) (model.UModelElement, error) {
+func findDataLink(elements []model.MModelElement, entityDomain, entityType, datasetKind string) (model.MModelElement, error) {
 	for _, el := range elements {
 		if el.Kind != "data_link" {
 			continue
@@ -302,7 +333,7 @@ func findDataLink(elements []model.UModelElement, entityDomain, entityType, data
 			return el, nil
 		}
 	}
-	return model.UModelElement{}, apperrors.WithDetails(
+	return model.MModelElement{}, apperrors.WithDetails(
 		apperrors.CodeNotFound,
 		"no DataLink found for entity type and dataset kind",
 		map[string]string{"entity_domain": entityDomain, "entity_type": entityType, "dataset_kind": datasetKind},
@@ -310,7 +341,7 @@ func findDataLink(elements []model.UModelElement, entityDomain, entityType, data
 }
 
 // findStorageLink locates the StorageLink that connects a DataSet (by kind+name) to a Storage.
-func findStorageLink(elements []model.UModelElement, datasetKind, datasetName string) (model.UModelElement, error) {
+func findStorageLink(elements []model.MModelElement, datasetKind, datasetName string) (model.MModelElement, error) {
 	for _, el := range elements {
 		if el.Kind != "storage_link" {
 			continue
@@ -321,7 +352,7 @@ func findStorageLink(elements []model.UModelElement, datasetKind, datasetName st
 			return el, nil
 		}
 	}
-	return model.UModelElement{}, apperrors.WithDetails(
+	return model.MModelElement{}, apperrors.WithDetails(
 		apperrors.CodeNotFound,
 		"no StorageLink found for dataset",
 		map[string]string{"dataset_kind": datasetKind, "dataset_name": datasetName},
@@ -329,7 +360,7 @@ func findStorageLink(elements []model.UModelElement, datasetKind, datasetName st
 }
 
 // findStorage locates a Storage element by name.
-func findStorage(elements []model.UModelElement, storageName string) (model.UModelElement, error) {
+func findStorage(elements []model.MModelElement, storageName string) (model.MModelElement, error) {
 	for _, el := range elements {
 		switch el.Kind {
 		case "external_storage", "sls_logstore", "sls_metricstore", "sls_entitystore", "aliyun_prometheus":
@@ -338,7 +369,7 @@ func findStorage(elements []model.UModelElement, storageName string) (model.UMod
 			}
 		}
 	}
-	return model.UModelElement{}, apperrors.WithDetails(
+	return model.MModelElement{}, apperrors.WithDetails(
 		apperrors.CodeNotFound,
 		"no Storage element found",
 		map[string]string{"name": storageName},
@@ -363,7 +394,7 @@ func resolveServiceMapping(fieldsMapping map[string]string) (entityField, datase
 	return "", ""
 }
 
-// specMap safely converts a UModelElement.Spec (map[string]any) nested field.
+// specMap safely converts a MModelElement.Spec (map[string]any) nested field.
 func specMap(spec map[string]any) map[string]any {
 	if spec == nil {
 		return map[string]any{}

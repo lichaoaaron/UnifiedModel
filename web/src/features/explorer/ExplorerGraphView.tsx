@@ -19,7 +19,7 @@ import {
   type NodeChange,
   type NodeProps,
 } from '@xyflow/react'
-import type { UModelElement } from '../../api/types'
+import type { MModelElement } from '../../api/types'
 import type { ExplorerEdgeData, ExplorerNodeData, GraphModel } from './graphModel'
 import {
   colorForKind,
@@ -54,7 +54,7 @@ export function GraphView({
   selectedId: string | null
   onZoomLevelChange: (level: ZoomLevel) => void
   onNodesChange: (changes: NodeChange<Node<ExplorerNodeData>>[]) => void
-  onSelect: (element: UModelElement | null) => void
+  onSelect: (element: MModelElement | null) => void
 }) {
   const { fitView } = useReactFlow()
   const focusKey = focusIds.join('\u001f')
@@ -115,7 +115,7 @@ export function GraphView({
   )
 }
 
-const UModelNodeCard = memo(({ data }: NodeProps<Node<ExplorerNodeData>>) => {
+const MModelNodeCard = memo(({ data }: NodeProps<Node<ExplorerNodeData>>) => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [menuRect, setMenuRect] = useState<DOMRect | null>(null)
   const menuButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -315,7 +315,7 @@ function NodeTag({ text }: { text: string }) {
   )
 }
 
-function UModelEdge({
+function MModelEdge({
   id,
   source,
   target,
@@ -406,5 +406,5 @@ function UModelEdge({
   )
 }
 
-const nodeTypes = { umodel: UModelNodeCard }
-const edgeTypes = { umodel: UModelEdge }
+const nodeTypes = { mmodel: MModelNodeCard }
+const edgeTypes = { mmodel: MModelEdge }

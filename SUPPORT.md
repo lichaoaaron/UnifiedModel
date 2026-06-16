@@ -18,7 +18,7 @@ Use the bug report template. Include a minimal reproduction and the output of:
 ```bash
 go version
 make status
-go run ./cmd/umctl --addr http://localhost:8080 query examples
+go run ./cmd/mmctl --addr http://localhost:8080 query examples
 ```
 
 If the bug involves the Web UI, include:

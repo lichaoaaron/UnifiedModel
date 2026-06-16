@@ -2,7 +2,7 @@
 
 中文：[Model Elements](../../zh/concepts/model-elements.md)
 
-UModel elements are versioned model definitions. They define the object graph before runtime entity and relation records are written.
+MModel elements are versioned model definitions. They define the object graph before runtime entity and relation records are written.
 
 
 ## Element Envelope
@@ -12,7 +12,7 @@ Authoring files use a common YAML shape:
 ```yaml
 kind: entity_set
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "devops.service"
@@ -48,7 +48,7 @@ flowchart LR
   Author["Author YAML"]
   Validate["Validate"]
   Import["Import to workspace"]
-  Query["Read through .umodel"]
+  Query["Read through .mmodel"]
   Use["Use in Query / UI / Agent"]
 
   Author --> Validate
@@ -70,7 +70,7 @@ curl -X POST http://localhost:8080/api/v1/samples/demo/multi-domain-quickstart:i
 Import your own model pack with the CLI:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 umodel import demo examples/quickstart-multidomain
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel import demo examples/quickstart-multidomain
 ```
 
 ## Validation And References

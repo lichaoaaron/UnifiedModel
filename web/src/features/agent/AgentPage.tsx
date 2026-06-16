@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Braces, Play, RefreshCcw, Sparkles } from 'lucide-react'
 import type { AgentDiscovery, AgentResource } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Badge, Button, Field, JsonEditor, Panel, Select } from '../../design/components'
 import { formatError, parseJson, stringify } from '../../lib/json'
 
-export function AgentPage({ api, workspaceId }: { api: UModelApi; workspaceId: string }) {
+export function AgentPage({ api, workspaceId }: { api: MModelApi; workspaceId: string }) {
   const [discovery, setDiscovery] = useState<AgentDiscovery | null>(null)
   const [selectedResource, setSelectedResource] = useState<AgentResource | null>(null)
   const [resourceResult, setResourceResult] = useState<unknown>(null)

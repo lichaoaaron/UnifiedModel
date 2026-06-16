@@ -8,13 +8,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestLadybugProviderConformance(t *testing.T) {
-	if os.Getenv("UMODEL_TEST_LADYBUG") != "1" {
-		t.Skip("set UMODEL_TEST_LADYBUG=1 and provide liblbug to run local.ladybug conformance tests")
+	if os.Getenv("MMODEL_TEST_LADYBUG") != "1" {
+		t.Skip("set MMODEL_TEST_LADYBUG=1 and provide liblbug to run local.ladybug conformance tests")
 	}
 
 	dataRoot := t.TempDir()
@@ -38,9 +38,9 @@ func TestLadybugProviderConformance(t *testing.T) {
 		t.Fatalf("health: %+v err=%v", health, err)
 	}
 
-	if _, err := provider.PutUModelElements(ctx, model.UModelElementBatch{
+	if _, err := provider.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{{
+		Elements: []model.MModelElement{{
 			Kind:    "entity_set",
 			Domain:  "apm",
 			Name:    "apm.service",
@@ -50,9 +50,9 @@ func TestLadybugProviderConformance(t *testing.T) {
 			},
 		}},
 	}); err != nil {
-		t.Fatalf("put umodel: %v", err)
+		t.Fatalf("put mmodel: %v", err)
 	}
-	snapshot, err := provider.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: "demo"})
+	snapshot, err := provider.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
 	if err != nil {
 		t.Fatalf("snapshot: %v", err)
 	}
@@ -60,7 +60,7 @@ func TestLadybugProviderConformance(t *testing.T) {
 		t.Fatalf("expected one element, got %+v", snapshot.Elements)
 	}
 	if snapshot.Elements[0].Version != "v1" || snapshot.Elements[0].Spec["display_name"] != "APM Service" {
-		t.Fatalf("unexpected umodel snapshot: %+v", snapshot.Elements[0])
+		t.Fatalf("unexpected mmodel snapshot: %+v", snapshot.Elements[0])
 	}
 
 	if _, err := provider.WriteEntities(ctx, model.EntityWriteBatch{
@@ -163,12 +163,12 @@ func TestLadybugProviderConformance(t *testing.T) {
 	if err := reopened.OpenWorkspace(ctx, model.WorkspaceMetadata{ID: "demo"}); err != nil {
 		t.Fatalf("reopen workspace: %v", err)
 	}
-	reopenedSnapshot, err := reopened.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: "demo"})
+	reopenedSnapshot, err := reopened.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
 	if err != nil {
 		t.Fatalf("reopened snapshot: %v", err)
 	}
 	if len(reopenedSnapshot.Elements) != 1 || reopenedSnapshot.Elements[0].Domain != "apm" || reopenedSnapshot.Elements[0].Name != "apm.service" || reopenedSnapshot.Elements[0].Kind != "entity_set" {
-		t.Fatalf("expected persisted umodel element after reopen, got %+v", reopenedSnapshot.Elements)
+		t.Fatalf("expected persisted mmodel element after reopen, got %+v", reopenedSnapshot.Elements)
 	}
 	reopenedRows, err := reopened.QueryEntities(ctx, model.EntityQueryPlan{
 		Workspace: "demo",

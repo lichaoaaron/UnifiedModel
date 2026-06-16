@@ -17,7 +17,7 @@ Common endpoints:
 
 ```http
 POST /api/v1/workspaces
-POST /api/v1/umodel/{workspace}/import
+POST /api/v1/mmodel/{workspace}/import
 POST /api/v1/entitystore/{workspace}/entities:write
 POST /api/v1/query/{workspace}/execute
 GET  /api/v1/agent/{workspace}/discover
@@ -25,11 +25,11 @@ GET  /api/v1/agent/{workspace}/discover
 
 ## CLI
 
-`umctl` covers local development, examples, and documentation workflows.
+`mmctl` covers local development, examples, and documentation workflows.
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 Reference: [CLI Reference](../reference/cli.md).
@@ -53,7 +53,7 @@ if err != nil {
 }
 
 result, err := client.Query(ctx, "demo", service.QueryRequest{
-    Query: ".umodel | limit 5",
+    Query: ".mmodel | limit 5",
 })
 if err != nil {
     return err
@@ -70,10 +70,10 @@ go test ./service
 
 ## Generated Model SDKs
 
-Generated model SDKs represent UModel schema types:
+Generated model SDKs represent MModel schema types:
 
-- Go: [sdk/go/umodel](../../../sdk/go/umodel/README.en.md)
-- Python: [sdk/python/umodel](../../../sdk/python/umodel/README.md)
+- Go: [sdk/go/mmodel](../../../sdk/go/mmodel/README.en.md)
+- Python: [sdk/python/mmodel](../../../sdk/python/mmodel/README.md)
 - Java: [generated/java](../../../generated/java)
 
 Regenerate and verify:
@@ -97,7 +97,7 @@ Generated SDK workflow: parse a model pack, fail fast on unknown kinds or missin
 
 ### Parse And Validate A Model File In Go
 
-Repository-local examples under `sdk/go` use the `umodel_go_cli` module path. External projects replace that import path with the published or vendored SDK module path.
+Repository-local examples under `sdk/go` use the `mmodel_go_cli` module path. External projects replace that import path with the published or vendored SDK module path.
 
 ```go
 package main
@@ -106,7 +106,7 @@ import (
     "fmt"
     "os"
 
-    umodel "umodel_go_cli/umodel"
+    mmodel "mmodel_go_cli/mmodel"
 )
 
 func main() {
@@ -115,7 +115,7 @@ func main() {
         panic(err)
     }
 
-    obj, err := umodel.ParseYamlUModel(data)
+    obj, err := mmodel.ParseYamlMModel(data)
     if err != nil {
         panic(err)
     }
@@ -135,15 +135,15 @@ Run from the repository root with `PYTHONPATH=sdk/python`, or package the genera
 ```python
 from pathlib import Path
 
-from umodel import (
+from mmodel import (
     get_link_endpoints,
     get_object_metadata,
     is_link_object,
-    parse_umodel_yaml,
+    parse_mmodel_yaml,
 )
 
 for path in Path("examples/quickstart-multidomain").rglob("*.yaml"):
-    obj = parse_umodel_yaml(path.read_bytes())
+    obj = parse_mmodel_yaml(path.read_bytes())
     metadata = get_object_metadata(obj)
 
     if is_link_object(obj):
@@ -172,7 +172,7 @@ if err != nil {
     return err
 }
 
-_, err = client.ImportUModel(ctx, "demo", service.UModelImportRequest{
+_, err = client.ImportMModel(ctx, "demo", service.MModelImportRequest{
     Path: "examples/quickstart-multidomain",
 })
 if err != nil {
@@ -180,7 +180,7 @@ if err != nil {
 }
 
 result, err := client.Query(ctx, "demo", service.QueryRequest{
-    Query: ".umodel with(kind='entity_set') | limit 5",
+    Query: ".mmodel with(kind='entity_set') | limit 5",
 })
 if err != nil {
     return err
@@ -199,16 +199,16 @@ Integration patterns:
 
 ## MCP
 
-MCP serves agent clients that need UModel discovery, resources, query examples, or query tools.
+MCP serves agent clients that need MModel discovery, resources, query examples, or query tools.
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 Use Streamable HTTP when the client expects an HTTP MCP server:
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 The MCP envelope stays JSON-RPC. Tool/resource text payloads use TOON (`text/toon`), and tool calls also return `structuredContent` for JSON-oriented clients.

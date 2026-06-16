@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const fileMemoryStateVersion = 1
@@ -26,7 +26,7 @@ type FileMemoryStore struct {
 
 type fileMemoryState struct {
 	Version   int                                         `json:"version"`
-	UModels   map[string]map[string]model.UModelElement   `json:"umodels,omitempty"`
+	MModels   map[string]map[string]model.MModelElement   `json:"mmodels,omitempty"`
 	Entities  map[string]map[string]model.EntityPayload   `json:"entities,omitempty"`
 	Relations map[string]map[string]model.RelationPayload `json:"relations,omitempty"`
 }
@@ -37,7 +37,7 @@ type fileMemoryCollection[T any] struct {
 }
 
 type fileMemoryWorkspaceState struct {
-	UModels   map[string]model.UModelElement
+	MModels   map[string]model.MModelElement
 	Entities  map[string]model.EntityPayload
 	Relations map[string]model.RelationPayload
 }
@@ -81,11 +81,11 @@ func (s *FileMemoryStore) EnsureSchema(ctx context.Context, workspace string) er
 	return s.persistWorkspaceLocked(workspace)
 }
 
-func (s *FileMemoryStore) PutUModelElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error) {
+func (s *FileMemoryStore) PutMModelElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error) {
 	s.persistMu.Lock()
 	defer s.persistMu.Unlock()
 
-	result, err := s.MemoryStore.PutUModelElements(ctx, batch)
+	result, err := s.MemoryStore.PutMModelElements(ctx, batch)
 	if err != nil {
 		return result, err
 	}
@@ -95,8 +95,8 @@ func (s *FileMemoryStore) PutUModelElements(ctx context.Context, batch model.UMo
 	return result, nil
 }
 
-func (s *FileMemoryStore) GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error) {
-	snapshot, err := s.MemoryStore.GetUModelSnapshot(ctx, req)
+func (s *FileMemoryStore) GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error) {
+	snapshot, err := s.MemoryStore.GetMModelSnapshot(ctx, req)
 	if err != nil {
 		return snapshot, err
 	}
@@ -159,7 +159,7 @@ func (s *FileMemoryStore) loadDirectory() (bool, error) {
 		return false, fmt.Errorf("read file memory graphstore workspace directory: %w", err)
 	}
 
-	umodels := make(map[string]map[string]model.UModelElement)
+	mmodels := make(map[string]map[string]model.MModelElement)
 	entities := make(map[string]map[string]model.EntityPayload)
 	relations := make(map[string]map[string]model.RelationPayload)
 	loaded := false
@@ -173,7 +173,7 @@ func (s *FileMemoryStore) loadDirectory() (bool, error) {
 		}
 		workspaceDir := filepath.Join(workspacesRoot, entry.Name())
 
-		umodelItems, hasUModels, err := readFileMemoryCollection[model.UModelElement](filepath.Join(workspaceDir, "umodels.json"))
+		mmodelItems, hasMModels, err := readMModelCollection(workspaceDir)
 		if err != nil {
 			return false, err
 		}
@@ -185,12 +185,12 @@ func (s *FileMemoryStore) loadDirectory() (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		if !hasUModels && !hasEntities && !hasRelations {
+		if !hasMModels && !hasEntities && !hasRelations {
 			continue
 		}
 
 		loaded = true
-		umodels[workspace] = normalizeUModelMap(umodelItems)
+		mmodels[workspace] = normalizeMModelMap(mmodelItems)
 		entities[workspace] = normalizeEntityMap(entityItems)
 		relations[workspace] = normalizeRelationMap(relationItems)
 	}
@@ -200,7 +200,7 @@ func (s *FileMemoryStore) loadDirectory() (bool, error) {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.umodels = umodels
+	s.mmodels = mmodels
 	s.entities = entities
 	s.relations = relations
 	s.ensureMapsLocked()
@@ -231,7 +231,7 @@ func (s *FileMemoryStore) loadLegacyFile() (bool, error) {
 
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.umodels = normalizeUModelWorkspaceMap(state.UModels)
+	s.mmodels = normalizeMModelWorkspaceMap(state.MModels)
 	s.entities = normalizeEntityWorkspaceMap(state.Entities)
 	s.relations = normalizeRelationWorkspaceMap(state.Relations)
 	s.ensureMapsLocked()
@@ -259,7 +259,7 @@ func (s *FileMemoryStore) persistWorkspaceLocked(workspace string) error {
 	if err := os.MkdirAll(workspaceDir, 0o755); err != nil {
 		return fmt.Errorf("create file memory graphstore workspace directory: %w", err)
 	}
-	if err := writeFileMemoryCollection(filepath.Join(workspaceDir, "umodels.json"), state.UModels); err != nil {
+	if err := writeFileMemoryCollection(filepath.Join(workspaceDir, "mmodels.json"), state.MModels); err != nil {
 		return err
 	}
 	if err := writeFileMemoryCollection(filepath.Join(workspaceDir, "entities.json"), state.Entities); err != nil {
@@ -276,7 +276,7 @@ func (s *FileMemoryStore) snapshotWorkspace(workspace string) fileMemoryWorkspac
 	defer s.mu.RUnlock()
 
 	return fileMemoryWorkspaceState{
-		UModels:   cloneUModelMap(s.umodels[workspace]),
+		MModels:   cloneMModelMap(s.mmodels[workspace]),
 		Entities:  cloneEntityMap(s.entities[workspace]),
 		Relations: cloneRelationMap(s.relations[workspace]),
 	}
@@ -287,7 +287,7 @@ func (s *FileMemoryStore) workspaceNames() []string {
 	defer s.mu.RUnlock()
 
 	names := make(map[string]struct{})
-	for workspace := range s.umodels {
+	for workspace := range s.mmodels {
 		names[workspace] = struct{}{}
 	}
 	for workspace := range s.entities {
@@ -310,8 +310,8 @@ func (s *FileMemoryStore) workspaceDir(workspace string) string {
 }
 
 func (s *FileMemoryStore) ensureMapsLocked() {
-	if s.umodels == nil {
-		s.umodels = make(map[string]map[string]model.UModelElement)
+	if s.mmodels == nil {
+		s.mmodels = make(map[string]map[string]model.MModelElement)
 	}
 	if s.entities == nil {
 		s.entities = make(map[string]map[string]model.EntityPayload)
@@ -364,6 +364,14 @@ func readFileMemoryCollection[T any](path string) (map[string]T, bool, error) {
 	return collection.Items, true, nil
 }
 
+func readMModelCollection(workspaceDir string) (map[string]model.MModelElement, bool, error) {
+	items, ok, err := readFileMemoryCollection[model.MModelElement](filepath.Join(workspaceDir, "mmodels.json"))
+	if err != nil || ok {
+		return items, ok, err
+	}
+	return readFileMemoryCollection[model.MModelElement](filepath.Join(workspaceDir, "umodels.json"))
+}
+
 func writeFileMemoryCollection[T any](path string, items map[string]T) error {
 	if items == nil {
 		items = make(map[string]T)
@@ -386,47 +394,47 @@ func writeFileMemoryCollection[T any](path string, items map[string]T) error {
 	return nil
 }
 
-func cloneUModelWorkspaceMap(source map[string]map[string]model.UModelElement) map[string]map[string]model.UModelElement {
+func cloneMModelWorkspaceMap(source map[string]map[string]model.MModelElement) map[string]map[string]model.MModelElement {
 	if source == nil {
 		return nil
 	}
-	target := make(map[string]map[string]model.UModelElement, len(source))
+	target := make(map[string]map[string]model.MModelElement, len(source))
 	for workspace, elements := range source {
-		target[workspace] = cloneUModelMap(elements)
+		target[workspace] = cloneMModelMap(elements)
 	}
 	return target
 }
 
-func normalizeUModelWorkspaceMap(source map[string]map[string]model.UModelElement) map[string]map[string]model.UModelElement {
+func normalizeMModelWorkspaceMap(source map[string]map[string]model.MModelElement) map[string]map[string]model.MModelElement {
 	if source == nil {
 		return nil
 	}
-	target := make(map[string]map[string]model.UModelElement, len(source))
+	target := make(map[string]map[string]model.MModelElement, len(source))
 	for workspace, elements := range source {
-		target[workspace] = normalizeUModelMap(elements)
+		target[workspace] = normalizeMModelMap(elements)
 	}
 	return target
 }
 
-func cloneUModelMap(source map[string]model.UModelElement) map[string]model.UModelElement {
+func cloneMModelMap(source map[string]model.MModelElement) map[string]model.MModelElement {
 	if source == nil {
 		return nil
 	}
-	target := make(map[string]model.UModelElement, len(source))
+	target := make(map[string]model.MModelElement, len(source))
 	for key, element := range source {
-		target[key] = cloneUModelElement(element)
+		target[key] = cloneMModelElement(element)
 	}
 	return target
 }
 
-func normalizeUModelMap(source map[string]model.UModelElement) map[string]model.UModelElement {
+func normalizeMModelMap(source map[string]model.MModelElement) map[string]model.MModelElement {
 	if source == nil {
 		return nil
 	}
-	target := make(map[string]model.UModelElement, len(source))
+	target := make(map[string]model.MModelElement, len(source))
 	for key, element := range source {
 		element.Spec = normalizeJSONMap(element.Spec)
-		if elementKey := model.UModelElementKey(element); elementKey != "" {
+		if elementKey := model.MModelElementKey(element); elementKey != "" {
 			key = elementKey
 		}
 		target[key] = element

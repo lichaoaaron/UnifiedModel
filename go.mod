@@ -1,4 +1,4 @@
-module github.com/alibaba/UnifiedModel
+module github.com/alibaba/MModel
 
 go 1.22
 

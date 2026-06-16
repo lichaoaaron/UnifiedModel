@@ -6,13 +6,13 @@ Entry Layer: process entry points.
 
 | Directory | Description |
 |---|---|
-| `umodel-server/` | UModel HTTP service. |
-| `umctl/` | CLI tool for the public REST API. |
-| `umodel-mcp/` | stdio MCP server. |
+| `mmodel-server/` | MModel HTTP service. |
+| `mmctl/` | CLI tool for the public REST API. |
+| `mmodel-mcp/` | stdio MCP server. |
 
 ## GraphStore Provider Flag
 
-`umodel-server` and `umodel-mcp` both support `--graphstore`:
+`mmodel-server` and `mmodel-mcp` both support `--graphstore`:
 
 | Provider | Description |
 |---|---|
@@ -23,8 +23,8 @@ Entry Layer: process entry points.
 Examples:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 See [GraphStore Providers](../docs/en/graphstore-providers.md).

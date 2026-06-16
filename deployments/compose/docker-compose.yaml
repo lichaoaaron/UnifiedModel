@@ -1,5 +1,5 @@
 services:
-  umodel-server:
+  mmodel-server:
     build:
       context: ../..
       dockerfile: deployments/docker/Dockerfile
@@ -7,7 +7,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - umodel-data:/data
+      - mmodel-data:/data
 
 volumes:
-  umodel-data: {}
+  mmodel-data: {}

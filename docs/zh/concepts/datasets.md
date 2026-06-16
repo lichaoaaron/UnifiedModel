@@ -72,7 +72,7 @@ flowchart LR
 查询 metric sets：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='metric_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='metric_set') | sort name | limit 20"
 ```
 
 导入包含遥测定义的模型包后，Web UI Explorer 会展示对应 datasets 和 storage links。

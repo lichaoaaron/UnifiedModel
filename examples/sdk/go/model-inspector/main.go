@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	umodel "umodel_go_cli/umodel"
+	mmodel "mmodel_go_cli/mmodel"
 
 	"gopkg.in/yaml.v3"
 )
@@ -34,8 +34,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("UModel Go SDK %s\n", umodel.Version)
-	fmt.Printf("Parsed %d UModel files", len(summaries))
+	fmt.Printf("MModel Go SDK %s\n", mmodel.Version)
+	fmt.Printf("Parsed %d MModel files", len(summaries))
 	if skipped > 0 {
 		fmt.Printf(" (%d non-model files skipped)", skipped)
 	}
@@ -105,12 +105,12 @@ func inspectPath(root string) ([]fileSummary, int, error) {
 		if err != nil {
 			return nil, skipped, err
 		}
-		if !looksLikeUModel(data) {
+		if !looksLikeMModel(data) {
 			skipped++
 			continue
 		}
 
-		obj, err := parseUModel(file, data)
+		obj, err := parseMModel(file, data)
 		if err != nil {
 			return nil, skipped, fmt.Errorf("%s: %w", file, err)
 		}
@@ -127,7 +127,7 @@ func inspectPath(root string) ([]fileSummary, int, error) {
 			Name:   metadata.Name,
 			Schema: schema.Version,
 		}
-		if src, dest := umodel.GetLinkEndpoints(obj); src != nil && dest != nil {
+		if src, dest := mmodel.GetLinkEndpoints(obj); src != nil && dest != nil {
 			summary.Link = fmt.Sprintf("%s/%s -> %s/%s", src.Kind, src.Name, dest.Kind, dest.Name)
 		}
 		summaries = append(summaries, summary)
@@ -144,14 +144,14 @@ func isModelCandidate(path string) bool {
 	}
 }
 
-func parseUModel(path string, data []byte) (umodel.UModelCoreObject, error) {
+func parseMModel(path string, data []byte) (mmodel.MModelCoreObject, error) {
 	if strings.EqualFold(filepath.Ext(path), ".json") {
-		return umodel.ParseJsonUModel(data)
+		return mmodel.ParseJsonMModel(data)
 	}
-	return umodel.ParseYamlUModel(data)
+	return mmodel.ParseYamlMModel(data)
 }
 
-func looksLikeUModel(data []byte) bool {
+func looksLikeMModel(data []byte) bool {
 	var header struct {
 		Kind     string `json:"kind" yaml:"kind"`
 		Metadata struct {

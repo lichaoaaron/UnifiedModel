@@ -4,13 +4,13 @@ Entry Layer — 二进制入口点。
 
 | 目录 | 说明 | Spec |
 |---|---|---|
-| `umodel-server/` | UModel 服务端 | spec 09 |
-| `umctl/` | CLI 工具 | spec 08 |
-| `umodel-mcp/` | MCP Server | spec 07 |
+| `mmodel-server/` | MModel 服务端 | spec 09 |
+| `mmctl/` | CLI 工具 | spec 08 |
+| `mmodel-mcp/` | MCP Server | spec 07 |
 
 ## GraphStore Provider 参数
 
-`umodel-server` 和 `umodel-mcp` 都支持 `--graphstore`：
+`mmodel-server` 和 `mmodel-mcp` 都支持 `--graphstore`：
 
 | Provider | 说明 |
 |---|---|
@@ -21,8 +21,8 @@ Entry Layer — 二进制入口点。
 示例：
 
 ```bash
-go run -tags ladybug ./cmd/umodel-server --addr :8080 --data data --graphstore local.ladybug
-go run -tags ladybug ./cmd/umodel-mcp --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-server --addr :8080 --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-mcp --data data --graphstore local.ladybug
 ```
 
 更多语义见 [GraphStore Providers](../docs/zh/graphstore-providers.md)。

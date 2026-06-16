@@ -2,7 +2,7 @@
 
 中文：[对象图语义层](../../zh/concepts/object-graph-semantic-layer.md)
 
-UModel is the object graph semantic layer inside a vendor-neutral semantic runtime for enterprise AI, data governance, and operational intelligence. It does not replace data platforms, telemetry collectors, metric stores, tracing systems, Kubernetes, Prometheus, OpenTelemetry, CMDB systems, or AI tools. It gives them a shared object vocabulary, relationship semantics, and graph-shaped context surface that people, services, and AI agents can query.
+MModel is the object graph semantic layer inside a vendor-neutral semantic runtime for enterprise AI, data governance, and operational intelligence. It does not replace data platforms, telemetry collectors, metric stores, tracing systems, Kubernetes, Prometheus, OpenTelemetry, CMDB systems, or AI tools. It gives them a shared object vocabulary, relationship semantics, and graph-shaped context surface that people, services, and AI agents can query.
 
 
 ## Problem
@@ -22,20 +22,20 @@ The missing layer: semantic alignment. Raw data exists, but core enterprise ques
 - Which fields, metrics, storage, query, and topology definitions explain that relationship?
 - What safe context can an AI agent read before acting?
 
-## UModel's Role
+## MModel's Role
 
-UModel models enterprise context as a workspace-scoped object graph:
+MModel models enterprise context as a workspace-scoped object graph:
 
 - `EntitySet` defines a class of business or operational objects, such as services, instances, operations, databases, assets, and external dependencies.
 - `DataSet` types define structured datasets and telemetry datasets, such as metrics, logs, traces, events, profiles, and runbooks.
 - `Storage` types describe where data lives.
 - `Link` types connect entities, datasets, and storage.
 - Entity and relation records provide runtime graph data.
-- Query Service exposes `.umodel`, `.entity`, and `.topo` as one read surface.
+- Query Service exposes `.mmodel`, `.entity`, and `.topo` as one read surface.
 
-## UModel Contribution
+## MModel Contribution
 
-| Layer | Existing systems | UModel contribution |
+| Layer | Existing systems | MModel contribution |
 |---|---|---|
 | Enterprise data | Data warehouses, data catalogs, business APIs | Gives datasets, fields, metrics, ownership, and lineage shared semantic anchors. |
 | Telemetry and operations | OpenTelemetry, agents, logs, metrics, traces | Maps operational signals to modeled objects and relations. |
@@ -54,8 +54,8 @@ UModel models enterprise context as a workspace-scoped object graph:
 ## Public Surfaces
 
 - REST API: `api/openapi/openapi.yaml`
-- CLI: `umctl`
-- MCP server: `umodel-mcp`
+- CLI: `mmctl`
+- MCP server: `mmodel-mcp`
 - Web UI: `web/`
 - SDKs: `sdk/go`, `sdk/python`, and `generated/java`
 

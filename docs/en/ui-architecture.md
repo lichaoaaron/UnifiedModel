@@ -1,12 +1,12 @@
-# UModel Web UI Architecture
+# MModel Web UI Architecture
 
 中文：[Web UI 架构](../zh/ui-architecture.md)
 
 ## Product Shape
 
-UModel Web: workspace-first local console. Flow: workspace chooser, workspace create/select, compact workbench. Workbench views: Explorer, Query, Imports & Writes, Agent, Settings, Data Store, and API Map.
+MModel Web: workspace-first local console. Flow: workspace chooser, workspace create/select, compact workbench. Workbench views: Explorer, Query, Imports & Writes, Agent, Settings, Data Store, and API Map.
 
-UI contract: public UModel REST API only. No Aliyun internal packages, obviz libraries, cloud console SDKs, or Formily. Structured editing stays JSON-first for the open-source distribution.
+UI contract: public MModel REST API only. No Aliyun internal packages, obviz libraries, cloud console SDKs, or Formily. Structured editing stays JSON-first for the open-source distribution.
 
 ## Frontend Modules
 
@@ -16,9 +16,9 @@ UI contract: public UModel REST API only. No Aliyun internal packages, obviz lib
 | Design system | `web/src/design/` | Tokens, buttons, panels, badges, tabs, fields, modal, JSON editor. |
 | Workspace launcher | `web/src/features/workspaces/` | Health check, endpoint setting, workspace list, create workspace modal. |
 | Workspace shell | `web/src/features/workspace/` | Sidebar navigation, top status bar, selected workspace lifecycle. |
-| Explorer | `web/src/features/explorer/` | UModel graph/table, kind/search filters, JSON detail editor. |
+| Explorer | `web/src/features/explorer/` | MModel graph/table, kind/search filters, JSON detail editor. |
 | Query/Data | `web/src/features/query/` | Unified SPL console and entity/topology convenience views. |
-| Imports | `web/src/features/imports/` | Import server-readable YAML/JSON paths, validate/write UModel JSON, write/expire EntityStore data. |
+| Imports | `web/src/features/imports/` | Import server-readable YAML/JSON paths, validate/write MModel JSON, write/expire EntityStore data. |
 | Agent | `web/src/features/agent/` | Discovery, resources, enabled tools, next actions. |
 | Settings/API Map | `web/src/features/settings/` | Workspace metadata edit/delete and UI-to-API mapping. |
 
@@ -30,7 +30,7 @@ dialogs. Target module boundaries:
 
 | Target module | Responsibility |
 |---|---|
-| `features/explorer/model/` | UModel kind metadata, title/tag helpers, search index, diff/filter pure functions. |
+| `features/explorer/model/` | MModel kind metadata, title/tag helpers, search index, diff/filter pure functions. |
 | `features/explorer/graph/` | ReactFlow nodes, edges, layout adapter, viewport interactions. |
 | `features/explorer/panels/` | Summary/settings sidebar, detail JSON side panel, submit diff side panel. |
 | `features/explorer/dialogs/` | Create node, upload, create link flows. |
@@ -48,7 +48,7 @@ still tune density and graph visuals, but it inherits tokens from
 - Professional, dense surface; closer to a coding workbench than a marketing page.
 - Design tokens and components are local, simple, and reusable.
 - JSON editing is the canonical open-source editing path; Formily schemas are not required.
-- All read paths use Query Service (`.umodel`, `.entity`, `.topo`) rather than private domain APIs.
+- All read paths use Query Service (`.mmodel`, `.entity`, `.topo`) rather than private domain APIs.
 - Write surfaces call public write APIs only and show raw structured responses for debuggability.
 
 ## Runtime Modes
@@ -75,13 +75,13 @@ Production from Go server:
 
 ```bash
 make build-ui
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
 ```
 
 Separate API and Web UI processes:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 make dev-web
 ```
 

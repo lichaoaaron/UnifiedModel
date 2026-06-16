@@ -8,7 +8,7 @@
 
 1. `README.md`
 2. `docs/zh/README.md`
-3. `cmd/umodel-server/main.go`
+3. `cmd/mmodel-server/main.go`
 4. `internal/bootstrap/app.go`
 5. `pkg/contract/contracts.go`
 6. `internal/query/service.go`
@@ -19,12 +19,12 @@
 
 | 路径 | 作用 | 为什么值得先看 |
 |---|---|---|
-| `cmd/umodel-server` | REST 服务入口 | 看进程如何启动、如何接 quickstart |
-| `cmd/umctl` | CLI 入口 | 看公共操作如何暴露给用户 |
-| `cmd/umodel-mcp` | MCP 入口 | 看 Agent 集成如何接入 |
+| `cmd/mmodel-server` | REST 服务入口 | 看进程如何启动、如何接 quickstart |
+| `cmd/mmctl` | CLI 入口 | 看公共操作如何暴露给用户 |
+| `cmd/mmodel-mcp` | MCP 入口 | 看 Agent 集成如何接入 |
 | `internal/bootstrap` | 服务组装和路由 | 最快看到系统 wiring |
 | `internal/workspace` | workspace 元数据 | 理解最外层隔离单元 |
-| `internal/umodel` | 模型校验与写入 | 理解模型定义如何进入系统 |
+| `internal/mmodel` | 模型校验与写入 | 理解模型定义如何进入系统 |
 | `internal/entitystore` | 实体和关系写入 | 理解运行时图如何构建 |
 | `internal/query` | 解析、规划、执行 | 理解统一读路径 |
 | `internal/agentgateway` | Agent 适配层 | 理解资源、工具和发现 |
@@ -45,7 +45,7 @@
 rg "NewService|NewProvider|HandleFunc" internal/bootstrap
 ```
 
-### 我想知道查询为什么统一走 `.umodel`、`.entity`、`.topo`
+### 我想知道查询为什么统一走 `.mmodel`、`.entity`、`.topo`
 
 看：
 
@@ -56,14 +56,14 @@ rg "NewService|NewProvider|HandleFunc" internal/bootstrap
 搜索：
 
 ```bash
-rg "Execute|Explain|graph-call|.entity|.topo|.umodel" internal/query
+rg "Execute|Explain|graph-call|.entity|.topo|.mmodel" internal/query
 ```
 
 ### 我想知道模型写入和实体写入有什么区别
 
 看：
 
-- `internal/umodel/service.go`
+- `internal/mmodel/service.go`
 - `internal/entitystore/service.go`
 - `internal/bootstrap/app.go`
 

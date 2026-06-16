@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# UModel Incident Investigation — MCP Integration Test
+# MModel Incident Investigation — MCP Integration Test
 # Validates that the MCP server correctly serves the demo data
 # and that the full investigation path is queryable.
 #
@@ -10,7 +10,7 @@ set -euo pipefail
 #   ./test-integration.sh --verbose
 
 VERBOSE=${1:-""}
-MCP_CMD="go run ./cmd/umodel-mcp --quickstart --quickstart-sample incident-investigation --graphstore memory"
+MCP_CMD="go run ./cmd/mmodel-mcp --quickstart --quickstart-sample incident-investigation --graphstore memory"
 PASS=0
 FAIL=0
 
@@ -38,7 +38,7 @@ assert_contains() {
 }
 
 echo "═══════════════════════════════════════════════════════════"
-echo " UModel MCP Integration Test — Incident Investigation"
+echo " MModel MCP Integration Test — Incident Investigation"
 echo "═══════════════════════════════════════════════════════════"
 echo ""
 
@@ -92,13 +92,13 @@ echo ""
 echo "── Model Definitions ──"
 
 # Runbook set
-result=$(run_mcp '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query_spl_execute","arguments":{"workspace":"demo","spl":".umodel with(kind='"'"'runbook_set'"'"', name='"'"'platform.service.ops'"'"')"}}}')
+result=$(run_mcp '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query_spl_execute","arguments":{"workspace":"demo","spl":".mmodel with(kind='"'"'runbook_set'"'"', name='"'"'platform.service.ops'"'"')"}}}')
 assert_contains "$result" "upstream_retry_amplification" "Runbook: observation upstream_retry_amplification"
 assert_contains "$result" "recent_deployment_correlation" "Runbook: observation recent_deployment_correlation"
 assert_contains "$result" "business_traffic_pressure" "Runbook: observation business_traffic_pressure"
 
 # Entity set link (cross-domain)
-result=$(run_mcp '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query_spl_execute","arguments":{"workspace":"demo","spl":".umodel with(kind='"'"'entity_set_link'"'"')"}}}')
+result=$(run_mcp '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query_spl_execute","arguments":{"workspace":"demo","spl":".mmodel with(kind='"'"'entity_set_link'"'"')"}}}')
 assert_contains "$result" "result" "Entity set links queryable"
 
 echo ""

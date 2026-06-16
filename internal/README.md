@@ -6,7 +6,7 @@ Application Layer + Infrastructure Layer — 私有模块，不对外暴露。
 |---|---|---|---|
 | `bootstrap/` | Bootstrap Layer | — | spec 01 |
 | `workspace/` | Application Layer | Control Plane | spec 02 |
-| `umodel/` | Application Layer | Data Plane | spec 04 |
+| `mmodel/` | Application Layer | Data Plane | spec 04 |
 | `entitystore/` | Application Layer | Data Plane | spec 05 |
 | `query/` | Application Layer | Query Plane | spec 06 |
 | `agentgateway/` | Application + Adapter Layer | Northbound Adapter | spec 07 |

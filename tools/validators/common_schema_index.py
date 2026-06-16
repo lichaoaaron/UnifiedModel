@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-UModel索引管理器 - 改进版
-提供高性能的UModel定义文件索引生成和待校验文件列表功能
+MModel索引管理器 - 改进版
+提供高性能的MModel定义文件索引生成和待校验文件列表功能
 支持实体引用关系分析
 """
 
@@ -19,30 +19,30 @@ from dataclasses import dataclass, asdict
 
 
 @dataclass
-class UModelEntity:
-    """UModel实体信息"""
+class MModelEntity:
+    """MModel实体信息"""
     domain: str
     kind: str
     name: str
     file_path: str
     file_hash: str
-    references: List[str]  # 该文件引用的其他实体的UModel ID列表
+    references: List[str]  # 该文件引用的其他实体的MModel ID列表
     
     @property
-    def umodel_id(self) -> str:
-        """UModelID: domain.kind.name"""
+    def mmodel_id(self) -> str:
+        """MModelID: domain.kind.name"""
         return f"{self.domain}.{self.kind}.{self.name}"
     
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
     
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'UModelEntity':
+    def from_dict(cls, data: Dict[str, Any]) -> 'MModelEntity':
         return cls(**data)
 
 
-class UModelIndexManager:
-    """UModel索引管理器 - 改进版"""
+class MModelIndexManager:
+    """MModel索引管理器 - 改进版"""
     
     def __init__(self, work_dir: str = None, quiet: bool = False):
         self.work_dir = os.path.abspath(work_dir or os.getcwd())
@@ -82,8 +82,8 @@ class UModelIndexManager:
             # 当文件不在工作目录下时返回原始路径
             return file_path
 
-    def _is_umodel_file(self, file_path: str, patterns: List[str] = None) -> bool:
-        """检查文件是否为UModel文件"""
+    def _is_mmodel_file(self, file_path: str, patterns: List[str] = None) -> bool:
+        """检查文件是否为MModel文件"""
         if patterns is None:
             patterns = ['*.yaml', '*.yml']
         return any(file_path.endswith(pattern.replace('*', '')) for pattern in patterns)
@@ -237,8 +237,8 @@ class UModelIndexManager:
         extract_from_dict(content)
         return list(references)
 
-    def _parse_umodel_file(self, file_path: str) -> Optional[UModelEntity]:
-        """解析单个UModel文件（包含引用关系分析）"""
+    def _parse_mmodel_file(self, file_path: str) -> Optional[MModelEntity]:
+        """解析单个MModel文件（包含引用关系分析）"""
         try:
             with open(os.path.join(self.work_dir, file_path), 'r', encoding='utf-8') as f:
                 content = yaml.safe_load(f)
@@ -264,7 +264,7 @@ class UModelIndexManager:
             # 转换为相对路径
             rel_path = self._normalize_path(file_path)
             
-            return UModelEntity(
+            return MModelEntity(
                 domain=domain,
                 kind=kind,
                 name=name,
@@ -277,13 +277,13 @@ class UModelIndexManager:
                 print(f"⚠️ 解析文件失败 {file_path}: {e}")
             return None
 
-    def _batch_process_files(self, file_paths: List[str]) -> List[Optional[UModelEntity]]:
+    def _batch_process_files(self, file_paths: List[str]) -> List[Optional[MModelEntity]]:
         """批量处理文件 - 用于进程池"""
         # 使用生成器表达式减少内存占用
-        return [self._parse_umodel_file(file_path) for file_path in file_paths]
+        return [self._parse_mmodel_file(file_path) for file_path in file_paths]
 
-    def _find_umodel_files(self, directory: str, patterns: List[str] = None) -> List[str]:
-        """查找UModel定义文件"""
+    def _find_mmodel_files(self, directory: str, patterns: List[str] = None) -> List[str]:
+        """查找MModel定义文件"""
         if patterns is None:
             patterns = ['*.yaml', '*.yml']
         
@@ -315,25 +315,25 @@ class UModelIndexManager:
         start_time = time.time()
         
         if not self.quiet:
-            print("🚀 开始生成UModel索引文件（含引用关系分析）...")
+            print("🚀 开始生成MModel索引文件（含引用关系分析）...")
         
-        # 查找所有UModel文件
-        umodel_files = self._find_umodel_files(source_dir, patterns)
-        if not umodel_files:
+        # 查找所有MModel文件
+        mmodel_files = self._find_mmodel_files(source_dir, patterns)
+        if not mmodel_files:
             if not self.quiet:
-                print("⚠️ 未找到任何UModel定义文件")
+                print("⚠️ 未找到任何MModel定义文件")
             return {}
         
         if not self.quiet:
-            print(f"📁 找到 {len(umodel_files)} 个UModel文件")
+            print(f"📁 找到 {len(mmodel_files)} 个MModel文件")
         
         # 优化批处理逻辑
         max_workers = min(32, (os.cpu_count() or 1) + 4)
         # 确保至少有一个批次
-        batch_size = max(1, len(umodel_files) // max_workers) if max_workers > 1 else len(umodel_files)
+        batch_size = max(1, len(mmodel_files) // max_workers) if max_workers > 1 else len(mmodel_files)
         batches = [
-            umodel_files[i:i + batch_size]
-            for i in range(0, len(umodel_files), batch_size)
+            mmodel_files[i:i + batch_size]
+            for i in range(0, len(mmodel_files), batch_size)
         ]
         
         all_entities = []
@@ -355,13 +355,13 @@ class UModelIndexManager:
                     all_entities.extend((e for e in batch_results if e is not None))
                     processed += len(future_to_batch[future])
                     
-                    if not self.quiet and len(umodel_files) > 100 and processed % 100 == 0:
+                    if not self.quiet and len(mmodel_files) > 100 and processed % 100 == 0:
                         elapsed = time.time() - start_time
                         rate = processed / elapsed if elapsed > 0 else 0
-                        print(f"📊 处理进度: {processed}/{len(umodel_files)} ({rate:.1f} files/sec)")
+                        print(f"📊 处理进度: {processed}/{len(mmodel_files)} ({rate:.1f} files/sec)")
         else:
             # 小文件集直接处理，避免进程开销
-            all_entities = [e for e in self._batch_process_files(umodel_files) if e is not None]
+            all_entities = [e for e in self._batch_process_files(mmodel_files) if e is not None]
         
         # 构建索引数据结构
         index_data = {
@@ -369,13 +369,13 @@ class UModelIndexManager:
                 'v': '4.0',  # 版本号升级，优化为只保存实体ID
                 'ts': datetime.now().isoformat(),
                 'git': self._get_current_commit(),
-                'files': len(umodel_files),
+                'files': len(mmodel_files),
                 'entities': len(all_entities),
                 'gen_time': time.time() - start_time
             },
-            'entities': {},  # umodel_id -> file_hash (极简结构，只保存实体ID和文件哈希)
-            'refs': {},  # umodel_id -> [referencing_file_paths] (引用关系)
-            'file_umodel': {},  # file_path -> umodel_id (用于快速查找文件路径)
+            'entities': {},  # mmodel_id -> file_hash (极简结构，只保存实体ID和文件哈希)
+            'refs': {},  # mmodel_id -> [referencing_file_paths] (引用关系)
+            'file_mmodel': {},  # file_path -> mmodel_id (用于快速查找文件路径)
         }
         
         # 填充索引数据和构建引用关系 - 使用更高效的方法
@@ -386,18 +386,18 @@ class UModelIndexManager:
         link_files_count = 0
         
         for entity in all_entities:
-            umodel_id = entity.umodel_id
+            mmodel_id = entity.mmodel_id
             file_path = entity.file_path
             
-            # 检查重复的UModelID
-            if umodel_id in index_data['entities']:
-                if umodel_id not in duplicate_ids:
-                    duplicate_ids[umodel_id] = []
-                duplicate_ids[umodel_id].append(file_path)
+            # 检查重复的MModelID
+            if mmodel_id in index_data['entities']:
+                if mmodel_id not in duplicate_ids:
+                    duplicate_ids[mmodel_id] = []
+                duplicate_ids[mmodel_id].append(file_path)
             else:
                 # 极简的实体信息 - 只保存实体ID和文件哈希
-                index_data['entities'][umodel_id] = entity.file_hash
-                index_data['file_umodel'][file_path] = umodel_id
+                index_data['entities'][mmodel_id] = entity.file_hash
+                index_data['file_mmodel'][file_path] = mmodel_id
             
             # 只有Link文件且有引用时才保存references到单独的结构中
             if entity.references:
@@ -428,7 +428,7 @@ class UModelIndexManager:
             if not self.quiet:
                 print(f"✅ 索引文件已生成: {index_file}")
                 print(f"📊 统计: {len(all_entities)} 个实体, {link_files_count} 个Link文件, {total_references} 个引用关系, {referenced_entities} 个被引用实体")
-                print(f"⏱️ 总耗时: {elapsed:.2f}秒 (平均 {len(umodel_files) / elapsed:.1f} files/sec)")
+                print(f"⏱️ 总耗时: {elapsed:.2f}秒 (平均 {len(mmodel_files) / elapsed:.1f} files/sec)")
         
         except Exception as e:
             if not self.quiet:
@@ -497,26 +497,26 @@ class UModelIndexManager:
         # 规范化路径分隔符（Windows/Linux兼容）
         rel_deleted_file = rel_deleted_file.replace(os.sep, '/')
         
-        # 如果删除的文件在索引中，找到其UModelID
-        umodel_id = None
+        # 如果删除的文件在索引中，找到其MModelID
+        mmodel_id = None
         # 检查新版本索引格式（v4.0）- entities只包含entity_id -> file_hash
         if index_data.get('meta', {}).get('v') == '4.0':
             # 新格式：需要通过文件路径反查实体ID
             # 这里我们遍历所有实体ID，并检查对应的文件是否匹配删除的文件
             # 但在v4.0格式中，我们没有直接的文件路径信息，所以跳过这个检查
             # 使用更通用的方法：检查索引中是否有相关实体
-            umodel_id = index_data.get('file_umodel', {}).get(rel_deleted_file)
+            mmodel_id = index_data.get('file_mmodel', {}).get(rel_deleted_file)
         else:
             # 旧版本索引格式  
             for entity_id, entity_data in index_data.get('entities', {}).items():
                 if isinstance(entity_data, dict) and entity_data.get('f') == rel_deleted_file:
-                    umodel_id = entity_id
+                    mmodel_id = entity_id
                     break
 
-        if not umodel_id:
+        if not mmodel_id:
             return related_files
         
-        referencing_files = index_data.get('refs', {}).get(umodel_id, [])
+        referencing_files = index_data.get('refs', {}).get(mmodel_id, [])
         for ref_file in referencing_files:
             abs_ref_file = os.path.abspath(os.path.join(self.work_dir, ref_file))
             if os.path.exists(abs_ref_file):
@@ -536,25 +536,25 @@ class UModelIndexManager:
 
         if focus_all:
             if not self.quiet:
-                print("🔍 全量验证模式，返回所有UModel文件")
-            return self._find_umodel_files(source_dir, patterns)
+                print("🔍 全量验证模式，返回所有MModel文件")
+            return self._find_mmodel_files(source_dir, patterns)
         else:
             if not self.quiet:
                 print("🔍 增量验证模式，基于索引文件")
         
-        # 如果不是Git仓库，返回所有UModel文件
+        # 如果不是Git仓库，返回所有MModel文件
         if not self.is_git_repo:
             if not self.quiet:
-                print("📁 非Git仓库，返回所有UModel文件")
-            all_files = self._find_umodel_files(source_dir, patterns)
+                print("📁 非Git仓库，返回所有MModel文件")
+            all_files = self._find_mmodel_files(source_dir, patterns)
             return all_files
         
         # 加载索引文件
         index_data = self._load_index_file(index_file)
         if not index_data:
             if not self.quiet:
-                print("⚠️ 索引文件无效，返回所有UModel文件")
-            return self._find_umodel_files(source_dir, patterns)
+                print("⚠️ 索引文件无效，返回所有MModel文件")
+            return self._find_mmodel_files(source_dir, patterns)
 
         # 检查索引版本
         index_version = index_data.get('metadata', {}).get('version', '1.0')
@@ -583,7 +583,7 @@ class UModelIndexManager:
         
         # 处理修改和新增的文件
         for file_path in modified_files | added_files:
-            if self._is_umodel_file(file_path, patterns):
+            if self._is_mmodel_file(file_path, patterns):
                 validation_files.add(file_path)
         
         # 处理删除的文件 - 查找相关文件
@@ -651,22 +651,22 @@ def main():
     """主函数"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='UModel索引管理器 - 改进版（支持引用关系分析）')
+    parser = argparse.ArgumentParser(description='MModel索引管理器 - 改进版（支持引用关系分析）')
     parser.add_argument('action', choices=['generate', 'validate'],
                        help='操作类型: generate(生成索引) 或 validate(获取待校验文件) 或 analyze(分析引用关系) 或 modified(获取修改文件列表)')
     
     # 通用参数
     parser.add_argument('-d', '--directory', default='.',
-                       help='UModel定义文件目录 (默认: 当前目录)')
-    parser.add_argument('-i', '--index-file', default='umodel_index.json',
-                       help='索引文件路径 (默认: umodel_index.json)')
+                       help='MModel定义文件目录 (默认: 当前目录)')
+    parser.add_argument('-i', '--index-file', default='mmodel_index.json',
+                       help='索引文件路径 (默认: mmodel_index.json)')
     parser.add_argument('-p', '--patterns', nargs='+', default=['*.yaml', '*.yml'],
                        help='文件匹配模式 (默认: *.yaml *.yml)')
     parser.add_argument('--quiet', action='store_true', help='静默模式')
     
     args = parser.parse_args()
     
-    manager = UModelIndexManager(work_dir=args.directory, quiet=args.quiet)
+    manager = MModelIndexManager(work_dir=args.directory, quiet=args.quiet)
     
     if args.action == 'generate':
         # 生成索引

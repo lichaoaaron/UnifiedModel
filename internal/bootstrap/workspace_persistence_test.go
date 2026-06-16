@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestFileMemoryAppPersistsWorkspaceMetadata(t *testing.T) {

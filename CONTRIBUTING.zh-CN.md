@@ -1,8 +1,8 @@
-# UModel 贡献指南
+# MModel 贡献指南
 
 English version: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-欢迎参与 UModel 共建。本仓库是 UModel 对象图语义层的开源实现，贡献应保持公共 API、CLI、MCP、SDK、示例和文档一致。
+欢迎参与 MModel 共建。本仓库是 MModel 对象图语义层的开源实现，贡献应保持公共 API、CLI、MCP、SDK、示例和文档一致。
 
 ## 环境要求
 

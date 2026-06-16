@@ -10,7 +10,7 @@ Query Service 拥有运行时读取。AgentGateway 将这些读取能力包装�
 ```mermaid
 flowchart LR
   REST["REST clients"]
-  CLI["umctl"]
+  CLI["mmctl"]
   Web["Web UI"]
   SDK["SDK"]
   MCP["MCP client"]
@@ -29,7 +29,7 @@ flowchart LR
 
 运行时读取统一进入 Query Service：
 
-- `.umodel`
+- `.mmodel`
 - `.entity`
 - `.topo`
 
@@ -49,7 +49,7 @@ AgentGateway 提供：
 
 ## MCP Server
 
-`umodel-mcp` 连接本地 GraphStore 配置，并向 MCP clients 暴露与 AgentGateway 兼容的 tools/resources。
+`mmodel-mcp` 连接本地 GraphStore 配置，并向 MCP clients 暴露与 AgentGateway 兼容的 tools/resources。
 
 支持的 transport：
 
@@ -60,13 +60,13 @@ AgentGateway 提供：
 本地 stdio 命令：
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 HTTP 命令：
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 MCP JSON-RPC 外壳保持 JSON。Tool 和 Resource 的 content text 使用 `text/toon`；需要 JSON 的 client 可以读取 tool result 上的 `structuredContent`。
@@ -84,9 +84,9 @@ POST /api/v1/agent/{workspace}/resources:read
 CLI 示例：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent discover demo
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".umodel | limit 5"}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent discover demo
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".mmodel | limit 5"}'
 ```
 
 ## 安全模型

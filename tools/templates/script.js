@@ -1,4 +1,4 @@
-// UModel HTML文档生成器JavaScript文件
+// MModel HTML文档生成器JavaScript文件
 
 // 树状目录折叠/展开
 function toggleTocItem(element) {

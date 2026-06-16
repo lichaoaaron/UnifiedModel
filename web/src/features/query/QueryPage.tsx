@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Play, SearchCode, Wand2 } from 'lucide-react'
 import type { QueryExplain, QueryResult } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Badge, Button, Field, JsonEditor, Panel, TextArea, TextInput } from '../../design/components'
 import { formatError, parseJson, stringify } from '../../lib/json'
 
 const examples = [
-  { label: '.umodel', query: ".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20" },
+  { label: '.mmodel', query: ".mmodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20" },
   { label: '.entity', query: ".entity with(domain='devops', name='devops.service', query='checkout', topk=20) | project __entity_id__,display_name,status,owner" },
   {
     label: 'direct',
@@ -26,7 +26,7 @@ const examples = [
   },
 ]
 
-export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: string }) {
+export function QueryPage({ api, workspaceId }: { api: MModelApi; workspaceId: string }) {
   const [query, setQuery] = useState(examples[0].query)
   const [limit, setLimit] = useState('50')
   const [parameters, setParameters] = useState('{}')

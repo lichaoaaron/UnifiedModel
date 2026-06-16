@@ -27,8 +27,8 @@ import {
   Trash2,
   X,
 } from 'lucide-react'
-import type { QueryResult, UModelElement } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import type { QueryResult, MModelElement } from '../../api/types'
+import { MModelApi } from '../../api/client'
 import { Button, EmptyState } from '../../design/components'
 import { formatError } from '../../lib/json'
 import { EntityTopoGraphView } from './EntityTopoGraphView'
@@ -72,7 +72,7 @@ export function EntityTopoPage({
   workspaceId,
   refreshToken,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
   refreshToken: number
 }) {
@@ -96,7 +96,7 @@ export function EntityTopoPage({
     setLoading(true)
     setError('')
     try {
-      const [topoResult, entityResult, umodelResult] = await Promise.all([
+      const [topoResult, entityResult, mmodelResult] = await Promise.all([
         api.query(workspaceId, {
           query: `.topo | limit ${ENTITY_TOPO_LIMIT}`,
           limit: ENTITY_TOPO_LIMIT,
@@ -113,10 +113,10 @@ export function EntityTopoPage({
             to: toIsoOrUndefined(range.to),
           },
         }).catch(() => null),
-        api.listUModel(workspaceId, 100).catch(() => null),
+        api.listMModel(workspaceId, 100).catch(() => null),
       ])
-      const umodelElements = (umodelResult?.rows || []).map(rowToElement).filter((element) => element.kind && element.domain && element.name)
-      const nextData = buildEntityTopoData(topoResult, umodelElements, entityResult?.rows || [])
+      const mmodelElements = (mmodelResult?.rows || []).map(rowToElement).filter((element) => element.kind && element.domain && element.name)
+      const nextData = buildEntityTopoData(topoResult, mmodelElements, entityResult?.rows || [])
       setData(nextData)
       setSelected((current) => resolveSelection(current, nextData))
     } catch (nextError) {
@@ -1085,7 +1085,7 @@ function toIsoOrUndefined(value: string) {
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString()
 }
 
-function rowToElement(row: Record<string, unknown>): UModelElement {
+function rowToElement(row: Record<string, unknown>): MModelElement {
   const metadata = isObject(row.metadata) ? row.metadata : undefined
   const domain = optionalString(row.domain) || optionalString(metadata?.domain)
   const name = optionalString(row.name) || optionalString(metadata?.name)

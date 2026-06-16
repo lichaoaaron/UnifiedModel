@@ -15,17 +15,17 @@ func TestMCPBusinessFlowCoversDiscoveryResourcesAndToolPolicy(t *testing.T) {
 		`{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"workspace":"mcp-demo"}}`,
 		`{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{"workspace":"mcp-demo"}}`,
 		`{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"workspace":"mcp-demo","name":"query_spl_examples","arguments":{}}}`,
-		`{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"workspace":"mcp-demo","name":"query_spl_execute","arguments":{"query":".umodel | limit 1"}}}`,
+		`{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"workspace":"mcp-demo","name":"query_spl_execute","arguments":{"query":".mmodel | limit 1"}}}`,
 		`{"jsonrpc":"2.0","id":5,"method":"resources/list","params":{"workspace":"mcp-demo"}}`,
-		`{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"mcp-demo","uri":"umodel://workspace/mcp-demo/overview"}}`,
+		`{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"mcp-demo","uri":"mmodel://workspace/mcp-demo/overview"}}`,
 		`{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"workspace":"mcp-demo","name":"entity_write","arguments":{"entities":[]}}}`,
 	}
-	cmd := exec.Command("go", "run", "./cmd/umodel-mcp", "--data", t.TempDir(), "--graphstore", "memory")
+	cmd := exec.Command("go", "run", "./cmd/mmodel-mcp", "--data", t.TempDir(), "--graphstore", "memory")
 	cmd.Dir = root
 	cmd.Stdin = strings.NewReader(strings.Join(requests, "\n"))
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Fatalf("umodel-mcp failed: %v\n%s", err, out)
+		t.Fatalf("mmodel-mcp failed: %v\n%s", err, out)
 	}
 
 	responses := decodeMCPResponses(t, out)

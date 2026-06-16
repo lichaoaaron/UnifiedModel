@@ -5,8 +5,8 @@ import (
 	"strings"
 	"unicode"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const defaultLimit = 100
@@ -172,12 +172,12 @@ func paramName(value string) (string, bool) {
 }
 
 func detectSource(queryText string) (string, error) {
-	for _, source := range []string{".umodel", ".entity", ".topo"} {
+	for _, source := range []string{".mmodel", ".entity", ".topo"} {
 		if strings.HasPrefix(queryText, source) && hasSourceBoundary(queryText, len(source)) {
 			return source, nil
 		}
 	}
-	return "", apperrors.New(apperrors.CodeQueryParseError, "query must start with .umodel, .entity, or .topo")
+	return "", apperrors.New(apperrors.CodeQueryParseError, "query must start with .mmodel, .entity, or .topo")
 }
 
 func hasSourceBoundary(queryText string, pos int) bool {

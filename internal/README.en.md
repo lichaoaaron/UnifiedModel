@@ -8,7 +8,7 @@ Private application and infrastructure modules. These packages are not public AP
 |---|---|---|
 | `bootstrap/` | Bootstrap Layer | Server wiring, providers, adapters, routes, UI serving. |
 | `workspace/` | Application Layer | Workspace control plane. |
-| `umodel/` | Application Layer | UModel data plane. |
+| `mmodel/` | Application Layer | MModel data plane. |
 | `entitystore/` | Application Layer | Entity and relation write plane. |
 | `query/` | Application Layer | Query plane. |
 | `agentgateway/` | Application + Adapter Layer | Agent and MCP-facing adapter. |

@@ -49,7 +49,7 @@ See [examples/quickstart-multidomain](../../../examples/quickstart-multidomain/R
 | EntitySet | `devops.service` | Defines the object type and fields. |
 | Entity record | a specific checkout service | Stores one runtime object instance. |
 
-Entity records are written through EntityStore APIs and read through `.entity` queries. EntitySet definitions are imported as UModel elements and read through `.umodel`.
+Entity records are written through EntityStore APIs and read through `.entity` queries. EntitySet definitions are imported as MModel elements and read through `.mmodel`.
 
 ## Design Rules
 
@@ -64,11 +64,11 @@ Entity records are written through EntityStore APIs and read through `.entity` q
 List EntitySet definitions:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 20"
 ```
 
 List runtime service entities:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
 ```

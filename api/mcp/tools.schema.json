@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:unifiedmodel:mcp:tools.schema.json",
-  "title": "UModel MCP Tool and Resource Contract",
+  "$id": "urn:mmodel:mcp:tools.schema.json",
+  "title": "MModel MCP Tool and Resource Contract",
   "type": "object",
   "required": ["transports", "output_format", "mcp_methods", "tools", "resources"],
   "properties": {
@@ -62,8 +62,8 @@
               "query_spl_execute",
               "query_spl_explain",
               "query_spl_examples",
-              "umodel_validate",
-              "umodel_import",
+              "mmodel_validate",
+              "mmodel_import",
               "entity_write",
               "entity_expire"
             ]
@@ -113,10 +113,10 @@
           "uri_template": {
             "type": "string",
             "enum": [
-              "umodel://workspace/{workspace}/overview",
-              "umodel://workspace/{workspace}/schema-index",
-              "umodel://workspace/{workspace}/query-templates",
-              "umodel://workspace/{workspace}/tool-capability-metadata"
+              "mmodel://workspace/{workspace}/overview",
+              "mmodel://workspace/{workspace}/schema-index",
+              "mmodel://workspace/{workspace}/query-templates",
+              "mmodel://workspace/{workspace}/tool-capability-metadata"
             ]
           },
           "read_only": {

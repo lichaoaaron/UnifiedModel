@@ -2,7 +2,7 @@
 
 English: [MCP Reference](../../en/reference/mcp.md)
 
-`umodel-mcp` 是 UModel 的本地 MCP surface。它通过与 REST API 相同的服务层暴露 discovery metadata、read-only resources、prompts、completions 和 query-oriented tools。
+`mmodel-mcp` 是 MModel 的本地 MCP surface。它通过与 REST API 相同的服务层暴露 discovery metadata、read-only resources、prompts、completions 和 query-oriented tools。
 
 
 ## 启动
@@ -10,13 +10,13 @@ English: [MCP Reference](../../en/reference/mcp.md)
 Stdio，用于本地 MCP client：
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore memory
+go run ./cmd/mmodel-mcp --data data --graphstore memory
 ```
 
 Streamable HTTP，用于支持远程连接的 MCP client：
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 HTTP transport 暴露：
@@ -30,13 +30,13 @@ HTTP transport 暴露：
 需要持久化的 stdio 开发：
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 Ladybug-backed 环境：
 
 ```bash
-go run -tags ladybug ./cmd/umodel-mcp --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-mcp --data data --graphstore local.ladybug
 ```
 
 ## Methods
@@ -72,18 +72,18 @@ Tool content 示例：
 ```toon
 name: query_spl_examples
 ok: true
-output[6]: ".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",".entity with(domain='devops', name='devops.service', query='checkout', topk=20)"
+output[6]: ".mmodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",".entity with(domain='devops', name='devops.service', query='checkout', topk=20)"
 ```
 
 ## Tools
 
 | Tool | 默认启用 | 用途 |
 |---|---:|---|
-| `query_spl_execute` | Yes | 执行 `.umodel`、`.entity`、`.topo` SPL。 |
+| `query_spl_execute` | Yes | 执行 `.mmodel`、`.entity`、`.topo` SPL。 |
 | `query_spl_explain` | Yes | 返回查询计划。 |
 | `query_spl_examples` | Yes | 返回安全查询示例。 |
-| `umodel_validate` | Yes | 校验 UModel elements。 |
-| `umodel_import` | No | 从服务端可读路径导入 UModel 文件。 |
+| `mmodel_validate` | Yes | 校验 MModel elements。 |
+| `mmodel_import` | No | 从服务端可读路径导入 MModel 文件。 |
 | `entity_write` | No | 写入 entity payload，需要显式启用写能力。 |
 | `entity_expire` | No | 过期 entity payload，需要显式启用写能力。 |
 
@@ -93,10 +93,10 @@ output[6]: ".umodel with(kind='entity_set') | project domain,name,kind | sort do
 
 | Resource | URI template | 描述 |
 |---|---|---|
-| `overview` | `umodel://workspace/{workspace}/overview` | Workspace-scoped API 和能力概览。 |
-| `schema-index` | `umodel://workspace/{workspace}/schema-index` | 模型/schema 元数据摘要。 |
-| `query-templates` | `umodel://workspace/{workspace}/query-templates` | `.umodel`、`.entity`、`.topo` 查询模板。 |
-| `tool-capability-metadata` | `umodel://workspace/{workspace}/tool-capability-metadata` | Tool 能力和写启用元数据。 |
+| `overview` | `mmodel://workspace/{workspace}/overview` | Workspace-scoped API 和能力概览。 |
+| `schema-index` | `mmodel://workspace/{workspace}/schema-index` | 模型/schema 元数据摘要。 |
+| `query-templates` | `mmodel://workspace/{workspace}/query-templates` | `.mmodel`、`.entity`、`.topo` 查询模板。 |
+| `tool-capability-metadata` | `mmodel://workspace/{workspace}/tool-capability-metadata` | Tool 能力和写启用元数据。 |
 
 Resources 只读且面向元数据。运行时 rows 应由 `query_spl_execute` 等 tools 返回。
 
@@ -104,10 +104,10 @@ Resources 只读且面向元数据。运行时 rows 应由 `query_spl_execute` �
 
 Prompts：
 
-- `umodel_query_context`
-- `umodel_object_graph_review`
+- `mmodel_query_context`
+- `mmodel_object_graph_review`
 
-Completion 支持 resource-template 和 prompt argument 建议，用于 workspace resources 以及常见 `.umodel`、`.entity`、`.topo` 查询起点。
+Completion 支持 resource-template 和 prompt argument 建议，用于 workspace resources 以及常见 `.mmodel`、`.entity`、`.topo` 查询起点。
 
 Stdio、Streamable HTTP、HTTP+SSE 和 TOON 解析示例见 [MCP 示例](../../../examples/mcp/README.zh-CN.md)。
 
@@ -120,9 +120,9 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"workspace":"demo","name":"query_spl_examples","arguments":{}}}' \
   '{"jsonrpc":"2.0","id":4,"method":"resources/list","params":{"workspace":"demo"}}' \
   '{"jsonrpc":"2.0","id":5,"method":"resources/templates/list","params":{"workspace":"demo"}}' \
-  '{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"demo","uri":"umodel://workspace/demo/query-templates"}}' \
+  '{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"demo","uri":"mmodel://workspace/demo/query-templates"}}' \
   '{"jsonrpc":"2.0","id":7,"method":"prompts/list","params":{}}' \
-| go run ./cmd/umodel-mcp --data data --graphstore memory
+| go run ./cmd/mmodel-mcp --data data --graphstore memory
 ```
 
 期望输出为每个输入行对应一条 JSON-RPC response。成功响应包含 `result`；tool/resource payload text 使用 TOON。

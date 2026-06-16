@@ -2,12 +2,12 @@
 
 中文：[扩展点](../../zh/architecture/extension-points.md)
 
-UModel is designed so contributors can add model packs, schema kinds, providers, clients, and query capabilities without breaking public contracts.
+MModel is designed so contributors can add model packs, schema kinds, providers, clients, and query capabilities without breaking public contracts.
 
 
 ## Model Packs
 
-Model packs are the safest first contribution path. Each pack is a directory with UModel YAML definitions and optional runtime sample data.
+Model packs are the safest first contribution path. Each pack is a directory with MModel YAML definitions and optional runtime sample data.
 
 Expected assets:
 
@@ -35,14 +35,14 @@ When adding or changing a schema kind:
 
 ## GraphStore Providers
 
-GraphStore providers implement the storage contract used by UModel Service, EntityStore, and Query Service.
+GraphStore providers implement the storage contract used by MModel Service, EntityStore, and Query Service.
 
 Provider changes should preserve:
 
 - Workspace isolation.
-- UModel element writes and reads.
+- MModel element writes and reads.
 - Entity and relation writes.
-- Query semantics for `.umodel`, `.entity`, and `.topo`.
+- Query semantics for `.mmodel`, `.entity`, and `.topo`.
 - Explain metadata exposing the active provider.
 
 Reference: [GraphStore Providers](../graphstore-providers.md).

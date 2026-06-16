@@ -1,4 +1,4 @@
-# UModel Schema Go SDK Generator
+# MModel Schema Go SDK Generator
 
 这个生成器基于 `base.yaml` 中定义的元数据规范，解析展开后的 schema 文件，生成相应的 Go SDK 代码。
 
@@ -32,18 +32,18 @@ python scripts/generators/schema_expander.py
 python scripts/generators/schema_go_generator.py
 ```
 
-生成的代码将保存在 `generated/go/umodel` 目录中。
+生成的代码将保存在 `generated/go/mmodel` 目录中。
 
 ### 3. 使用生成的 SDK
 
 ```go
 import (
     "encoding/json"
-    "your-module/umodel"
+    "your-module/mmodel"
 )
 
 // 解析 JSON
-var metricSet umodel.MetricSetV100
+var metricSet mmodel.MetricSetV100
 err := json.Unmarshal(jsonData, &metricSet)
 
 // 访问数据
@@ -58,7 +58,7 @@ for key, value := range metricSet.Extension.Fields {
 ## 生成的代码结构
 
 - `common_types.go` - 通用类型定义（SemanticString, Extension）
-- `umodel.go` - 主包文件和辅助函数
+- `mmodel.go` - 主包文件和辅助函数
 - `{schema_name}.go` - 每个 schema 对应的结构体和解析方法
 
 ## 类型映射

@@ -2,7 +2,7 @@
 
 中文：[Web UI 指南](../../zh/guides/web-ui.md)
 
-UModel Web: local console for workspaces, model definitions, runtime data, Query Service behavior, and AgentGateway metadata.
+MModel Web: local console for workspaces, model definitions, runtime data, Query Service behavior, and AgentGateway metadata.
 
 
 ## Start
@@ -28,7 +28,7 @@ Workspace Launcher covers:
 
 ## Explorer
 
-Explorer shows imported UModel definitions as graph and table views.
+Explorer shows imported MModel definitions as graph and table views.
 
 Explorer scope:
 
@@ -42,7 +42,7 @@ Explorer scope:
 
 Query is the interactive surface for:
 
-- `.umodel`
+- `.mmodel`
 - `.entity`
 - `.topo`
 
@@ -52,7 +52,7 @@ Query validates workflows before CLI, SDK, MCP, or documentation reuse.
 
 Imports & Writes supports local workflows around:
 
-- UModel model import.
+- MModel model import.
 - Entity writes.
 - Relation writes.
 

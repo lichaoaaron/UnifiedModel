@@ -3,8 +3,8 @@ package graphstore
 import (
 	"sort"
 
-	"github.com/alibaba/UnifiedModel/internal/cypher"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/cypher"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func (s *MemoryStore) queryCypherLocked(plan model.TopoQueryPlan, limit int) (model.QueryResult, error) {

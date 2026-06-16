@@ -1,6 +1,6 @@
-# UModel Web UI
+# MModel Web UI
 
-UModel Web is a small, open-source friendly React/Vite workspace UI for the public UModel REST API.
+MModel Web is a small, open-source friendly React/Vite workspace UI for the public MModel REST API.
 
 ## Development
 
@@ -12,7 +12,7 @@ Requirements:
 Start the API server:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 Start the web dev server:
@@ -24,7 +24,7 @@ pnpm dev
 ```
 
 The Vite server proxies `/api/*` and `/healthz` to `http://localhost:8080`.
-Set `UMODEL_API_TARGET` to point at another API server.
+Set `MMODEL_API_TARGET` to point at another API server.
 
 ## Production Build
 
@@ -36,7 +36,7 @@ pnpm build
 The Go server can serve the generated assets:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
 ```
 
 From the repository root you can also use:

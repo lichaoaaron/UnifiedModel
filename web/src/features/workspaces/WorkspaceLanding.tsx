@@ -41,7 +41,7 @@ import {
   Workflow,
 } from 'lucide-react'
 import type { HealthResponse, WorkspaceMetadata } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { formatError, parseJson } from '../../lib/json'
 import { Brand, HealthBadge } from '../../App'
 import { Badge, Button, EmptyState, Field, JsonEditor, Modal, TextInput } from '../../design/components'
@@ -54,7 +54,7 @@ export function WorkspaceLanding({
   onHealthChange,
   onOpenWorkspace,
 }: {
-  api: UModelApi
+  api: MModelApi
   apiBase: string
   onApiBaseChange: (value: string) => void
   health: HealthResponse | null
@@ -111,7 +111,7 @@ export function WorkspaceLanding({
 
   const testEndpoint = useCallback(async () => {
     const nextBase = normalizeApiBase(endpointDraft)
-    const nextApi = new UModelApi(nextBase)
+    const nextApi = new MModelApi(nextBase)
     setTestingEndpoint(true)
     setLoading(true)
     setError('')
@@ -162,7 +162,7 @@ export function WorkspaceLanding({
               Build the <span className="landing-gradient-text">world model</span> for digital twins.
             </h1>
             <p>
-              UModel maps assets, systems, metrics, tools, and relationships into a living graph
+              MModel maps assets, systems, metrics, tools, and relationships into a living graph
               that agents can query, simulate, and evolve.
             </p>
           </div>
@@ -301,7 +301,7 @@ export function WorkspaceLanding({
               {!loading && !endpointChanged && displayedWorkspaces.length === 0 && (
                 <EmptyState
                   title="No workspaces yet"
-                  detail="Create a workspace to start importing UModel elements and querying data."
+                  detail="Create a workspace to start importing MModel elements and querying data."
                   action={
                     <Button variant="primary" onClick={() => setCreateOpen(true)}>
                       <FolderPlus size={16} />
@@ -335,7 +335,7 @@ export function WorkspaceLanding({
           </div>
         </section>
 
-        <section className="landing-stage flow-stage" aria-label="UModel product preview">
+        <section className="landing-stage flow-stage" aria-label="MModel product preview">
           <div className="flow-product-shell">
             <div className="flow-canvas-wrap">
               <ReactFlow
@@ -438,7 +438,7 @@ const landingFlowNodes: Node<LandingFlowNodeData>[] = [
     data: {
       icon: 'schema',
       kind: 'Schema',
-      title: 'UModel contract',
+      title: 'MModel contract',
       subtitle: 'typed entities, relations, and versions',
       meta: 'design',
       tone: 'violet',
@@ -470,7 +470,7 @@ const landingFlowNodes: Node<LandingFlowNodeData>[] = [
     data: {
       icon: 'service',
       kind: 'Model Core',
-      title: 'Living UModel Graph',
+      title: 'Living MModel Graph',
       subtitle: 'services, metrics, tools, owners, topology',
       meta: 'primary',
       tone: 'blue',
@@ -877,13 +877,13 @@ function CreateWorkspaceModal({
   onClose,
   onCreated,
 }: {
-  api: UModelApi
+  api: MModelApi
   onClose: () => void
   onCreated: (workspace: WorkspaceMetadata) => void
 }) {
   const [id, setId] = useState('demo')
   const [name, setName] = useState('Demo')
-  const [description, setDescription] = useState('Local UModel workspace')
+  const [description, setDescription] = useState('Local MModel workspace')
   const [labels, setLabels] = useState('{\n  "env": "local"\n}')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')

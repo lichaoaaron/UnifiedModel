@@ -1,8 +1,8 @@
-# UModel Web UI
+# MModel Web UI
 
 English version: [README.md](README.md)
 
-UModel Web 是面向公开 UModel REST API 的 React/Vite workspace UI。
+MModel Web 是面向公开 MModel REST API 的 React/Vite workspace UI。
 
 ## 开发
 
@@ -14,7 +14,7 @@ UModel Web 是面向公开 UModel REST API 的 React/Vite workspace UI。
 启动 API：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 启动 Web dev server：
@@ -25,7 +25,7 @@ pnpm install
 pnpm dev
 ```
 
-Vite server 会将 `/api/*` 和 `/healthz` 代理到 `http://localhost:8080`。可以通过 `UMODEL_API_TARGET` 指向其他 API server。
+Vite server 会将 `/api/*` 和 `/healthz` 代理到 `http://localhost:8080`。可以通过 `MMODEL_API_TARGET` 指向其他 API server。
 
 ## 生产构建
 
@@ -37,7 +37,7 @@ pnpm build
 Go server 可以托管生成资产：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory --ui-dir web/dist
 ```
 
 仓库根目录也可以使用：

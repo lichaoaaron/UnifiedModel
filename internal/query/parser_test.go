@@ -4,18 +4,18 @@ import (
 	"reflect"
 	"testing"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const cartServiceNode = "(:\"apm@apm.service\" {__entity_id__: '54013ba69c196820e56801f1ef5aad54'})"
 
-func TestParseUModelPipeline(t *testing.T) {
-	plan, err := Parse(model.QueryRequest{Query: ".umodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name desc | limit 5"})
+func TestParseMModelPipeline(t *testing.T) {
+	plan, err := Parse(model.QueryRequest{Query: ".mmodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name desc | limit 5"})
 	if err != nil {
 		t.Fatalf("parse: %v", err)
 	}
-	if plan.Source != ".umodel" || plan.Limit != 5 {
+	if plan.Source != ".mmodel" || plan.Limit != 5 {
 		t.Fatalf("unexpected plan: %+v", plan)
 	}
 	if plan.Filters["kind"] != "entity_set" {
@@ -148,7 +148,7 @@ func TestParseTopoGraphMatchAndCypher(t *testing.T) {
 }
 
 func TestParseRejectsUnknownOperator(t *testing.T) {
-	_, err := Parse(model.QueryRequest{Query: ".umodel | native('MATCH n RETURN n')"})
+	_, err := Parse(model.QueryRequest{Query: ".mmodel | native('MATCH n RETURN n')"})
 	if !apperrors.IsCode(err, apperrors.CodeQueryParseError) {
 		t.Fatalf("expected parse error, got %v", err)
 	}

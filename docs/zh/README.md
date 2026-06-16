@@ -1,14 +1,14 @@
-# UModel 中文文档
+# MModel 中文文档
 
-UModel 中文文档入口。中文文档与英文文档分别维护在 `docs/zh` 和 `docs/en` 下，目录结构保持一致，示例、命令和公共契约引用保持对齐。
+MModel 中文文档入口。中文文档与英文文档分别维护在 `docs/zh` 和 `docs/en` 下，目录结构保持一致，示例、命令和公共契约引用保持对齐。
 
 文档总入口：[docs/README.md](../README.md)
 
-English: [UModel Documentation](../en/README.md)
+English: [MModel Documentation](../en/README.md)
 
 ## 学习导览
 
-- [UnifiedModel 学习导览](learning-guide/README.md) - 面向第一次系统理解项目的源码阅读入口、架构主线、调用链和实践路径。
+- [MModel 学习导览](learning-guide/README.md) - 面向第一次系统理解项目的源码阅读入口、架构主线、调用链和实践路径。
 
 ## 入门
 
@@ -21,7 +21,7 @@ English: [UModel Documentation](../en/README.md)
 ## 概念
 
 - [概念索引](concepts/index.md) - 推荐阅读顺序和概念地图。
-- [对象图语义层](concepts/object-graph-semantic-layer.md) - UModel 解决的问题，以及它与企业数据、遥测、运行时系统和 Agent 上下文的关系。
+- [对象图语义层](concepts/object-graph-semantic-layer.md) - MModel 解决的问题，以及它与企业数据、遥测、运行时系统和 Agent 上下文的关系。
 - [Workspace 与 Domain](concepts/workspaces-and-domains.md) - 隔离、命名和本地持久化边界。
 - [Model Elements](concepts/model-elements.md) - 模型元素的通用 envelope 和支持的 kind。
 - [EntitySet](concepts/entity-sets.md) - 对象类型定义与运行时实体的关系。
@@ -29,7 +29,7 @@ English: [UModel Documentation](../en/README.md)
 - [Link 与字段映射](concepts/links-and-field-mappings.md) - DataLink、EntitySetLink、StorageLink 和 `fields_mapping`。
 - [Storage 与 GraphStore](concepts/storage-and-graphstore.md) - 模型中的存储定义与运行时 provider。
 - [Entity 与 Relation](concepts/entities-and-relations.md) - 运行时对象图数据和生命周期。
-- [查询入口](concepts/query-surfaces.md) - `.umodel`、`.entity`、`.topo`、explain 和 Agent 用法。
+- [查询入口](concepts/query-surfaces.md) - `.mmodel`、`.entity`、`.topo`、explain 和 Agent 用法。
 
 ## 使用指南
 
@@ -53,7 +53,7 @@ English: [UModel Documentation](../en/README.md)
 - [CLI 参考](reference/cli.md)
 - [MCP 参考](reference/mcp.md)
 - [Web UI API 对照](ui-api.md)
-- [UModel SDK 规范](umodel-sdk-specification.md)
+- [MModel SDK 规范](mmodel-sdk-specification.md)
 - [REST OpenAPI](../../api/openapi/openapi.yaml)
 - [MCP Tool 和 Resource Schema](../../api/mcp/tools.schema.json)
 - [公共 Go Contracts](../../pkg/contract/contracts.go)

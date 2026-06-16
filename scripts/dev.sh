@@ -2,11 +2,11 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-API_ADDR="${API_ADDR:-${UMODEL_API_ADDR:-:8080}}"
-API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
-WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
-DATA_ROOT="${DATA_ROOT:-${UMODEL_DATA:-data}}"
-GRAPHSTORE="${GRAPHSTORE:-${UMODEL_GRAPHSTORE:-file.memory}}"
+API_ADDR="${API_ADDR:-${MMODEL_API_ADDR:-:8080}}"
+API_URL="${API_URL:-${MMODEL_API_URL:-http://localhost:8080}}"
+WEB_PORT="${WEB_PORT:-${MMODEL_WEB_PORT:-5173}}"
+DATA_ROOT="${DATA_ROOT:-${MMODEL_DATA:-data}}"
+GRAPHSTORE="${GRAPHSTORE:-${MMODEL_GRAPHSTORE:-file.memory}}"
 GO_TAGS="${GO_TAGS:-}"
 if [[ -z "${GO_TAGS}" && "${GRAPHSTORE}" == "local.ladybug" ]]; then
   GO_TAGS="ladybug"
@@ -27,11 +27,11 @@ case "${LOG_DIR}" in
   *) LOG_DIR="${ROOT_DIR}/${LOG_DIR}" ;;
 esac
 
-API_PID_FILE="${PID_DIR}/openumodel-dev-api.pid"
-WEB_PID_FILE="${PID_DIR}/openumodel-dev-web.pid"
+API_PID_FILE="${PID_DIR}/openmmodel-dev-api.pid"
+WEB_PID_FILE="${PID_DIR}/openmmodel-dev-web.pid"
 API_LOG="${LOG_DIR}/dev-api.log"
 WEB_LOG="${LOG_DIR}/dev-web.log"
-API_BIN="${PID_DIR}/bin/umodel-server"
+API_BIN="${PID_DIR}/bin/mmodel-server"
 WEB_PM=()
 PNPM_VERSION="${PNPM_VERSION:-}"
 
@@ -107,7 +107,7 @@ start_web_server() {
   fi
 
   cd "${ROOT_DIR}/web"
-  exec nohup env UMODEL_API_TARGET="${API_URL}" "${vite_bin}" --host 0.0.0.0 --port "${WEB_PORT}" --strictPort >> "${WEB_LOG}" 2>&1 < /dev/null
+  exec nohup env MMODEL_API_TARGET="${API_URL}" "${vite_bin}" --host 0.0.0.0 --port "${WEB_PORT}" --strictPort >> "${WEB_LOG}" 2>&1 < /dev/null
 }
 
 ensure_port_free() {
@@ -187,19 +187,19 @@ wait_for_api() {
   for ((attempt = 1; attempt <= attempts; attempt += 1)); do
     if ! kill -0 "${API_PID}" >/dev/null 2>&1; then
       wait "${API_PID}" || api_status="$?"
-      echo "UModel API exited before becoming healthy (status ${api_status})." >&2
+      echo "MModel API exited before becoming healthy (status ${api_status})." >&2
       exit "${api_status}"
     fi
 
     if curl -fsS "${API_URL}/healthz" >/dev/null 2>&1; then
-      echo "UModel API is healthy."
+      echo "MModel API is healthy."
       return
     fi
 
     sleep 0.5
   done
 
-  echo "UModel API did not become healthy at ${API_URL}/healthz." >&2
+  echo "MModel API did not become healthy at ${API_URL}/healthz." >&2
   exit 1
 }
 
@@ -209,20 +209,20 @@ wait_for_web() {
 
   for ((attempt = 1; attempt <= attempts; attempt += 1)); do
     if ! kill -0 "${WEB_PID}" >/dev/null 2>&1; then
-      echo "UModel Web exited before becoming reachable." >&2
+      echo "MModel Web exited before becoming reachable." >&2
       tail -n 40 "${WEB_LOG}" >&2 || true
       return 1
     fi
 
     if curl -fsS "${web_url}" >/dev/null 2>&1; then
-      echo "UModel Web is reachable."
+      echo "MModel Web is reachable."
       return 0
     fi
 
     sleep 0.5
   done
 
-  echo "UModel Web did not become reachable at ${web_url}." >&2
+  echo "MModel Web did not become reachable at ${web_url}." >&2
   tail -n 40 "${WEB_LOG}" >&2 || true
   return 1
 }
@@ -235,24 +235,24 @@ resolve_web_tooling
 ensure_port_free "API" "${API_PORT}"
 ensure_port_free "Web" "${WEB_PORT}"
 mkdir -p "${PID_DIR}" "${LOG_DIR}"
-assert_pid_file_stale_or_absent "UModel API" "${API_PID_FILE}"
-assert_pid_file_stale_or_absent "UModel Web" "${WEB_PID_FILE}"
+assert_pid_file_stale_or_absent "MModel API" "${API_PID_FILE}"
+assert_pid_file_stale_or_absent "MModel Web" "${WEB_PID_FILE}"
 
-echo "Installing UModel Web dependencies..."
+echo "Installing MModel Web dependencies..."
 if ! (
   install_web_dependencies
 ); then
-  echo "UModel Web dependency install failed. See ${WEB_LOG}." >&2
+  echo "MModel Web dependency install failed. See ${WEB_LOG}." >&2
   tail -n 40 "${WEB_LOG}" >&2 || true
   exit 1
 fi
 
 if is_enabled "${QUICKSTART}"; then
-  echo "Starting UModel API at ${API_URL} (graphstore=${GRAPHSTORE}, data=${DATA_ROOT}, quickstart=${QUICKSTART_WORKSPACE}/${QUICKSTART_SAMPLE})"
+  echo "Starting MModel API at ${API_URL} (graphstore=${GRAPHSTORE}, data=${DATA_ROOT}, quickstart=${QUICKSTART_WORKSPACE}/${QUICKSTART_SAMPLE})"
 else
-  echo "Starting UModel API at ${API_URL} (graphstore=${GRAPHSTORE}, data=${DATA_ROOT})"
+  echo "Starting MModel API at ${API_URL} (graphstore=${GRAPHSTORE}, data=${DATA_ROOT})"
 fi
-echo "Building UModel API binary at ${API_BIN}"
+echo "Building MModel API binary at ${API_BIN}"
 mkdir -p "$(dirname "${API_BIN}")"
 (
   cd "${ROOT_DIR}"
@@ -260,7 +260,7 @@ mkdir -p "$(dirname "${API_BIN}")"
   if [[ -n "${GO_TAGS}" ]]; then
     go_build+=(-tags "${GO_TAGS}")
   fi
-  go_build+=(-o "${API_BIN}" ./cmd/umodel-server)
+  go_build+=(-o "${API_BIN}" ./cmd/mmodel-server)
   "${go_build[@]}"
 )
 (
@@ -279,7 +279,7 @@ if ! wait_for_api; then
   exit 1
 fi
 
-echo "Starting UModel Web at http://localhost:${WEB_PORT}"
+echo "Starting MModel Web at http://localhost:${WEB_PORT}"
 (
   start_web_server
 ) &
@@ -292,7 +292,7 @@ if ! wait_for_web; then
 fi
 
 cat <<EOF
-UModel dev is running in the background.
+MModel dev is running in the background.
   API: ${API_URL}
   Web: http://localhost:${WEB_PORT}
   API log: ${API_LOG}

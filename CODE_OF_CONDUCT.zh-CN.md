@@ -2,7 +2,7 @@
 
 English version: [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 
-UModel 是一个开源技术社区。我们希望讨论、issue、pull request 和 review 都保持有用、尊重，并以证据为基础。
+MModel 是一个开源技术社区。我们希望讨论、issue、pull request 和 review 都保持有用、尊重，并以证据为基础。
 
 ## 期望行为
 

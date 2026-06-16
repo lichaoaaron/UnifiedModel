@@ -2,11 +2,11 @@
 
 English version: [README.md](README.md)
 
-本目录包含 UModel Open Source 的本地部署资产。
+本目录包含 MModel Open Source 的本地部署资产。
 
 | 路径 | 作用 |
 |---|---|
-| `docker/Dockerfile` | 将 `umodel-server` 构建为小型运行时镜像。 |
+| `docker/Dockerfile` | 将 `mmodel-server` 构建为小型运行时镜像。 |
 | `compose/docker-compose.yaml` | 使用持久化 Docker volume 运行服务。 |
 
 ## 默认 Provider
@@ -18,11 +18,11 @@ English version: [README.md](README.md)
 ## Docker
 
 ```bash
-docker build -f deployments/docker/Dockerfile -t umodel-open-source:local .
+docker build -f deployments/docker/Dockerfile -t mmodel-open-source:local .
 docker run --rm \
   -p 8080:8080 \
-  -v umodel-data:/data \
-  umodel-open-source:local
+  -v mmodel-data:/data \
+  mmodel-open-source:local
 ```
 
 健康检查：
@@ -49,15 +49,15 @@ docker compose -f deployments/compose/docker-compose.yaml down -v
 | 配置 | 默认值 | 说明 |
 |---|---|---|
 | API port | `8080` | `http://localhost:8080` |
-| Data directory | `/data` | Compose 中挂载到 `umodel-data` volume。 |
+| Data directory | `/data` | Compose 中挂载到 `mmodel-data` volume。 |
 | GraphStore provider | `file.memory` | JSON snapshot 位于 `/data/graphstore/file-memory/`。 |
 
 ## 导入 Demo
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
 curl -X POST http://localhost:8080/api/v1/samples/demo/multi-domain-quickstart:import \
   -H 'Content-Type: application/json' \
   -d '{}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```

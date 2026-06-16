@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { Play, Route } from 'lucide-react'
 import type { QueryResult } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Badge, Button, Field, Panel, Tabs, TextInput } from '../../design/components'
 import { formatError } from '../../lib/json'
 import { ResultTable } from './QueryPage'
 
 type DataMode = 'entity' | 'topo'
 
-export function DataStorePage({ api, workspaceId }: { api: UModelApi; workspaceId: string }) {
+export function DataStorePage({ api, workspaceId }: { api: MModelApi; workspaceId: string }) {
   const [mode, setMode] = useState<DataMode>('entity')
   const [domain, setDomain] = useState('devops')
   const [name, setName] = useState('devops.service')

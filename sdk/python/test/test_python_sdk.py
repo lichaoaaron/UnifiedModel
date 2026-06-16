@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-UModel Python SDK 测试程序
+MModel Python SDK 测试程序
 
 这个程序用来验证生成的Python SDK是否可以正常工作。
 功能包括：
 1. 自动扫描examples目录
-2. 解析UModel文件（JSON/YAML）
+2. 解析MModel文件（JSON/YAML）
 3. 验证生成的类型系统
 4. 转换输出格式
 5. 显示详细的测试结果
@@ -26,18 +26,18 @@ if GENERATED_SDK_PATH.exists():
     sys.path.insert(0, str(GENERATED_SDK_PATH))
 
 try:
-    # 导入生成的UModel SDK
-    from umodel import *
+    # 导入生成的MModel SDK
+    from mmodel import *
     SDK_AVAILABLE = True
-    print("✅ 成功导入UModel Python SDK")
+    print("✅ 成功导入MModel Python SDK")
 except ImportError as e:
-    print(f"❌ 无法导入UModel Python SDK: {e}")
+    print(f"❌ 无法导入MModel Python SDK: {e}")
     print(f"请先运行: python scripts/generators/schema_python_generator_v2.py")
     SDK_AVAILABLE = False
 
 
-class UModelTester:
-    """UModel Python SDK 测试器"""
+class MModelTester:
+    """MModel Python SDK 测试器"""
     
     def __init__(self):
         self.examples_dir = Path(__file__).parent.parent.parent.parent / "examples"
@@ -54,7 +54,7 @@ class UModelTester:
     def run_tests(self, input_file: Optional[str] = None, output_file: Optional[str] = None, 
                   output_format: str = "json", pretty: bool = True) -> bool:
         """运行所有测试"""
-        print("🚀 开始UModel Python SDK测试")
+        print("🚀 开始MModel Python SDK测试")
         print("=" * 60)
         
         if not SDK_AVAILABLE:
@@ -126,24 +126,24 @@ class UModelTester:
             print(f"❌ examples目录不存在: {self.examples_dir}")
             return False
         
-        # 查找所有UModel文件
-        umodel_files = self._find_umodel_files()
+        # 查找所有MModel文件
+        mmodel_files = self._find_mmodel_files()
         
-        if not umodel_files:
-            print("❌ 未找到任何UModel文件")
+        if not mmodel_files:
+            print("❌ 未找到任何MModel文件")
             return False
         
-        print(f"📊 找到 {len(umodel_files)} 个文件，开始测试...")
+        print(f"📊 找到 {len(mmodel_files)} 个文件，开始测试...")
         print()
         
         # 测试每个文件
-        for file_path in umodel_files:
+        for file_path in mmodel_files:
             self._test_file(file_path)
         
         return self.stats['error_count'] == 0
     
-    def _find_umodel_files(self) -> List[Path]:
-        """查找所有UModel文件"""
+    def _find_mmodel_files(self) -> List[Path]:
+        """查找所有MModel文件"""
         files = []
         
         # 支持的文件扩展名
@@ -152,13 +152,13 @@ class UModelTester:
         # 递归查找
         for ext in extensions:
             for file_path in self.examples_dir.rglob(f"*{ext}"):
-                if self._looks_like_umodel_file(file_path):
+                if self._looks_like_mmodel_file(file_path):
                     files.append(file_path)
         
         return sorted(files)
     
-    def _looks_like_umodel_file(self, file_path: Path) -> bool:
-        """只测试UModel定义文件，跳过sample-data中的实体/关系载荷。"""
+    def _looks_like_mmodel_file(self, file_path: Path) -> bool:
+        """只测试MModel定义文件，跳过sample-data中的实体/关系载荷。"""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 if file_path.suffix == '.json':
@@ -240,7 +240,7 @@ class UModelTester:
         try:
             # 测试基础接口
             if is_core_object(obj):
-                print(f"     🔹 UModelCoreObject: ✅")
+                print(f"     🔹 MModelCoreObject: ✅")
                 
                 # 测试Metadata
                 metadata = get_object_metadata(obj)
@@ -258,7 +258,7 @@ class UModelTester:
             
             # 测试Link接口
             if is_link_object(obj):
-                print(f"     🔹 UModelLinkObject: ✅")
+                print(f"     🔹 MModelLinkObject: ✅")
                 src, dest = get_link_endpoints(obj)
                 if src and dest:
                     print(f"     🔹 Link: {src.name} -> {dest.name}")
@@ -298,9 +298,9 @@ class UModelTester:
         """解析文件"""
         try:
             if input_format == 'json':
-                obj = parse_umodel_json(data)
+                obj = parse_mmodel_json(data)
             elif input_format == 'yaml':
-                obj = parse_umodel_yaml(data)
+                obj = parse_mmodel_yaml(data)
             else:
                 return {
                     'success': False,
@@ -365,14 +365,14 @@ class UModelTester:
         print("\n" + "=" * 60)
         
         if self.stats['error_count'] == 0:
-            print("🎉 所有测试通过！UModel Python SDK工作正常。")
+            print("🎉 所有测试通过！MModel Python SDK工作正常。")
         else:
             print(f"⚠️  有 {self.stats['error_count']} 个测试失败，请检查。")
 
 
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description='UModel Python SDK 测试程序')
+    parser = argparse.ArgumentParser(description='MModel Python SDK 测试程序')
     
     parser.add_argument('-i', '--input', help='输入文件路径（可选，默认测试整个examples目录）')
     parser.add_argument('-o', '--output', help='输出文件路径（可选，默认输出到控制台）')
@@ -388,7 +388,7 @@ def main():
     args = parser.parse_args()
     
     # 创建测试器
-    tester = UModelTester()
+    tester = MModelTester()
     
     # 运行测试
     success = tester.run_tests(

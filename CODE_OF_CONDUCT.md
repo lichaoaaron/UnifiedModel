@@ -1,6 +1,6 @@
 # Code Of Conduct
 
-UModel is an open-source technical community. We want discussions, issues, pull requests, and reviews to be useful, respectful, and grounded in evidence.
+MModel is an open-source technical community. We want discussions, issues, pull requests, and reviews to be useful, respectful, and grounded in evidence.
 
 ## Expected Behavior
 

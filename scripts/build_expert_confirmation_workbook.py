@@ -10,9 +10,9 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
 
-ROOT = pathlib.Path(r"C:\Users\chaoJ\Desktop\UnifiedModel")
+ROOT = pathlib.Path(r"C:\Users\chaoJ\Desktop\MModel")
 OUTPUTS = ROOT / "outputs"
-SOURCE = OUTPUTS / "cmcc4a_unifiedmodel_ontology_fill_pack.zh.xlsx"
+SOURCE = OUTPUTS / "cmcc4a_mmodel_ontology_fill_pack.zh.xlsx"
 TARGET = OUTPUTS / "cmcc4a_expert_confirmation_pack.xlsx"
 
 YELLOW = PatternFill("solid", fgColor="FFF2CC")

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Schema to Table HTML Documentation Generator
-将 umodel schema 文件转换为表格形式的 HTML 文档
+将 mmodel schema 文件转换为表格形式的 HTML 文档
 专注于单文件转换，高密度信息展示，支持与expanded schema对比
 """
 
@@ -1909,7 +1909,7 @@ class SchemaToTableHtmlConverter:
 
 
 def main():
-    parser = argparse.ArgumentParser(description='将 umodel schema 转换为表格形式的 HTML 文档')
+    parser = argparse.ArgumentParser(description='将 mmodel schema 转换为表格形式的 HTML 文档')
     parser.add_argument('input', help='输入的 YAML 文件路径')
     parser.add_argument('-o', '--output', help='输出的 HTML 文件路径')
     

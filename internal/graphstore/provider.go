@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/alibaba/UnifiedModel/pkg/contract"
+	"github.com/alibaba/MModel/pkg/contract"
 )
 
 const (

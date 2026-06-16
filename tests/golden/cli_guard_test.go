@@ -16,14 +16,14 @@ func TestCLIRejectsDomainReadCommands(t *testing.T) {
 		{"topo", "neighbors", "demo", "cart"},
 		{"topo", "subgraph", "demo", "cart"},
 		{"topo", "path", "demo", "cart", "checkout"},
-		{"umodel", "get", "demo", "apm.service"},
-		{"umodel", "list", "demo"},
-		{"umodel", "graph", "demo"},
+		{"mmodel", "get", "demo", "apm.service"},
+		{"mmodel", "list", "demo"},
+		{"mmodel", "graph", "demo"},
 		{"workspace", "start", "demo"},
 		{"workspace", "backup", "demo"},
 	}
 	for _, args := range cases {
-		cmdArgs := append([]string{"run", "./cmd/umctl"}, args...)
+		cmdArgs := append([]string{"run", "./cmd/mmctl"}, args...)
 		cmd := exec.Command("go", cmdArgs...)
 		cmd.Dir = root
 		out, err := cmd.CombinedOutput()

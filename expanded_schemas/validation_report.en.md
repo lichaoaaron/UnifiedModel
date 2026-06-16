@@ -6,7 +6,7 @@ This is the English companion for the generated expanded schema validation repor
 
 ## Scope
 
-The validation report records validation results for expanded UModel schema artifacts.
+The validation report records validation results for expanded MModel schema artifacts.
 
 ## Regeneration
 

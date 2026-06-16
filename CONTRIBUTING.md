@@ -1,6 +1,6 @@
-# Contributing To UModel
+# Contributing To MModel
 
-Thank you for helping improve UModel. This repository is an open-source implementation of the UModel object graph semantic layer, so contributions should keep the public API, CLI, MCP, SDK, examples, and documentation aligned.
+Thank you for helping improve MModel. This repository is an open-source implementation of the MModel object graph semantic layer, so contributions should keep the public API, CLI, MCP, SDK, examples, and documentation aligned.
 
 Chinese version: [CONTRIBUTING.zh-CN.md](CONTRIBUTING.zh-CN.md)
 
@@ -29,10 +29,10 @@ make install-env
 | Path | Purpose |
 |---|---|
 | `api/` | Public REST OpenAPI and MCP tool/resource contracts. |
-| `cmd/` | Entry binaries: `umodel-server`, `umctl`, `umodel-mcp`. |
+| `cmd/` | Entry binaries: `mmodel-server`, `mmctl`, `mmodel-mcp`. |
 | `docs/` | Concept, guide, reference, SDK, UI, and GraphStore documentation. |
-| `examples/` | UModel packs and runnable sample data. |
-| `schemas/` | UModel schema source definitions. |
+| `examples/` | MModel packs and runnable sample data. |
+| `schemas/` | MModel schema source definitions. |
 | `sdk/go`, `sdk/python` | Generated Go and Python model SDKs plus Go service client. |
 | `generated/java` | Generated Java model SDK. |
 | `internal/` | Private service modules and infrastructure. |
@@ -49,7 +49,7 @@ Run the local API and Web UI:
 make dev
 ```
 
-`make dev` starts `umodel-server` with `GRAPHSTORE=file.memory`, stores local data under `data/`, and starts the Vite UI on `http://localhost:5173`.
+`make dev` starts `mmodel-server` with `GRAPHSTORE=file.memory`, stores local data under `data/`, and starts the Vite UI on `http://localhost:5173`.
 
 Stop local services:
 
@@ -93,8 +93,8 @@ make example-validate
 
 Generated SDK locations:
 
-- Go: `sdk/go/umodel`
-- Python: `sdk/python/umodel`
+- Go: `sdk/go/mmodel`
+- Python: `sdk/python/mmodel`
 - Java: `generated/java`
 
 Do not hand-edit generated SDK files unless you are changing generated output as part of a generator update.
@@ -103,7 +103,7 @@ Do not hand-edit generated SDK files unless you are changing generated output as
 
 1. Keep all public contracts in sync: `api/openapi/openapi.yaml`, `api/mcp/tools.schema.json`, `pkg/model`, and `pkg/errors`.
 2. Keep reads behind the Query Service. Do not add domain-specific entity, relation, or graph read APIs.
-3. Update `umctl` and documentation when public behavior changes.
+3. Update `mmctl` and documentation when public behavior changes.
 4. Add focused tests in `internal/` plus contract, integration, e2e, or golden coverage when behavior crosses module boundaries.
 
 Recommended checks:
@@ -117,7 +117,7 @@ make test-service
 
 1. Use the public REST API only.
 2. Keep workspace context explicit.
-3. Keep UModel editing JSON-first unless a schema-aware editor is intentionally added behind the same public validate/write APIs.
+3. Keep MModel editing JSON-first unless a schema-aware editor is intentionally added behind the same public validate/write APIs.
 4. Build before submitting:
 
 ```bash
@@ -148,7 +148,7 @@ make test-ui
 For Ladybug-backed provider changes, run this in an environment with `liblbug` installed:
 
 ```bash
-UMODEL_TEST_LADYBUG=1 make test-ladybug
+MMODEL_TEST_LADYBUG=1 make test-ladybug
 ```
 
 ## Architecture Rules

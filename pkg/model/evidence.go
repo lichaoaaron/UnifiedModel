@@ -2,9 +2,9 @@ package model
 
 // EvidencePlan holds the parsed parameters of an evidence(...) pipeline operator.
 type EvidencePlan struct {
-	Kind string     `json:"kind"`
-	From *string    `json:"from,omitempty"`
-	To   *string    `json:"to,omitempty"`
+	Kind string  `json:"kind"`
+	From *string `json:"from,omitempty"`
+	To   *string `json:"to,omitempty"`
 }
 
 // EvidenceExplain holds the resolved execution chain produced by evidence(...).
@@ -19,6 +19,10 @@ type EvidenceExplain struct {
 	StorageName      string            `json:"storage_name,omitempty"`
 	StorageType      string            `json:"storage_type,omitempty"`
 	Provider         string            `json:"provider,omitempty"`
+	Endpoint         string            `json:"endpoint,omitempty"`
+	IndexName        string            `json:"index_name,omitempty"`
+	ServiceField     string            `json:"service_field,omitempty"`
+	TimeField        string            `json:"time_field,omitempty"`
 	FieldsMapping    map[string]string `json:"fields_mapping,omitempty"`
 	TimeFrom         string            `json:"time_from,omitempty"`
 	TimeTo           string            `json:"time_to,omitempty"`

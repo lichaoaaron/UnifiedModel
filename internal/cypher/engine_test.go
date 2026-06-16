@@ -3,7 +3,7 @@ package cypher
 import (
 	"testing"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
 )
 
 const (

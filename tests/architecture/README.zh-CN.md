@@ -12,5 +12,5 @@ Guard 强制项目级约束：
 
 - Workspace metadata APIs 不应扩展 runtime lifecycle operations。
 - Domain read APIs 不应绕过 Query Service。
-- UModelAssistant 不属于当前开源 runtime/API surface。
+- MModelAssistant 不属于当前开源 runtime/API surface。
 - 业务模块不得导入 GraphStore provider implementation packages。

@@ -1,6 +1,6 @@
-# UModel Schema 工具集
+# MModel Schema 工具集
 
-这个工具集包含两个Python脚本，用于处理UModel Schema定义文件：
+这个工具集包含两个Python脚本，用于处理MModel Schema定义文件：
 
 1. **schema_expander.py** - Schema展开器
 2. **schema_validator.py** - Schema验证器
@@ -61,7 +61,7 @@ python schema_validator.py
 ## 📁 目录结构
 
 ```
-umodel/
+mmodel/
 ├── schemas/                    # 原始schema定义
 │   ├── core/                  # 核心schema文件
 │   │   ├── dataset/          # 数据集相关schema

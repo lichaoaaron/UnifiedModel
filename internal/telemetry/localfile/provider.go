@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
 
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
+	"github.com/alibaba/MModel/internal/telemetry"
 )
 
 const storageType = "local_file"

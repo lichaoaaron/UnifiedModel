@@ -2,14 +2,14 @@
 
 中文：[Workspace 与 Domain](../../zh/concepts/workspaces-and-domains.md)
 
-Workspaces and domains are the two main scope controls in UModel.
+Workspaces and domains are the two main scope controls in MModel.
 
 
 ## Workspace
 
 A workspace is an isolated context for:
 
-- UModel definitions.
+- MModel definitions.
 - Entity and relation records.
 - Query execution.
 - AgentGateway discovery and tools.
@@ -18,7 +18,7 @@ A workspace is an isolated context for:
 The public API makes the workspace explicit in path parameters:
 
 ```http
-POST /api/v1/umodel/{workspace}/import
+POST /api/v1/mmodel/{workspace}/import
 POST /api/v1/entitystore/{workspace}/entities:write
 POST /api/v1/query/{workspace}/execute
 GET  /api/v1/agent/{workspace}/discover
@@ -27,8 +27,8 @@ GET  /api/v1/agent/{workspace}/discover
 CLI commands use the same model:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 ## Domain
@@ -39,7 +39,7 @@ A domain is a semantic namespace inside a workspace. Examples include:
 - `k8s` for Kubernetes objects.
 - `automaker`, `game`, or `supplier` for business scenario objects.
 
-Domain names appear in UModel metadata:
+Domain names appear in MModel metadata:
 
 ```yaml
 metadata:
@@ -50,7 +50,7 @@ metadata:
 They also appear in query filters:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 ## Boundary Rules
@@ -77,7 +77,7 @@ When using `file.memory`, workspace metadata is saved under the data root and gr
 data/
 ├── workspaces.json
 └── graphstore/file-memory/workspaces/demo/
-    ├── umodels.json
+    ├── mmodels.json
     ├── entities.json
     └── relations.json
 ```

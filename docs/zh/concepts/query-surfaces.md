@@ -2,14 +2,14 @@
 
 English: [Query Surfaces](../../en/concepts/query-surfaces.md)
 
-Query Service 是 UModel 的公共读取面。REST、CLI、Web UI、SDK 和 MCP tools 都收敛到同一套查询概念。
+Query Service 是 MModel 的公共读取面。REST、CLI、Web UI、SDK 和 MCP tools 都收敛到同一套查询概念。
 
 
 ## Sources
 
 | Source | 读取内容 | 示例 |
 |---|---|---|
-| `.umodel` | 模型定义 | `.umodel with(kind='entity_set')` |
+| `.mmodel` | 模型定义 | `.mmodel with(kind='entity_set')` |
 | `.entity` | 运行时实体 | `.entity with(domain='devops', name='devops.service')` |
 | `.topo` | 运行时拓扑关系 | `.topo | graph-call getDirectRelations(...)` |
 
@@ -35,13 +35,13 @@ flowchart LR
 执行查询：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 Explain 查询计划：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 Explain 输出 source、provider、planned operators 和 limit 行为。

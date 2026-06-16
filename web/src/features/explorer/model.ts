@@ -1,4 +1,4 @@
-import type { UModelElement } from '../../api/types'
+import type { MModelElement } from '../../api/types'
 
 export type ViewMode = 'graph' | 'table'
 export type ZoomLevel = 'mini' | 'compact' | 'full'
@@ -20,7 +20,7 @@ export interface SearchEntry {
   title: string
   subtitle: string
   tokens: string[]
-  element: UModelElement
+  element: MModelElement
 }
 
 export interface SearchToken {
@@ -36,9 +36,9 @@ export interface SearchIndex {
 }
 
 export interface DraftDiff {
-  added: UModelElement[]
-  modified: UModelElement[]
-  deleted: UModelElement[]
+  added: MModelElement[]
+  modified: MModelElement[]
+  deleted: MModelElement[]
 }
 
 export const nodeWidth = 250
@@ -69,7 +69,7 @@ export const defaultKindColor: KindColor = {
   bg: '#f8fafc',
   text: '#64748b',
   dot: '#94a3b8',
-  label: 'UModel',
+  label: 'MModel',
   abbrev: 'UM',
 }
 
@@ -107,12 +107,12 @@ export function buildElementId(kind: unknown, domain?: string, name?: string) {
   return [domain, name, kind].filter(Boolean).join('/')
 }
 
-export function elementKey(element: UModelElement): string {
+export function elementKey(element: MModelElement): string {
   return buildElementId(element.kind, element.domain, element.name)
 }
 
 export function filterElements(
-  elements: UModelElement[],
+  elements: MModelElement[],
   fullTextFilters: string[],
   kinds: string[],
   domains: string[],
@@ -128,7 +128,7 @@ export function filterElements(
 }
 
 export function filterFlatElements(
-  elements: UModelElement[],
+  elements: MModelElement[],
   fullTextFilters: string[],
   kinds: string[],
   domains: string[],
@@ -150,7 +150,7 @@ export function filterFlatElements(
 }
 
 export function filterGraphElements(
-  elements: UModelElement[],
+  elements: MModelElement[],
   fullTextFilters: string[],
   kinds: string[],
   domains: string[],
@@ -186,7 +186,7 @@ export function filterGraphElements(
   }
 
   const visibleNodeIds = new Set(selectedNodeIds)
-  const visibleLinks = new Map<string, UModelElement>()
+  const visibleLinks = new Map<string, MModelElement>()
 
   for (const link of linkElements) {
     const key = elementKey(link)
@@ -203,7 +203,7 @@ export function filterGraphElements(
     visibleLinks.set(key, link)
   }
 
-  const result = new Map<string, UModelElement>()
+  const result = new Map<string, MModelElement>()
   for (const element of graphNodeElements) {
     const key = elementKey(element)
     if (visibleNodeIds.has(key)) result.set(key, element)
@@ -217,7 +217,7 @@ export function filterGraphElements(
 }
 
 function elementMatchesFlatFilters(
-  element: UModelElement,
+  element: MModelElement,
   fullTextFilters: string[],
   kinds: string[],
   domains: string[],
@@ -230,7 +230,7 @@ function elementMatchesFlatFilters(
   return needles.every((needle) => tokens.some((value) => value.includes(needle)))
 }
 
-export function summarize(elements: UModelElement[]) {
+export function summarize(elements: MModelElement[]) {
   const byKind = new Map<string, number>()
   const byDomain = new Map<string, number>()
   let links = 0
@@ -256,7 +256,7 @@ const recommendationStopWords = new Set([
   'sls_logstore', 'sls_metricstore', 'aliyun_prometheus', 'explorer', 'storage',
 ])
 
-export function buildSearchIndex(elements: UModelElement[]): SearchIndex {
+export function buildSearchIndex(elements: MModelElement[]): SearchIndex {
   const tokenCounts = new Map<string, number>()
   const allKinds = new Set(elements.map((element) => element.kind.toLowerCase()))
   const allDomains = new Set(elements.map((element) => (element.domain || 'unknown').toLowerCase()))
@@ -378,7 +378,7 @@ export function suggestTokens(index: SearchIndex, partial: string, limit = 8): S
     .slice(0, limit)
 }
 
-export function tokensForElement(element: UModelElement): string[] {
+export function tokensForElement(element: MModelElement): string[] {
   return [
     elementKey(element),
     element.kind,
@@ -394,7 +394,7 @@ export function tokensForElement(element: UModelElement): string[] {
     .map(String)
 }
 
-function recommendationTokensForElement(element: UModelElement): string[] {
+function recommendationTokensForElement(element: MModelElement): string[] {
   const spec = element.spec || {}
   return [
     elementKey(element),
@@ -447,7 +447,7 @@ export function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-export function diffElements(serverElements: UModelElement[], draftElements: UModelElement[]): DraftDiff {
+export function diffElements(serverElements: MModelElement[], draftElements: MModelElement[]): DraftDiff {
   const serverById = new Map(serverElements.map((element) => [elementKey(element), element]))
   const draftById = new Map(draftElements.map((element) => [elementKey(element), element]))
   const added = draftElements.filter((element) => !serverById.has(elementKey(element)))
@@ -470,7 +470,7 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value)
 }
 
-export function relatedElementIds(elements: UModelElement[], ids: string[]): Set<string> {
+export function relatedElementIds(elements: MModelElement[], ids: string[]): Set<string> {
   const nodeElements = elements.filter((element) => !isLinkElement(element))
   const alias = aliasForElements(nodeElements)
   const related = new Set(ids)
@@ -489,7 +489,7 @@ export function relatedElementIds(elements: UModelElement[], ids: string[]): Set
   return related
 }
 
-export function focusIdsForElements(elements: UModelElement[], allElements: UModelElement[]) {
+export function focusIdsForElements(elements: MModelElement[], allElements: MModelElement[]) {
   const nodeElements = allElements.filter((element) => !isLinkElement(element))
   const alias = aliasForElements(nodeElements)
   const ids = new Set<string>()
@@ -505,7 +505,7 @@ export function focusIdsForElements(elements: UModelElement[], allElements: UMod
   return [...ids]
 }
 
-export function linkTouchesElement(link: UModelElement, element: UModelElement, elements: UModelElement[]) {
+export function linkTouchesElement(link: MModelElement, element: MModelElement, elements: MModelElement[]) {
   const alias = aliasForElements(elements.filter((item) => !isLinkElement(item)))
   const source = endpointId((link.spec || {}).src)
   const target = endpointId((link.spec || {}).dest)
@@ -513,7 +513,7 @@ export function linkTouchesElement(link: UModelElement, element: UModelElement, 
   return (alias.get(source) || source) === key || (alias.get(target) || target) === key
 }
 
-export function aliasForElements(elements: UModelElement[]) {
+export function aliasForElements(elements: MModelElement[]) {
   const alias = new Map<string, string>()
   for (const element of elements) {
     const key = elementKey(element)
@@ -524,18 +524,18 @@ export function aliasForElements(elements: UModelElement[]) {
   return alias
 }
 
-export function cloneElements(elements: UModelElement[]): UModelElement[] {
-  return elements.map((element) => JSON.parse(JSON.stringify(element)) as UModelElement)
+export function cloneElements(elements: MModelElement[]): MModelElement[] {
+  return elements.map((element) => JSON.parse(JSON.stringify(element)) as MModelElement)
 }
 
-export function cloneElementForDraft(element: UModelElement): UModelElement {
+export function cloneElementForDraft(element: MModelElement): MModelElement {
   const suffix = Math.random().toString(36).slice(2, 7)
-  const copy = JSON.parse(JSON.stringify(element)) as UModelElement
+  const copy = JSON.parse(JSON.stringify(element)) as MModelElement
   copy.name = `${element.name || elementKey(element)}_copy_${suffix}`
   return copy
 }
 
-export function cloneLinkForDraft(link: UModelElement, original: UModelElement, copy: UModelElement): UModelElement {
+export function cloneLinkForDraft(link: MModelElement, original: MModelElement, copy: MModelElement): MModelElement {
   const linkCopy = cloneElementForDraft(link)
   const spec = { ...(linkCopy.spec || {}) }
   spec.src = rewriteEndpointForCopy(spec.src, original, copy)
@@ -544,7 +544,7 @@ export function cloneLinkForDraft(link: UModelElement, original: UModelElement, 
   return linkCopy
 }
 
-function rewriteEndpointForCopy(value: unknown, original: UModelElement, copy: UModelElement): unknown {
+function rewriteEndpointForCopy(value: unknown, original: MModelElement, copy: MModelElement): unknown {
   if (!endpointMatchesElement(value, original)) return value
   if (typeof value === 'string') return copy.domain && copy.name ? `${copy.domain}.${copy.name}` : elementKey(copy)
   if (isObject(value)) {
@@ -558,7 +558,7 @@ function rewriteEndpointForCopy(value: unknown, original: UModelElement, copy: U
   return value
 }
 
-function endpointMatchesElement(value: unknown, element: UModelElement): boolean {
+function endpointMatchesElement(value: unknown, element: MModelElement): boolean {
   const endpoint = endpointId(value)
   if (!endpoint) return false
   return [elementKey(element), element.name, element.domain && element.name ? `${element.domain}.${element.name}` : '']
@@ -566,13 +566,13 @@ function endpointMatchesElement(value: unknown, element: UModelElement): boolean
     .includes(endpoint)
 }
 
-export function upsertById(items: UModelElement[], element: UModelElement): UModelElement[] {
+export function upsertById(items: MModelElement[], element: MModelElement): MModelElement[] {
   const key = elementKey(element)
   const exists = items.some((item) => elementKey(item) === key)
   return exists ? items.map((item) => (elementKey(item) === key ? element : item)) : [...items, element]
 }
 
-export function defaultNewNode(kind = 'entity_set'): UModelElement {
+export function defaultNewNode(kind = 'entity_set'): MModelElement {
   const domain = 'demo'
   const nameBase = formatKindLabel(kind).replace(/Set$/, '').toLowerCase() || 'custom'
   const name = `custom_${nameBase}`
@@ -614,7 +614,7 @@ export function defaultNewNode(kind = 'entity_set'): UModelElement {
   }
 }
 
-export function createDataLink(source: UModelElement, target: UModelElement): UModelElement {
+export function createDataLink(source: MModelElement, target: MModelElement): MModelElement {
   const sourceName = source.name || elementKey(source)
   const targetName = target.name || elementKey(target)
   const name = `${sourceName}_to_${targetName}`.replace(/[^a-zA-Z0-9_]+/g, '_')
@@ -650,11 +650,11 @@ export function endpointId(value: unknown): string {
   return ''
 }
 
-export function isLinkElement(element: UModelElement): boolean {
+export function isLinkElement(element: MModelElement): boolean {
   return linkKinds.has(element.kind) || Boolean((element.spec || {}).src && (element.spec || {}).dest)
 }
 
-export function isEntitySetLinkElement(element: UModelElement): boolean {
+export function isEntitySetLinkElement(element: MModelElement): boolean {
   return element.kind === 'entity_set_link'
 }
 
@@ -662,7 +662,7 @@ export function kindActsAsGraphNode(kind: string, entitySetLinkDisplay: EntitySe
   return !linkKinds.has(kind) || (entitySetLinkDisplay === 'relative_link' && kind === 'entity_set_link')
 }
 
-export function elementActsAsGraphNode(element: UModelElement, entitySetLinkDisplay: EntitySetLinkDisplay): boolean {
+export function elementActsAsGraphNode(element: MModelElement, entitySetLinkDisplay: EntitySetLinkDisplay): boolean {
   return !isLinkElement(element) || (entitySetLinkDisplay === 'relative_link' && isEntitySetLinkElement(element))
 }
 
@@ -686,18 +686,18 @@ export function formatKindLabel(kind: string): string {
   return kind.split('_').map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join('')
 }
 
-export function titleForElement(element: UModelElement): string {
+export function titleForElement(element: MModelElement): string {
   return element.name || elementKey(element)
 }
 
-export function descriptionForElement(element: UModelElement): string {
+export function descriptionForElement(element: MModelElement): string {
   const description = (element.spec || {}).description
   if (typeof description === 'string') return description
   if (isObject(description)) return optionalString(description.zh_cn) || optionalString(description.en_us) || ''
   return ''
 }
 
-export function tableSortValue(element: UModelElement, key: 'name' | 'domain' | 'kind' | 'description'): string {
+export function tableSortValue(element: MModelElement, key: 'name' | 'domain' | 'kind' | 'description'): string {
   if (key === 'name') return titleForElement(element).toLowerCase()
   if (key === 'domain') return (element.domain || '').toLowerCase()
   if (key === 'kind') return labelForKind(element.kind).toLowerCase()
@@ -714,7 +714,7 @@ export function paginationItems(page: number, totalPages: number): Array<number 
   return items
 }
 
-export function tagsForElement(element: UModelElement): string[] {
+export function tagsForElement(element: MModelElement): string[] {
   const spec = element.spec || {}
   const fields = asUnknownArray(spec.fields)
   const metrics = asUnknownArray(spec.metrics)
@@ -730,7 +730,7 @@ export function tagsForElement(element: UModelElement): string[] {
     .slice(0, 8)
 }
 
-export function tagCountForElement(element: UModelElement): number {
+export function tagCountForElement(element: MModelElement): number {
   const spec = element.spec || {}
   return Math.max(
     asUnknownArray(spec.fields).length,
@@ -740,7 +740,7 @@ export function tagCountForElement(element: UModelElement): number {
   )
 }
 
-export function detailShort(element: UModelElement): string {
+export function detailShort(element: MModelElement): string {
   if (isLinkElement(element)) {
     const src = endpointId((element.spec || {}).src)
     const dest = endpointId((element.spec || {}).dest)
@@ -753,7 +753,7 @@ export function detailShort(element: UModelElement): string {
   return element.version || ''
 }
 
-export function entityLinkTypeForEdge(element: UModelElement): string {
+export function entityLinkTypeForEdge(element: MModelElement): string {
   const spec = element.spec || {}
   return optionalString(spec.entity_link_type) || optionalString(spec.link_type) || optionalString(spec.type) || labelForKind(element.kind)
 }

@@ -3,17 +3,17 @@
 这篇帮助你回答两个常见问题：
 
 - AgentGateway 和 Query Service 是什么关系。
-- `umodel-mcp` 到底是在暴露什么。
+- `mmodel-mcp` 到底是在暴露什么。
 
 ## 先记一句话
 
-AgentGateway 是 Query Service 的 agent-facing 适配层，`umodel-mcp` 是把这层能力用 MCP 协议暴露出去。
+AgentGateway 是 Query Service 的 agent-facing 适配层，`mmodel-mcp` 是把这层能力用 MCP 协议暴露出去。
 
 ## 关系图
 
 ```mermaid
 flowchart LR
-  Client["MCP client / Agent"] --> MCP["cmd/umodel-mcp"]
+  Client["MCP client / Agent"] --> MCP["cmd/mmodel-mcp"]
   MCP --> AG["internal/agentgateway.Service"]
   AG --> QS["internal/query.Service"]
   QS --> GS["GraphStore"]
@@ -49,8 +49,8 @@ flowchart LR
 - `query_spl_execute`
 - `query_spl_explain`
 - `query_spl_examples`
-- `umodel_validate`
-- `umodel_import`
+- `mmodel_validate`
+- `mmodel_import`
 - `entity_write`
 - `entity_expire`
 
@@ -75,9 +75,9 @@ flowchart LR
 
 关键文件：
 
-- `cmd/umodel-mcp/main.go`
+- `cmd/mmodel-mcp/main.go`
 
-这个入口做的事情和 `umodel-server` 很像：
+这个入口做的事情和 `mmodel-server` 很像：
 
 - 解析 flags
 - 组装 App
@@ -97,13 +97,13 @@ flowchart LR
 常见本地启动命令：
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore memory
+go run ./cmd/mmodel-mcp --data data --graphstore memory
 ```
 
 HTTP 模式：
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 ## MCP 为什么仍然不绕过 Query Service
@@ -119,16 +119,16 @@ go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --gra
 ## 推荐源码阅读顺序
 
 1. `internal/agentgateway/service.go`
-2. `cmd/umodel-mcp/main.go`
-3. `cmd/umodel-mcp/http.go`
+2. `cmd/mmodel-mcp/main.go`
+3. `cmd/mmodel-mcp/http.go`
 4. `docs/zh/reference/mcp.md`
 
 ## 推荐验证命令
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent discover demo
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".umodel | limit 5"}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent discover demo
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_explain '{"query":".mmodel | limit 5"}'
 ```
 
 本地 MCP 冒烟测试可参考：

@@ -25,8 +25,8 @@ echo "  Python SDK 验证"
 echo "========================================="
 echo "Python: $($PYTHON --version)"
 
-if [ ! -d "$PYTHON_DIR/umodel" ]; then
-    echo -e "${RED}❌ Python SDK 目录不存在: $PYTHON_DIR/umodel${NC}"
+if [ ! -d "$PYTHON_DIR/mmodel" ]; then
+    echo -e "${RED}❌ Python SDK 目录不存在: $PYTHON_DIR/mmodel${NC}"
     exit 1
 fi
 
@@ -34,7 +34,7 @@ ERRORS=0
 
 echo ""
 echo "📦 检查 Python 依赖..."
-REQ_FILE="$PYTHON_DIR/umodel/requirements.txt"
+REQ_FILE="$PYTHON_DIR/mmodel/requirements.txt"
 if [ -f "$REQ_FILE" ]; then
     $PYTHON -m pip install -r "$REQ_FILE" -q 2>/dev/null || true
     echo -e "${GREEN}✅ Python 依赖已安装${NC}"
@@ -45,7 +45,7 @@ fi
 echo ""
 echo "🔍 验证 Python SDK 导入..."
 cd "$PYTHON_DIR"
-if $PYTHON -c "from umodel import *; print('Import OK: all modules loaded')" 2>&1; then
+if $PYTHON -c "from mmodel import *; print('Import OK: all modules loaded')" 2>&1; then
     echo -e "${GREEN}✅ Python 导入验证通过${NC}"
 else
     echo -e "${RED}❌ Python 导入验证失败${NC}"

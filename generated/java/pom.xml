@@ -5,13 +5,13 @@
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     
-    <groupId>com.umodel</groupId>
-    <artifactId>umodel-java-sdk</artifactId>
+    <groupId>com.mmodel</groupId>
+    <artifactId>mmodel-java-sdk</artifactId>
     <version>2.0.0</version>
     <packaging>jar</packaging>
     
-    <name>UModel Java SDK</name>
-    <description>Java SDK for UModel Schema</description>
+    <name>MModel Java SDK</name>
+    <description>Java SDK for MModel Schema</description>
     
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

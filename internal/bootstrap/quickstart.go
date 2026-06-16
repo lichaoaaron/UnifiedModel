@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"github.com/alibaba/UnifiedModel/internal/sampledata"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/sampledata"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const (
@@ -50,7 +50,7 @@ func (a *App) LoadQuickStart(ctx context.Context, opts QuickStartOptions) (model
 			Name:        workspaceName,
 			Description: workspaceDescription,
 			Labels: map[string]string{
-				"umodel.io/quickstart": "true",
+				"mmodel.io/quickstart": "true",
 			},
 		}); err != nil && !apperrors.IsCode(err, apperrors.CodeConflict) {
 			return model.SampleImportResult{}, err

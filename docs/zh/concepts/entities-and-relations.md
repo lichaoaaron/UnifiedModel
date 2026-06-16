@@ -25,13 +25,13 @@ POST /api/v1/entitystore/{workspace}/entities:write
 CLI：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 entity write demo examples/quickstart-multidomain/sample-data/entities.json
+go run ./cmd/mmctl --addr http://localhost:8080 entity write demo examples/quickstart-multidomain/sample-data/entities.json
 ```
 
 读取：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 20"
 ```
 
 ## 写入 Relation
@@ -45,13 +45,13 @@ POST /api/v1/entitystore/{workspace}/relations:write
 CLI：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 topo write demo examples/quickstart-multidomain/sample-data/relations.json
+go run ./cmd/mmctl --addr http://localhost:8080 topo write demo examples/quickstart-multidomain/sample-data/relations.json
 ```
 
 读取拓扑：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 20"
 ```
 
 ## Visibility
@@ -60,7 +60,7 @@ EntityStore 支持 write、expire 和 delete-style 操作。本地查询默认�
 
 ## Identity
 
-运行时记录需要稳定 entity IDs。UModel 在 topology calls 和 provider storage 中使用经过校验的 entity identifiers。示例 ID 保持确定，教程和测试即可直接复制运行。
+运行时记录需要稳定 entity IDs。MModel 在 topology calls 和 provider storage 中使用经过校验的 entity identifiers。示例 ID 保持确定，教程和测试即可直接复制运行。
 
 ## 设计规则
 

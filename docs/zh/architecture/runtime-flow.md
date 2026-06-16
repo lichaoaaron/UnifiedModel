@@ -9,7 +9,7 @@ English: [Runtime Flow](../../en/architecture/runtime-flow.md)
 
 ```mermaid
 sequenceDiagram
-  participant Main as umodel-server
+  participant Main as mmodel-server
   participant Bootstrap as internal/bootstrap
   participant Workspace as Workspace Store
   participant Graph as GraphStore Provider
@@ -36,17 +36,17 @@ sequenceDiagram
 sequenceDiagram
   participant Client
   participant API as REST API
-  participant UModel as UModel Service
+  participant MModel as MModel Service
   participant Validator as Schema Validator
   participant Graph as GraphStore
 
-  Client->>API: POST /api/v1/umodel/{workspace}/import
-  API->>UModel: import path or pack
-  UModel->>Validator: validate elements
-  Validator-->>UModel: validation result
-  UModel->>Graph: put UModel elements
-  Graph-->>UModel: write result
-  UModel-->>Client: import result
+  Client->>API: POST /api/v1/mmodel/{workspace}/import
+  API->>MModel: import path or pack
+  MModel->>Validator: validate elements
+  Validator-->>MModel: validation result
+  MModel->>Graph: put MModel elements
+  Graph-->>MModel: write result
+  MModel-->>Client: import result
 ```
 
 内置多域 quickstart 样例通过以下 endpoint 包装同一路径：
@@ -101,7 +101,7 @@ AgentGateway 提供安全的 Agent-facing 层：
 - Resources 暴露元数据和模板。
 - 写工具默认关闭，需显式启用。
 
-`umodel-mcp` 将 MCP clients 接入同一套 AgentGateway 语义。
+`mmodel-mcp` 将 MCP clients 接入同一套 AgentGateway 语义。
 
 ## 本地持久化
 
@@ -109,7 +109,7 @@ AgentGateway 提供安全的 Agent-facing 层：
 
 ```text
 data/graphstore/file-memory/workspaces/<workspace>/
-├── umodels.json
+├── mmodels.json
 ├── entities.json
 └── relations.json
 ```

@@ -6,8 +6,8 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	"github.com/alibaba/UnifiedModel/internal/telemetry/localfile"
+	"github.com/alibaba/MModel/internal/telemetry"
+	"github.com/alibaba/MModel/internal/telemetry/localfile"
 )
 
 func testDataRoot() string {

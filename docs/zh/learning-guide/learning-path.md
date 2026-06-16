@@ -1,6 +1,6 @@
 # 实践学习路径
 
-如果你想真正把 UnifiedModel 读懂，最有效的方式不是连续读很多文件，而是“读一点，跑一点，验证一点”。
+如果你想真正把 MModel 读懂，最有效的方式不是连续读很多文件，而是“读一点，跑一点，验证一点”。
 
 ## 第一阶段：先跑起来
 
@@ -26,14 +26,14 @@ make quickstart
 
 ## 第二阶段：把三种读路径跑一遍
 
-目标：把 `.umodel`、`.entity`、`.topo` 三个公共查询源和真实结果对上。
+目标：把 `.mmodel`、`.entity`、`.topo` 三个公共查询源和真实结果对上。
 
 执行：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 10"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | limit 10"
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | limit 10"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 10"
 ```
 
 你在这一阶段要回答的问题：
@@ -48,7 +48,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 
 先看：
 
-- `cmd/umodel-server/main.go`
+- `cmd/mmodel-server/main.go`
 - `internal/bootstrap/app.go`
 - `internal/bootstrap/quickstart.go`
 
@@ -64,7 +64,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 
 先看：
 
-- `internal/umodel/service.go`
+- `internal/mmodel/service.go`
 - `internal/entitystore/service.go`
 - `internal/sampledata/service.go`
 
@@ -94,7 +94,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 建议执行：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 你在这一阶段要回答的问题：
@@ -110,14 +110,14 @@ go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with
 先看：
 
 - `internal/agentgateway/service.go`
-- `cmd/umodel-mcp/main.go`
+- `cmd/mmodel-mcp/main.go`
 - `docs/zh/reference/mcp.md`
 
 建议执行：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent discover demo
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent discover demo
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_examples '{}'
 ```
 
 你在这一阶段要回答的问题：
@@ -145,7 +145,7 @@ git diff --check
 如果下面这些问题你都能自己回答，说明已经形成了比较稳的理解：
 
 - 为什么 Query Service 是唯一公共读路径。
-- UModel Service 和 EntityStore 的职责边界是什么。
+- MModel Service 和 EntityStore 的职责边界是什么。
 - quickstart 为何默认使用 `memory` provider。
 - AgentGateway 为什么只把资源做成元数据导向。
 - Web UI 如何证明自己只调用公共 REST API。

@@ -1,4 +1,4 @@
-# UModel Schema 验证报告
+# MModel Schema 验证报告
 
 基于 `schemas/base.yaml` 中定义的元数据规范进行验证
 

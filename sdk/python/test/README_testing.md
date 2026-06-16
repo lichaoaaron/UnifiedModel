@@ -1,6 +1,6 @@
-# UModel Python SDK 测试指南
+# MModel Python SDK 测试指南
 
-本目录包含了用于测试和验证生成的UModel Python SDK的脚本。
+本目录包含了用于测试和验证生成的MModel Python SDK的脚本。
 
 ## 📋 测试脚本列表
 
@@ -28,7 +28,7 @@ python scripts/run_python_tests.py
 这是一个功能完整的测试程序，类似于Go版本的CLI工具，可以：
 
 - 📁 自动扫描整个examples目录
-- 🔍 解析UModel文件（JSON/YAML）
+- 🔍 解析MModel文件（JSON/YAML）
 - ✅ 验证生成的类型系统
 - 🔄 转换输出格式
 - 📊 显示详细的测试结果和统计信息
@@ -63,7 +63,7 @@ python scripts/test_python_sdk.py --help
 
 ### 2. `demo_python_sdk.py` - 演示程序
 
-这是一个简单的演示脚本，展示UModel Python SDK的核心功能：
+这是一个简单的演示脚本，展示MModel Python SDK的核心功能：
 
 - 🔤 SemanticString使用演示
 - 🔗 LinkEndpoint使用演示
@@ -122,7 +122,7 @@ python scripts/demo_python_sdk.py
 ### 自动化测试输出
 
 ```
-🚀 UModel Python SDK 自动化测试
+🚀 MModel Python SDK 自动化测试
 ============================================================
 开始时间: 2024-01-15 14:30:00
 
@@ -161,9 +161,9 @@ Python版本: 3.9.7
   演示程序: ✅ 通过
 
 📝 建议:
-  - UModel Python SDK工作正常
+  - MModel Python SDK工作正常
   - 可以开始使用生成的SDK
-  - 查看generated/python/umodel/README.md了解更多用法
+  - 查看generated/python/mmodel/README.md了解更多用法
 ============================================================
 
 🎊 自动化测试完成！所有检查都通过了。
@@ -172,9 +172,9 @@ Python版本: 3.9.7
 ### 完整测试输出
 
 ```
-🚀 开始UModel Python SDK测试
+🚀 开始MModel Python SDK测试
 ============================================================
-✅ 成功导入UModel Python SDK
+✅ 成功导入MModel Python SDK
 📁 扫描examples目录: /path/to/examples
 📊 找到 1 个文件，开始测试...
 
@@ -183,7 +183,7 @@ Python版本: 3.9.7
      格式: yaml
      类型: MetricSetV010
      Kind: metric_set
-     🔹 UModelCoreObject: ✅
+     🔹 MModelCoreObject: ✅
      🔹 Metadata: ✅ (name: sls_front.metricset)
      🔹 Schema: ✅ (version: v0.1.0)
      🔹 Validation: ✅
@@ -201,15 +201,15 @@ YAML文件:     1
   - MetricSetV010
 
 ============================================================
-🎉 所有测试通过！UModel Python SDK工作正常。
+🎉 所有测试通过！MModel Python SDK工作正常。
 ```
 
 ### 演示程序输出
 
 ```
-🚀 UModel Python SDK 演示程序
+🚀 MModel Python SDK 演示程序
 ============================================================
-✅ 成功导入UModel Python SDK
+✅ 成功导入MModel Python SDK
 SDK 版本: 2.0.0
 
 🔤 SemanticString 演示
@@ -230,7 +230,7 @@ SDK 版本: 2.0.0
 ✅ 解析成功
 类型: MetricSetV100
 Kind: metric_set
-✅ 实现了UModelCoreObject接口
+✅ 实现了MModelCoreObject接口
 元数据名称: demo_metric
 Schema版本: v1.0.0
 ✅ 对象验证通过
@@ -251,13 +251,13 @@ Schema版本: v1.0.0
    ```
    **解决方案**：检查schemas目录是否存在，确保在项目根目录运行
    ```bash
-   cd /path/to/umodel
+   cd /path/to/mmodel
    python scripts/run_python_tests.py
    ```
 
 2. **导入错误**：
    ```
-   ❌ 无法导入UModel Python SDK: No module named 'umodel'
+   ❌ 无法导入MModel Python SDK: No module named 'mmodel'
    ```
    **解决方案**：先运行生成器
    ```bash
@@ -317,7 +317,7 @@ def demo_custom_feature():
     """演示自定义功能"""
     print("\n🎯 自定义功能演示")
     print("-" * 40)
-    
+
     # 你的演示代码
     pass
 
@@ -342,4 +342,4 @@ demo_custom_feature()
 
 ---
 
-💡 **提示**：这些测试脚本不仅用于验证SDK的正确性，也是学习如何使用UModel Python SDK的好例子！ 
+💡 **提示**：这些测试脚本不仅用于验证SDK的正确性，也是学习如何使用MModel Python SDK的好例子！

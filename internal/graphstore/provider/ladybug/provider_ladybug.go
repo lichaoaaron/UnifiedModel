@@ -14,11 +14,11 @@ import (
 	"time"
 
 	lbug "github.com/LadybugDB/go-ladybug"
-	"github.com/alibaba/UnifiedModel/internal/cypher"
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/pkg/contract"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/cypher"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/pkg/contract"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type Provider struct {
@@ -33,8 +33,8 @@ type workspaceHandle struct {
 }
 
 const (
-	upsertUModelNodeStatement = `MERGE (n:umodel_node {key: $key}) SET n.kind = $kind, n.domain = $domain, n.name = $name, n.version = $version, n.spec = $spec;`
-	deleteUModelNodeStatement = `MATCH (n:umodel_node {key: $key}) DELETE n;`
+	upsertMModelNodeStatement = `MERGE (n:mmodel_node {key: $key}) SET n.kind = $kind, n.domain = $domain, n.name = $name, n.version = $version, n.spec = $spec;`
+	deleteMModelNodeStatement = `MATCH (n:mmodel_node {key: $key}) DELETE n;`
 	upsertEntityStatement     = `MERGE (e:entity {entity_key: $entity_key}) SET e.domain = $domain, e.entity_type = $entity_type, e.entity_id = $entity_id, e.method = $method, e.first_observed_time = $first_observed_time, e.last_observed_time = $last_observed_time, e.keep_alive_seconds = $keep_alive_seconds, e.deleted = $deleted, e.properties = $properties;`
 	upsertTopoStatement       = `MATCH (s:entity {entity_key: $src_key}), (d:entity {entity_key: $dest_key}) MERGE (s)-[r:topo {relation_key: $relation_key}]->(d) SET r.relation_type = $relation_type, r.method = $method, r.first_observed_time = $first_observed_time, r.last_observed_time = $last_observed_time, r.keep_alive_seconds = $keep_alive_seconds, r.deleted = $deleted, r.properties = $properties;`
 )
@@ -84,12 +84,12 @@ func (p *Provider) EnsureSchema(ctx context.Context, workspace string) error {
 	return p.ensureSchemaLocked(workspace)
 }
 
-func (p *Provider) PutUModelElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error) {
+func (p *Provider) PutMModelElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error) {
 	conn, err := p.conn(batch.Workspace)
 	if err != nil {
 		return model.WriteResult{}, err
 	}
-	stmt, err := conn.Prepare(upsertUModelNodeStatement)
+	stmt, err := conn.Prepare(upsertMModelNodeStatement)
 	if err != nil {
 		return model.WriteResult{}, err
 	}
@@ -97,7 +97,7 @@ func (p *Provider) PutUModelElements(ctx context.Context, batch model.UModelElem
 
 	items := make([]model.BatchItemResult, 0, len(batch.Elements))
 	for _, element := range batch.Elements {
-		key := model.UModelElementKey(element)
+		key := model.MModelElementKey(element)
 		spec, _ := json.Marshal(element.Spec)
 		res, err := conn.Execute(stmt, map[string]any{
 			"key":     key,
@@ -116,12 +116,12 @@ func (p *Provider) PutUModelElements(ctx context.Context, batch model.UModelElem
 	return model.WriteResult{Accepted: len(batch.Elements), Items: items}, nil
 }
 
-func (p *Provider) DeleteUModelElements(ctx context.Context, workspace string, ids []string) (model.WriteResult, error) {
+func (p *Provider) DeleteMModelElements(ctx context.Context, workspace string, ids []string) (model.WriteResult, error) {
 	conn, err := p.conn(workspace)
 	if err != nil {
 		return model.WriteResult{}, err
 	}
-	stmt, err := conn.Prepare(deleteUModelNodeStatement)
+	stmt, err := conn.Prepare(deleteMModelNodeStatement)
 	if err != nil {
 		return model.WriteResult{}, err
 	}
@@ -131,15 +131,15 @@ func (p *Provider) DeleteUModelElements(ctx context.Context, workspace string, i
 	for _, id := range ids {
 		id = strings.TrimSpace(id)
 		if id == "" {
-			items = append(items, model.BatchItemResult{ID: id, OK: false, Code: string(apperrors.CodeValidationFailed), Message: "umodel element id is required"})
+			items = append(items, model.BatchItemResult{ID: id, OK: false, Code: string(apperrors.CodeValidationFailed), Message: "mmodel element id is required"})
 			continue
 		}
-		rows, err := runRows(conn, `MATCH (n:umodel_node {key: $key}) RETURN n.key AS key LIMIT 1;`, map[string]any{"key": id})
+		rows, err := runRows(conn, `MATCH (n:mmodel_node {key: $key}) RETURN n.key AS key LIMIT 1;`, map[string]any{"key": id})
 		if err != nil {
 			return model.WriteResult{}, err
 		}
 		if len(rows) == 0 {
-			items = append(items, model.BatchItemResult{ID: id, OK: false, Code: string(apperrors.CodeNotFound), Message: "umodel element not found"})
+			items = append(items, model.BatchItemResult{ID: id, OK: false, Code: string(apperrors.CodeNotFound), Message: "mmodel element not found"})
 			continue
 		}
 		res, err := conn.Execute(stmt, map[string]any{"key": id})
@@ -152,20 +152,20 @@ func (p *Provider) DeleteUModelElements(ctx context.Context, workspace string, i
 	return summarizeItems(items), nil
 }
 
-func (p *Provider) GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error) {
+func (p *Provider) GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error) {
 	conn, err := p.conn(req.Workspace)
 	if err != nil {
-		return model.UModelSnapshot{}, err
+		return model.MModelSnapshot{}, err
 	}
-	rows, err := runRows(conn, `MATCH (n:umodel_node) RETURN n.kind AS kind, n.domain AS domain, n.name AS name, n.version AS version, n.spec AS spec ORDER BY n.key;`, nil)
+	rows, err := runRows(conn, `MATCH (n:mmodel_node) RETURN n.kind AS kind, n.domain AS domain, n.name AS name, n.version AS version, n.spec AS spec ORDER BY n.key;`, nil)
 	if err != nil {
-		return model.UModelSnapshot{}, err
+		return model.MModelSnapshot{}, err
 	}
-	elements := make([]model.UModelElement, 0, len(rows))
+	elements := make([]model.MModelElement, 0, len(rows))
 	for _, row := range rows {
 		spec := map[string]any{}
 		_ = json.Unmarshal([]byte(asString(row["spec"])), &spec)
-		elements = append(elements, model.UModelElement{
+		elements = append(elements, model.MModelElement{
 			Kind:    asString(row["kind"]),
 			Domain:  asString(row["domain"]),
 			Name:    asString(row["name"]),
@@ -177,7 +177,7 @@ func (p *Provider) GetUModelSnapshot(ctx context.Context, req model.UModelSnapsh
 	if version == "" {
 		version = graphstore.ProviderTypeLadybug
 	}
-	return model.UModelSnapshot{Workspace: req.Workspace, Version: version, Elements: elements}, nil
+	return model.MModelSnapshot{Workspace: req.Workspace, Version: version, Elements: elements}, nil
 }
 
 func (p *Provider) WriteEntities(ctx context.Context, batch model.EntityWriteBatch) (model.WriteResult, error) {
@@ -420,7 +420,7 @@ func (p *Provider) ensureSchemaLocked(workspace string) error {
 		return fmt.Errorf("workspace %q is not open", workspace)
 	}
 	for _, statement := range []string{
-		`CREATE NODE TABLE IF NOT EXISTS umodel_node (key STRING, kind STRING, domain STRING, name STRING, version STRING, spec STRING, PRIMARY KEY(key));`,
+		`CREATE NODE TABLE IF NOT EXISTS mmodel_node (key STRING, kind STRING, domain STRING, name STRING, version STRING, spec STRING, PRIMARY KEY(key));`,
 		`CREATE NODE TABLE IF NOT EXISTS entity (entity_key STRING, domain STRING, entity_type STRING, entity_id STRING, method STRING, first_observed_time INT64, last_observed_time INT64, keep_alive_seconds INT64, deleted BOOL, properties STRING, PRIMARY KEY(entity_key));`,
 		`CREATE REL TABLE IF NOT EXISTS topo (FROM entity TO entity, relation_key STRING, relation_type STRING, method STRING, first_observed_time INT64, last_observed_time INT64, keep_alive_seconds INT64, deleted BOOL, properties STRING);`,
 	} {

@@ -2,14 +2,14 @@
 
 English: [Workspaces And Domains](../../en/concepts/workspaces-and-domains.md)
 
-Workspace 和 domain 是 UModel 最重要的两个范围控制。
+Workspace 和 domain 是 MModel 最重要的两个范围控制。
 
 
 ## Workspace
 
 Workspace 是隔离上下文，包含：
 
-- UModel 定义。
+- MModel 定义。
 - Entity 和 Relation records。
 - Query Service 执行上下文。
 - AgentGateway discovery 和 tools。
@@ -18,7 +18,7 @@ Workspace 是隔离上下文，包含：
 公共 API 在路径中显式携带 workspace：
 
 ```http
-POST /api/v1/umodel/{workspace}/import
+POST /api/v1/mmodel/{workspace}/import
 POST /api/v1/entitystore/{workspace}/entities:write
 POST /api/v1/query/{workspace}/execute
 GET  /api/v1/agent/{workspace}/discover
@@ -27,8 +27,8 @@ GET  /api/v1/agent/{workspace}/discover
 CLI 也使用同一模型：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 ## Domain
@@ -39,7 +39,7 @@ Domain 是 workspace 内的语义命名空间，例如：
 - `k8s`：Kubernetes 对象。
 - `automaker`、`game` 或 `supplier`：业务场景对象。
 
-UModel metadata 中会声明 domain：
+MModel metadata 中会声明 domain：
 
 ```yaml
 metadata:
@@ -50,7 +50,7 @@ metadata:
 Domain 过滤：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 ## 边界规则
@@ -77,7 +77,7 @@ Domain 边界：DevOps 服务、Kubernetes workload、云资源或业务对象�
 data/
 ├── workspaces.json
 └── graphstore/file-memory/workspaces/demo/
-    ├── umodels.json
+    ├── mmodels.json
     ├── entities.json
     └── relations.json
 ```

@@ -1,6 +1,6 @@
 kind: runbook_link
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v1.0.0"
 metadata:
   name: "platform.service_to_platform.service.ops"

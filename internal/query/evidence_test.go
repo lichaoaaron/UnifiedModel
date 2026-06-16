@@ -6,11 +6,11 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	"github.com/alibaba/UnifiedModel/internal/telemetry/localfile"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/internal/telemetry"
+	"github.com/alibaba/MModel/internal/telemetry/localfile"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 // --- Test fixture helpers ---
@@ -22,8 +22,8 @@ func localfileTestDataRoot() string {
 }
 
 // platformModelElements returns a minimal model pack for testing evidence() queries.
-func platformModelElements() []model.UModelElement {
-	return []model.UModelElement{
+func platformModelElements() []model.MModelElement {
+	return []model.MModelElement{
 		{
 			Kind:   "entity_set",
 			Domain: "platform",
@@ -118,7 +118,7 @@ func newEvidenceTestService(t *testing.T) *Service {
 	store := graphstore.NewMemoryStore()
 	ctx := context.Background()
 
-	if _, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	if _, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "test",
 		Elements:  platformModelElements(),
 	}); err != nil {
@@ -134,7 +134,7 @@ func newEvidenceTestService(t *testing.T) *Service {
 				"__method__":              "Update",
 				"__first_observed_time__": int64(1748912400),
 				"__last_observed_time__":  int64(4102444800),
-				"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa0001", "display_name": "iam-manage", "status": "active",
+				"id":                      "aaaaaaaaaaaaaaaaaaaaaaaaaaaa0001", "display_name": "iam-manage", "status": "active",
 			},
 			{
 				"__domain__": "platform", "__entity_type__": "platform.service",
@@ -142,7 +142,7 @@ func newEvidenceTestService(t *testing.T) *Service {
 				"__method__":              "Update",
 				"__first_observed_time__": int64(1748912400),
 				"__last_observed_time__":  int64(4102444800),
-				"id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaa0002", "display_name": "ais-consumer", "status": "active",
+				"id":                      "aaaaaaaaaaaaaaaaaaaaaaaaaaaa0002", "display_name": "ais-consumer", "status": "active",
 			},
 		},
 	}); err != nil {
@@ -211,9 +211,9 @@ func TestParseEvidenceMissingKind(t *testing.T) {
 }
 
 func TestParseEvidenceOnlyForEntitySource(t *testing.T) {
-	_, err := ParseAST(".umodel | evidence(kind='log_set')")
+	_, err := ParseAST(".mmodel | evidence(kind='log_set')")
 	if !apperrors.IsCode(err, apperrors.CodeQueryParseError) {
-		t.Fatalf("expected parse error for evidence on .umodel, got %v", err)
+		t.Fatalf("expected parse error for evidence on .mmodel, got %v", err)
 	}
 }
 
@@ -363,12 +363,12 @@ func TestEvidenceMultipleEntitiesReturnsError(t *testing.T) {
 func TestEvidenceNoDataLinkReturnsError(t *testing.T) {
 	store := graphstore.NewMemoryStore()
 	ctx := context.Background()
-	elements := []model.UModelElement{
+	elements := []model.MModelElement{
 		{Kind: "entity_set", Domain: "platform", Name: "platform.service",
 			Spec: map[string]any{"fields": []any{map[string]any{"name": "display_name"}}}},
 		// NO data_link elements
 	}
-	if _, err := store.PutUModelElements(ctx, model.UModelElementBatch{Workspace: "test", Elements: elements}); err != nil {
+	if _, err := store.PutMModelElements(ctx, model.MModelElementBatch{Workspace: "test", Elements: elements}); err != nil {
 		t.Fatalf("put elements: %v", err)
 	}
 	if _, err := store.WriteEntities(ctx, model.EntityWriteBatch{
@@ -598,4 +598,3 @@ func TestEvidenceLimitAppliedAfterProject(t *testing.T) {
 		t.Errorf("limit 1 not respected after project: got %d rows", len(result.Rows))
 	}
 }
-

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UModel Schema Validator
+MModel Schema Validator
 
 这个脚本基于base.yaml中定义的元数据规范来验证展开后的schema文件的有效性。
 
@@ -427,7 +427,7 @@ class SchemaValidator:
     def generate_validation_report(self, results: Dict[str, Any]) -> str:
         """生成验证报告"""
         report = []
-        report.append("# UModel Schema 验证报告")
+        report.append("# MModel Schema 验证报告")
         report.append(f"\n基于 `{self.base_schema_path}` 中定义的元数据规范进行验证\n")
         
         # 统计信息
@@ -479,7 +479,7 @@ class SchemaValidator:
 
 def main():
     """主函数"""
-    print("🚀 UModel Schema Validator 启动")
+    print("🚀 MModel Schema Validator 启动")
     print("=" * 50)
     
     expanded_schemas_dir = "expanded_schemas"

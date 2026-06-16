@@ -1,33 +1,33 @@
-# UModel
+# MModel
 
-[![CI](https://github.com/alibaba/UnifiedModel/actions/workflows/ci.yml/badge.svg)](https://github.com/alibaba/UnifiedModel/actions/workflows/ci.yml)
+[![CI](https://github.com/alibaba/MModel/actions/workflows/ci.yml/badge.svg)](https://github.com/alibaba/MModel/actions/workflows/ci.yml)
 ![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8)
 ![Node 22+](https://img.shields.io/badge/Node.js-22%2B-339933)
 ![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
 中文版本：[README_CN.md](README_CN.md)
 
-UModel (Unified Model) is a vendor-neutral semantic runtime for enterprise AI, data governance, and operational intelligence. It turns fragmented schemas, entities, business objects, telemetry links, and topology relations into workspace-scoped graph context that humans, systems, and AI agents can understand and use through one local service.
+MModel (Unified Model) is a vendor-neutral semantic runtime for enterprise AI, data governance, and operational intelligence. It turns fragmented schemas, entities, business objects, telemetry links, and topology relations into workspace-scoped graph context that humans, systems, and AI agents can understand and use through one local service.
 
-With UModel, you can:
+With MModel, you can:
 
 - Author and import model packs that define enterprise objects, operational objects, datasets, links, storage, and topology semantics.
 - Write CMS 2.0 compatible runtime entities and relations.
-- Query models, entities, and topology through one SPL surface: `.umodel`, `.entity`, and `.topo`.
+- Query models, entities, and topology through one SPL surface: `.mmodel`, `.entity`, and `.topo`.
 - Explore the workspace through a local Web UI.
 - Connect agent clients through AgentGateway and MCP.
 - Use public REST, CLI, and SDK contracts without depending on server internals.
 
-## Why UModel
+## Why MModel
 
 - Accelerate enterprise AI at scale. A unified semantic standard helps AI models understand data meaning across platforms, departments, tools, and domains, improving the path to intelligent operations, customer service, analytics, prediction, and agent workflows.
 - Reduce data governance cost. A shared language for multi-source enterprise data frees data teams from repetitive metric alignment, field translation, and context reconstruction, so more effort goes into extracting value from data.
-- Preserve vendor neutrality and choice. UModel is independent of any single platform, data tool, observability stack, or AI vendor, helping organizations avoid semantic lock-in while building digital infrastructure.
-- Build an enterprise semantic operating system. UModel moves beyond a passive data dictionary toward a live, programmable semantic runtime that AI agents can query, reason over, and use as shared context for future multi-agent collaboration.
+- Preserve vendor neutrality and choice. MModel is independent of any single platform, data tool, observability stack, or AI vendor, helping organizations avoid semantic lock-in while building digital infrastructure.
+- Build an enterprise semantic operating system. MModel moves beyond a passive data dictionary toward a live, programmable semantic runtime that AI agents can query, reason over, and use as shared context for future multi-agent collaboration.
 
 ## Project Scope
 
-This repository includes the local UModel service, `umctl` CLI, MCP server, OpenAPI contract, React Web UI, generated SDK assets, example packs, Docker/Compose assets, and test suites.
+This repository includes the local MModel service, `mmctl` CLI, MCP server, OpenAPI contract, React Web UI, generated SDK assets, example packs, Docker/Compose assets, and test suites.
 
 The open-source core focuses on local operation, public contracts, semantic modeling, agent integration, and contributor-friendly extension points. Cloud-hosted control planes, multi-tenant authorization, Aliyun internal frontend packages, and domain-specific read APIs outside Query Service are outside the public core.
 
@@ -57,7 +57,7 @@ make quickstart
 Next steps:
 
 - Open `http://localhost:5173`, select `demo`, and inspect the workspace through Explorer, Query, Data Store, and Agent views.
-- Integrate an agent through AgentGateway or MCP. Start with `umctl agent discover demo`, then connect an MCP client through `umodel-mcp`.
+- Integrate an agent through AgentGateway or MCP. Start with `mmctl agent discover demo`, then connect an MCP client through `mmodel-mcp`.
 - Query models, entities, and topology through CLI or REST using Query Service.
 
 Detailed flows:
@@ -75,13 +75,13 @@ make stop-all
 
 ## Architecture
 
-![UModel architecture](images/architecture.png)
+![MModel architecture](images/architecture.png)
 
-UModel runs as a local service around one workspace-scoped object graph:
+MModel runs as a local service around one workspace-scoped object graph:
 
 - Model packs define the object vocabulary: EntitySets, datasets, links, storage, and relation semantics.
 - EntityStore writes runtime entities and topology relations that instantiate the model.
-- Query Service is the unified read surface for `.umodel`, `.entity`, and `.topo`.
+- Query Service is the unified read surface for `.mmodel`, `.entity`, and `.topo`.
 - AgentGateway and MCP expose discovery, resources, query examples, and safe tools for agent clients.
 - Web UI, CLI, REST, and SDK clients operate against the same public contracts.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Generate deterministic UModel incident samples from exported telemetry."""
+"""Generate deterministic MModel incident samples from exported telemetry."""
 
 from __future__ import annotations
 

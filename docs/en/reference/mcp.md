@@ -2,20 +2,20 @@
 
 中文：[MCP 参考](../../zh/reference/mcp.md)
 
-`umodel-mcp` is the local MCP surface for UModel. It exposes discovery metadata, read-only resources, prompts, completions, and query-oriented tools over the same service layer as the REST API.
+`mmodel-mcp` is the local MCP surface for MModel. It exposes discovery metadata, read-only resources, prompts, completions, and query-oriented tools over the same service layer as the REST API.
 
 ## Start
 
 Stdio, for local MCP clients:
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore memory
+go run ./cmd/mmodel-mcp --data data --graphstore memory
 ```
 
 Streamable HTTP, for remote-capable MCP clients:
 
 ```bash
-go run ./cmd/umodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --transport http --addr 127.0.0.1:8090 --data data --graphstore file.memory
 ```
 
 The HTTP transport exposes:
@@ -29,13 +29,13 @@ Runnable examples: [examples/mcp](../../../examples/mcp/README.md).
 For persisted stdio development:
 
 ```bash
-go run ./cmd/umodel-mcp --data data --graphstore file.memory
+go run ./cmd/mmodel-mcp --data data --graphstore file.memory
 ```
 
 For Ladybug-backed environments:
 
 ```bash
-go run -tags ladybug ./cmd/umodel-mcp --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-mcp --data data --graphstore local.ladybug
 ```
 
 ## Methods
@@ -71,18 +71,18 @@ Example tool content:
 ```toon
 name: query_spl_examples
 ok: true
-output[6]: ".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",".entity with(domain='devops', name='devops.service', query='checkout', topk=20)"
+output[6]: ".mmodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",".entity with(domain='devops', name='devops.service', query='checkout', topk=20)"
 ```
 
 ## Tools
 
 | Tool | Enabled by default | Purpose |
 |---|---:|---|
-| `query_spl_execute` | Yes | Execute `.umodel`, `.entity`, or `.topo` SPL. |
+| `query_spl_execute` | Yes | Execute `.mmodel`, `.entity`, or `.topo` SPL. |
 | `query_spl_explain` | Yes | Explain a query plan. |
 | `query_spl_examples` | Yes | Return safe query examples. |
-| `umodel_validate` | Yes | Validate UModel elements. |
-| `umodel_import` | No | Import UModel files from a server-readable path. |
+| `mmodel_validate` | Yes | Validate MModel elements. |
+| `mmodel_import` | No | Import MModel files from a server-readable path. |
 | `entity_write` | No | Write entity payloads. Requires explicit write enablement. |
 | `entity_expire` | No | Expire entity payloads. Requires explicit write enablement. |
 
@@ -92,10 +92,10 @@ Write tools are disabled by default so MCP clients start from a safe read-orient
 
 | Resource | URI template | Notes |
 |---|---|---|
-| `overview` | `umodel://workspace/{workspace}/overview` | Workspace-scoped API and capability overview. |
-| `schema-index` | `umodel://workspace/{workspace}/schema-index` | Model/schema metadata summary. |
-| `query-templates` | `umodel://workspace/{workspace}/query-templates` | Query templates for `.umodel`, `.entity`, and `.topo`. |
-| `tool-capability-metadata` | `umodel://workspace/{workspace}/tool-capability-metadata` | Tool capability and write-enablement metadata. |
+| `overview` | `mmodel://workspace/{workspace}/overview` | Workspace-scoped API and capability overview. |
+| `schema-index` | `mmodel://workspace/{workspace}/schema-index` | Model/schema metadata summary. |
+| `query-templates` | `mmodel://workspace/{workspace}/query-templates` | Query templates for `.mmodel`, `.entity`, and `.topo`. |
+| `tool-capability-metadata` | `mmodel://workspace/{workspace}/tool-capability-metadata` | Tool capability and write-enablement metadata. |
 
 Resources are read-only and metadata-oriented. Runtime rows should be returned by tools such as `query_spl_execute`.
 
@@ -103,10 +103,10 @@ Resources are read-only and metadata-oriented. Runtime rows should be returned b
 
 Prompts:
 
-- `umodel_query_context`
-- `umodel_object_graph_review`
+- `mmodel_query_context`
+- `mmodel_object_graph_review`
 
-Completion supports resource-template and prompt argument suggestions for workspace resources and common `.umodel`, `.entity`, and `.topo` query starts.
+Completion supports resource-template and prompt argument suggestions for workspace resources and common `.mmodel`, `.entity`, and `.topo` query starts.
 
 See [MCP Examples](../../../examples/mcp/README.md) for stdio, Streamable HTTP, HTTP+SSE, and TOON parsing examples.
 
@@ -119,9 +119,9 @@ printf '%s\n' \
   '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"workspace":"demo","name":"query_spl_examples","arguments":{}}}' \
   '{"jsonrpc":"2.0","id":4,"method":"resources/list","params":{"workspace":"demo"}}' \
   '{"jsonrpc":"2.0","id":5,"method":"resources/templates/list","params":{"workspace":"demo"}}' \
-  '{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"demo","uri":"umodel://workspace/demo/query-templates"}}' \
+  '{"jsonrpc":"2.0","id":6,"method":"resources/read","params":{"workspace":"demo","uri":"mmodel://workspace/demo/query-templates"}}' \
   '{"jsonrpc":"2.0","id":7,"method":"prompts/list","params":{}}' \
-| go run ./cmd/umodel-mcp --data data --graphstore memory
+| go run ./cmd/mmodel-mcp --data data --graphstore memory
 ```
 
 Expected output is one JSON-RPC response per input line. Successful responses contain `result`; tool/resource payload text is TOON.

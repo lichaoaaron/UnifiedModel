@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Boxes, Check, Globe2, Info, List, Search, X } from 'lucide-react'
-import type { UModelElement } from '../../api/types'
+import type { MModelElement } from '../../api/types'
 import {
   colorForKind,
   countEntries,
@@ -40,7 +40,7 @@ export function SearchPanel({
   onApplyFullText: (text: string) => void
   onApplyKind: (kind: string) => void
   onClose: () => void
-  onFocusElement: (element: UModelElement) => void
+  onFocusElement: (element: MModelElement) => void
 }) {
   const [resultKindFilter, setResultKindFilter] = useState<string[]>([])
   const hasQuery = query.trim().length > 0
@@ -196,7 +196,7 @@ export function SearchPanel({
       )}
     </div>
   )
-  const portalTarget = typeof document === 'undefined' ? null : document.querySelector('.openumodel-explorer')
+  const portalTarget = typeof document === 'undefined' ? null : document.querySelector('.openmmodel-explorer')
   return portalTarget ? createPortal(panel, portalTarget) : panel
 }
 

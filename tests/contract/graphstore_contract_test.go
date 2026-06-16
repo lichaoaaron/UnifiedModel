@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/pkg/contract"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/pkg/contract"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestMemoryGraphStoreConformance(t *testing.T) {
@@ -87,9 +87,9 @@ func exerciseGraphStore(t *testing.T, store contract.GraphStore) {
 		t.Fatalf("health: %+v err=%v", health, err)
 	}
 
-	write, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	write, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{{
+		Elements: []model.MModelElement{{
 			Kind:    "entity_set",
 			Domain:  "apm",
 			Name:    "apm.service",
@@ -100,17 +100,17 @@ func exerciseGraphStore(t *testing.T, store contract.GraphStore) {
 		}},
 	})
 	if err != nil || write.Accepted != 1 {
-		t.Fatalf("put umodel: %+v err=%v", write, err)
+		t.Fatalf("put mmodel: %+v err=%v", write, err)
 	}
-	snapshot, err := store.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: "demo"})
+	snapshot, err := store.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: "demo"})
 	if err != nil {
 		t.Fatalf("snapshot: %v", err)
 	}
 	if len(snapshot.Elements) != 1 {
-		t.Fatalf("expected one umodel element, got %+v", snapshot.Elements)
+		t.Fatalf("expected one mmodel element, got %+v", snapshot.Elements)
 	}
 	if snapshot.Elements[0].Version != "v1" || snapshot.Elements[0].Spec["display_name"] != "APM Service" {
-		t.Fatalf("unexpected umodel snapshot: %+v", snapshot.Elements[0])
+		t.Fatalf("unexpected mmodel snapshot: %+v", snapshot.Elements[0])
 	}
 
 	if _, err := store.WriteEntities(ctx, model.EntityWriteBatch{Workspace: "demo", Entities: []model.EntityPayload{entity("54013ba69c196820e56801f1ef5aad54")}}); err != nil {

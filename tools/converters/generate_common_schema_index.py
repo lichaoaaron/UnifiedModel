@@ -55,7 +55,7 @@ def extract_info_from_yaml(yaml_path):
         
         # 获取中文显示名称和描述
         display_name = metadata.get('display_name', {}).get('zh_cn', '未知文档')
-        description = metadata.get('description', {}).get('zh_cn', 'UModel 系统文档')
+        description = metadata.get('description', {}).get('zh_cn', 'MModel 系统文档')
         
         # 如果描述太长，截取前100个字符
         if len(description) > 100:
@@ -64,7 +64,7 @@ def extract_info_from_yaml(yaml_path):
         return kind, display_name, description
     except Exception as e:
         print(f"解析 YAML 文件 {yaml_path} 时出错: {e}")
-        return 'unknown', '未知文档', 'UModel 系统文档'
+        return 'unknown', '未知文档', 'MModel 系统文档'
 
 def scan_html_files(base_dir, common_schema_root):
     """递归扫描 HTML 文件，按 Domain/Group/Kind 分类"""
@@ -95,7 +95,7 @@ def scan_html_files(base_dir, common_schema_root):
             # 如果找不到 YAML 文件，尝试从 HTML 提取
             kind = 'unknown'
             title = html_file.stem.replace('_', ' ').title()
-            description = 'UModel 系统文档'
+            description = 'MModel 系统文档'
         
         # 组织数据：三层结构 Domain -> Group -> Kind
         docs.setdefault(domain, {})
@@ -438,7 +438,7 @@ def generate_index_html(docs, output_path):
             </div>
         </div>
         <div class="footer">
-            <p>&copy; {datetime.now().year} UModel Common Schema Documentation. </p>
+            <p>&copy; {datetime.now().year} MModel Common Schema Documentation. </p>
             <p>使用 <code>python scripts/converters/generate_common_schema_index.py</code> 重新生成此页面</p>
         </div>
     </div>

@@ -1,22 +1,22 @@
 # CLAUDE.md
 
-Claude Code quick context for UModel.
+Claude Code quick context for MModel.
 
 Read `AGENTS.md` first. It is the primary AI-agent guide for this repository.
 
 ## Project Snapshot
 
-UModel is an open-source object graph semantic layer for observability and operations data.
+MModel is an open-source object graph semantic layer for observability and operations data.
 
 Core idea:
 
 - Model packs define object vocabulary and relation semantics.
 - EntityStore writes runtime entities and topology relations.
-- Query Service reads everything through `.umodel`, `.entity`, and `.topo`.
+- Query Service reads everything through `.mmodel`, `.entity`, and `.topo`.
 - AgentGateway and MCP expose safe agent-facing discovery, resources, examples, and tools.
 - Web UI, CLI, REST, and SDKs share public contracts.
 
-Never call UModel an MVP, skeleton, prototype, toy, or internal demo.
+Never call MModel an MVP, skeleton, prototype, toy, or internal demo.
 
 ## Fast Orientation
 
@@ -31,9 +31,9 @@ Read:
 
 Important directories:
 
-- `cmd/umodel-server` - REST server.
-- `cmd/umctl` - public CLI.
-- `cmd/umodel-mcp` - MCP server.
+- `cmd/mmodel-server` - REST server.
+- `cmd/mmctl` - public CLI.
+- `cmd/mmodel-mcp` - MCP server.
 - `internal/query` - public read path implementation.
 - `internal/agentgateway` - agent-facing surface.
 - `internal/sampledata` - bundled sample loading.
@@ -61,7 +61,7 @@ Use focused commands for small changes. Use broader commands for public contract
 ## Non-Negotiable Boundaries
 
 - Runtime reads go through Query Service.
-- Public query sources are `.umodel`, `.entity`, and `.topo`.
+- Public query sources are `.mmodel`, `.entity`, and `.topo`.
 - EntityStore writes runtime entities and relations.
 - AgentGateway resources stay metadata-oriented.
 - AgentGateway tools return runtime rows through Query Service.

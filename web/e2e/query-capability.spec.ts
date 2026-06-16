@@ -8,7 +8,7 @@ test.describe('Query capability via UI', () => {
     const demoCard = page.locator('.workspace-id', { hasText: 'demo' }).first()
     await expect(demoCard).toBeVisible({ timeout: 10_000 })
     await demoCard.click()
-    await expect(page.locator('text=UModel Explorer')).toBeVisible({ timeout: 5_000 })
+    await expect(page.locator('text=MModel Explorer')).toBeVisible({ timeout: 5_000 })
   })
 
   test('workspace landing shows demo workspace', async ({ page }) => {
@@ -16,12 +16,12 @@ test.describe('Query capability via UI', () => {
     await expect(page.locator('.workspace-id', { hasText: 'demo' }).first()).toBeVisible({ timeout: 10_000 })
   })
 
-  test('umodel query returns rows', async ({ page }) => {
+  test('mmodel query returns rows', async ({ page }) => {
     await page.locator('text=Query').click()
     await expect(page.locator('text=Unified SPL Query')).toBeVisible()
 
     const textarea = page.locator('textarea').first()
-    await textarea.fill(".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20")
+    await textarea.fill(".mmodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20")
     await page.locator('button:has-text("Execute")').click()
 
     await expect(page.locator('.om-table tbody tr').first()).toBeVisible({ timeout: 10_000 })
@@ -54,14 +54,14 @@ test.describe('Query capability via UI', () => {
     await page.locator('text=Query').click()
 
     const textarea = page.locator('textarea').first()
-    await textarea.fill(".umodel with(kind='entity_set') | limit 5")
+    await textarea.fill(".mmodel with(kind='entity_set') | limit 5")
     await page.locator('button:has-text("Explain")').click()
 
     await expect(page.locator('text=memory')).toBeVisible({ timeout: 10_000 })
   })
 
   test('explorer view renders graph', async ({ page }) => {
-    await expect(page.locator('text=UModel Explorer')).toBeVisible()
+    await expect(page.locator('text=MModel Explorer')).toBeVisible()
     await page.waitForTimeout(2_000)
     const hasContent = await page.locator('.react-flow, [data-testid="explorer"], canvas, svg').first().isVisible().catch(() => false)
     expect(hasContent || (await page.locator('text=entity_set').count()) > 0).toBeTruthy()

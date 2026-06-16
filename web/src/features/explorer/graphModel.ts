@@ -1,6 +1,6 @@
 import type { Graphviz } from '@hpcc-js/wasm-graphviz'
 import { Position, type Edge, type Node } from '@xyflow/react'
-import type { UModelElement } from '../../api/types'
+import type { MModelElement } from '../../api/types'
 import {
   aliasForElements,
   colorForKind,
@@ -20,16 +20,16 @@ import {
 } from './model'
 
 export interface GraphActions {
-  onSelect: (element: UModelElement) => void
-  onFocus: (element: UModelElement) => void
-  onConnect: (element: UModelElement) => void
-  onCopy: (element: UModelElement) => void
-  onCopyCascade: (element: UModelElement) => void
-  onDelete: (element: UModelElement, cascade: boolean) => void
+  onSelect: (element: MModelElement) => void
+  onFocus: (element: MModelElement) => void
+  onConnect: (element: MModelElement) => void
+  onCopy: (element: MModelElement) => void
+  onCopyCascade: (element: MModelElement) => void
+  onDelete: (element: MModelElement, cascade: boolean) => void
 }
 
 export interface ExplorerNodeData extends Record<string, unknown> {
-  element: UModelElement
+  element: MModelElement
   title: string
   name: string
   domain: string
@@ -42,7 +42,7 @@ export interface ExplorerNodeData extends Record<string, unknown> {
 }
 
 export interface ExplorerEdgeData extends Record<string, unknown> {
-  element: UModelElement
+  element: MModelElement
   title: string
   kind: string
   sourceTitle: string
@@ -62,7 +62,7 @@ export interface GraphModel {
 let graphvizPromise: Promise<Graphviz> | null = null
 
 export function buildGraph(
-  elements: UModelElement[],
+  elements: MModelElement[],
   actions: GraphActions,
   draftStatusById: Map<string, DraftStatus>,
   entitySetLinkDisplay: EntitySetLinkDisplay,
@@ -76,11 +76,11 @@ export function buildGraph(
   const nodeById = new Map(nodeElements.map((element) => [elementKey(element), element]))
   const validEdges: Array<{
     id: string
-    element: UModelElement
+    element: MModelElement
     source: string
     target: string
-    sourceElement: UModelElement
-    targetElement: UModelElement
+    sourceElement: MModelElement
+    targetElement: MModelElement
     kind?: string
   }> = []
 
@@ -125,7 +125,7 @@ export function buildGraph(
     const height = entityLinkNode ? 30 : 84
     return {
       id: key,
-      type: 'umodel',
+      type: 'mmodel',
       position,
       draggable: true,
       sourcePosition: Position.Right,
@@ -156,7 +156,7 @@ export function buildGraph(
 
   const edges: Array<Edge<ExplorerEdgeData>> = validEdges.map(({ id, element, source, target, sourceElement, targetElement, kind }) => ({
     id,
-    type: 'umodel',
+    type: 'mmodel',
     source,
     target,
     sourceHandle: 'source',
@@ -178,15 +178,15 @@ export function buildGraph(
   return { nodes, edges }
 }
 
-function fallbackLayoutNodes(elements: UModelElement[]) {
-  const grouped = new Map<number, UModelElement[]>()
+function fallbackLayoutNodes(elements: MModelElement[]) {
+  const grouped = new Map<number, MModelElement[]>()
   for (const element of elements) {
     const column = columnForKind(element.kind)
     if (!grouped.has(column)) grouped.set(column, [])
     grouped.get(column)!.push(element)
   }
 
-  const result: Array<{ element: UModelElement; position: { x: number; y: number } }> = []
+  const result: Array<{ element: MModelElement; position: { x: number; y: number } }> = []
   let lane = 0
   const maxPerLane = 12
   for (const [, items] of [...grouped.entries()].sort((left, right) => left[0] - right[0])) {

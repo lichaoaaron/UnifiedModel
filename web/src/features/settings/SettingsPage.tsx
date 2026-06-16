@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Save, Trash2 } from 'lucide-react'
 import type { WorkspaceMetadata } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Badge, Button, Field, JsonEditor, Panel, TextInput } from '../../design/components'
 import { formatError, parseJson, stringify } from '../../lib/json'
 
@@ -12,7 +12,7 @@ export function SettingsPage({
   onWorkspaceChange,
   onBack,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
   workspace: WorkspaceMetadata | null
   onWorkspaceChange: (workspace: WorkspaceMetadata | null) => void

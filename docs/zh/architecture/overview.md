@@ -2,7 +2,7 @@
 
 English: [Architecture Overview](../../en/architecture/overview.md)
 
-UModel 是 local-first 服务：REST API、CLI、Web UI、SDK 和 MCP 共享同一组领域服务和公共契约。
+MModel 是 local-first 服务：REST API、CLI、Web UI、SDK 和 MCP 共享同一组领域服务和公共契约。
 
 
 ## 系统视图
@@ -12,12 +12,12 @@ flowchart LR
   Developer["Developer / SRE"]
   Agent["MCP client / Agent"]
   Web["Web UI"]
-  CLI["umctl"]
+  CLI["mmctl"]
   SDK["SDK clients"]
-  MCP["umodel-mcp"]
+  MCP["mmodel-mcp"]
   REST["REST API"]
   Workspace["Workspace Service"]
-  UModel["UModel Service"]
+  MModel["MModel Service"]
   EntityStore["EntityStore"]
   Query["Query Service"]
   AgentGateway["AgentGateway"]
@@ -33,11 +33,11 @@ flowchart LR
   SDK --> REST
   MCP --> AgentGateway
   REST --> Workspace
-  REST --> UModel
+  REST --> MModel
   REST --> EntityStore
   REST --> Query
   REST --> AgentGateway
-  UModel --> GraphStore
+  MModel --> GraphStore
   EntityStore --> GraphStore
   Query --> GraphStore
   AgentGateway --> Query
@@ -48,9 +48,9 @@ flowchart LR
 
 | 层 | 路径 | 职责 |
 |---|---|---|
-| Entry | `cmd/umodel-server`, `cmd/umctl`, `cmd/umodel-mcp` | 进程、flags、本地运行入口。 |
+| Entry | `cmd/mmodel-server`, `cmd/mmctl`, `cmd/mmodel-mcp` | 进程、flags、本地运行入口。 |
 | API adapters | `api/openapi`, `api/mcp`, `internal/bootstrap` | REST routing、MCP schema、server wiring。 |
-| Application services | `internal/workspace`, `internal/umodel`, `internal/entitystore`, `internal/query`, `internal/agentgateway` | Workspace、模型写入、运行时写入、读取和 Agent 接入。 |
+| Application services | `internal/workspace`, `internal/mmodel`, `internal/entitystore`, `internal/query`, `internal/agentgateway` | Workspace、模型写入、运行时写入、读取和 Agent 接入。 |
 | Contracts | `pkg/contract`, `pkg/model`, `pkg/errors` | 公共接口、共享类型、稳定错误 envelope。 |
 | Storage abstraction | `internal/graphstore` | Provider-neutral 的持久化和图访问。 |
 | Providers | `memory`, `file.memory`, `local.ladybug` | 运行时存储实现。 |
@@ -73,7 +73,7 @@ flowchart LR
 - 所有操作都以 workspace 为边界。
 - Query Service 是模型、实体和拓扑数据的唯一公共读取路径。
 - EntityStore 负责写入运行时对象和关系，不提供公共读取 API。
-- UModel Service 负责模型定义写入和校验。
+- MModel Service 负责模型定义写入和校验。
 - AgentGateway 通过 Query Service 获取运行时 rows，resources 保持 metadata-oriented。
 - GraphStore provider 隔离持久化细节。
 

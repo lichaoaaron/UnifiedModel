@@ -28,8 +28,8 @@ import {
   type NodeChange,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import type { QueryResult, UModelElement } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import type { QueryResult, MModelElement } from '../../api/types'
+import { MModelApi } from '../../api/client'
 import { Button, EmptyState, IconButton, SegmentedControl } from '../../design/components'
 import { asArray, formatError, parseJson, stringify } from '../../lib/json'
 import { buildGraph, layoutGraphWithGraphviz, type ExplorerEdgeData, type ExplorerNodeData, type GraphModel } from './graphModel'
@@ -84,12 +84,12 @@ export function ExplorerPage({
   workspaceId,
   refreshToken,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
   refreshToken: number
 }) {
-  const [serverElements, setServerElements] = useState<UModelElement[]>([])
-  const [draftElements, setDraftElements] = useState<UModelElement[]>([])
+  const [serverElements, setServerElements] = useState<MModelElement[]>([])
+  const [draftElements, setDraftElements] = useState<MModelElement[]>([])
   const [loading, setLoading] = useState(false)
   const [committing, setCommitting] = useState(false)
   const [layouting, setLayouting] = useState(false)
@@ -108,7 +108,7 @@ export function ExplorerPage({
   const [backgroundStyle, setBackgroundStyle] = useState<BackgroundStyle>('dots')
   const [entitySetLinkDisplay, setEntitySetLinkDisplay] = useState<EntitySetLinkDisplay>('absolute_node')
   const [forceFullMode, setForceFullMode] = useState(false)
-  const [selected, setSelected] = useState<UModelElement | null>(null)
+  const [selected, setSelected] = useState<MModelElement | null>(null)
   const [detailPanelWidth, setDetailPanelWidth] = useState(380)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('full')
   const [graph, setGraph] = useState<GraphModel>({ nodes: [], edges: [] })
@@ -116,10 +116,10 @@ export function ExplorerPage({
   const [uploadOpen, setUploadOpen] = useState(false)
   const [addMenuOpen, setAddMenuOpen] = useState(false)
   const [connectOpen, setConnectOpen] = useState(false)
-  const [connectSource, setConnectSource] = useState<UModelElement | null>(null)
+  const [connectSource, setConnectSource] = useState<MModelElement | null>(null)
   const [diffOpen, setDiffOpen] = useState(false)
-  const [undoStack, setUndoStack] = useState<UModelElement[][]>([])
-  const [redoStack, setRedoStack] = useState<UModelElement[][]>([])
+  const [undoStack, setUndoStack] = useState<MModelElement[][]>([])
+  const [redoStack, setRedoStack] = useState<MModelElement[][]>([])
   const searchBlurRef = useRef<number | null>(null)
   const searchWrapRef = useRef<HTMLDivElement | null>(null)
   const [searchPanelStyle, setSearchPanelStyle] = useState<CSSProperties>()
@@ -151,7 +151,7 @@ export function ExplorerPage({
     setLoading(true)
     setError('')
     try {
-      const result = await api.listUModel(workspaceId, 100)
+      const result = await api.listMModel(workspaceId, 100)
       const elements = result.rows.map(rowToElement).filter((element) => elementKey(element))
       setQueryResult(result)
       setServerElements(elements)
@@ -205,7 +205,7 @@ export function ExplorerPage({
   )
   const filteredStats = useMemo(() => summarize(filtered), [filtered])
 
-  const focusElement = useCallback((element: UModelElement) => {
+  const focusElement = useCallback((element: MModelElement) => {
     setMode('graph')
     if (isLinkElement(element)) {
       const alias = aliasForElements(draftElements.filter((item) => !isLinkElement(item)))
@@ -219,14 +219,14 @@ export function ExplorerPage({
     setSelected(element)
   }, [draftElements])
 
-  const focusSingleElement = useCallback((element: UModelElement) => {
+  const focusSingleElement = useCallback((element: MModelElement) => {
     setMode('graph')
     setFilterStacking(false)
     setFocusIds([elementKey(element)])
     setSelected(element)
   }, [])
 
-  const updateDraft = useCallback((updater: (items: UModelElement[]) => UModelElement[], nextMessage?: string) => {
+  const updateDraft = useCallback((updater: (items: MModelElement[]) => MModelElement[], nextMessage?: string) => {
     setDraftElements((items) => {
       const before = cloneElements(items)
       const after = updater(cloneElements(items))
@@ -237,7 +237,7 @@ export function ExplorerPage({
     if (nextMessage) setMessage(nextMessage)
   }, [])
 
-  const copyDraftElement = useCallback((element: UModelElement) => {
+  const copyDraftElement = useCallback((element: MModelElement) => {
     const copy = cloneElementForDraft(element)
     updateDraft((items) => [...items, copy], `Added draft copy: ${titleForElement(copy)}`)
     setSelected(copy)
@@ -245,7 +245,7 @@ export function ExplorerPage({
     setFocusIds([elementKey(element), elementKey(copy)])
   }, [updateDraft])
 
-  const copyDraftCascadeElement = useCallback((element: UModelElement) => {
+  const copyDraftCascadeElement = useCallback((element: MModelElement) => {
     const copy = cloneElementForDraft(element)
     updateDraft((items) => {
       if (isLinkElement(element)) return [...items, copy]
@@ -258,7 +258,7 @@ export function ExplorerPage({
     setFocusIds([elementKey(element), elementKey(copy)])
   }, [updateDraft])
 
-  const deleteDraftElement = useCallback((element: UModelElement, cascade: boolean) => {
+  const deleteDraftElement = useCallback((element: MModelElement, cascade: boolean) => {
     updateDraft((items) => {
       const ids = new Set<string>([elementKey(element)])
       if (cascade && !isLinkElement(element)) {
@@ -284,12 +284,12 @@ export function ExplorerPage({
     return () => window.removeEventListener('keydown', handleKeyboardDelete)
   }, [connectOpen, createOpen, deleteDraftElement, diffOpen, selected, uploadOpen])
 
-  const replaceDraftElement = useCallback((next: UModelElement) => {
+  const replaceDraftElement = useCallback((next: MModelElement) => {
     updateDraft((items) => upsertById(items, next))
     setSelected(next)
   }, [updateDraft])
 
-  const createDraftElement = useCallback((next: UModelElement) => {
+  const createDraftElement = useCallback((next: MModelElement) => {
     updateDraft((items) => upsertById(items, next), `Created draft element: ${titleForElement(next)}`)
     setSelected(next)
     setMode('graph')
@@ -297,7 +297,7 @@ export function ExplorerPage({
     setCreateOpen(false)
   }, [updateDraft])
 
-  const uploadDraftElements = useCallback((items: UModelElement[]) => {
+  const uploadDraftElements = useCallback((items: MModelElement[]) => {
     updateDraft((current) => {
       let next = current
       for (const item of items) next = upsertById(next, item)
@@ -309,7 +309,7 @@ export function ExplorerPage({
     setUploadOpen(false)
   }, [draftElements, updateDraft])
 
-  const createDraftLinks = useCallback((source: UModelElement, targets: UModelElement[]) => {
+  const createDraftLinks = useCallback((source: MModelElement, targets: MModelElement[]) => {
     if (targets.length === 0) return
     const links = targets.map((target) => createDataLink(source, target))
     updateDraft((items) => {
@@ -324,7 +324,7 @@ export function ExplorerPage({
     setConnectSource(null)
   }, [updateDraft])
 
-  const openConnectFromNode = useCallback((element: UModelElement) => {
+  const openConnectFromNode = useCallback((element: MModelElement) => {
     setConnectSource(element)
     setConnectOpen(true)
   }, [])
@@ -405,7 +405,7 @@ export function ExplorerPage({
     try {
       const result = await api.importSampleData(workspaceId)
       await load()
-      setMessage(`Imported sample: ${result.umodel.imported} UModel elements, ${result.entities.accepted} entities, ${result.relations.accepted} relations.`)
+      setMessage(`Imported sample: ${result.mmodel.imported} MModel elements, ${result.entities.accepted} entities, ${result.relations.accepted} relations.`)
     } catch (nextError) {
       setError(formatError(nextError))
     } finally {
@@ -421,19 +421,19 @@ export function ExplorerPage({
     try {
       const upserts = [...diff.added, ...diff.modified]
       if (upserts.length > 0) {
-        const validation = await api.validateUModel(workspaceId, upserts)
+        const validation = await api.validateMModel(workspaceId, upserts)
         if (!validation.valid) {
           setError((validation.errors || []).map((item) => `${item.field || 'element'}: ${item.reason}`).join('\n') || 'Validation failed')
           return
         }
-        const result = await api.putUModel(workspaceId, upserts)
+        const result = await api.putMModel(workspaceId, upserts)
         if (result.failed > 0) {
           setError(stringify(result))
           return
         }
       }
       if (diff.deleted.length > 0) {
-        const result = await api.deleteUModel(workspaceId, diff.deleted.map(elementKey))
+        const result = await api.deleteMModel(workspaceId, diff.deleted.map(elementKey))
         if (result.failed > 0) {
           setError(stringify(result))
           return
@@ -491,7 +491,7 @@ export function ExplorerPage({
   }
 
   return (
-    <div className="ume-v2 openumodel-explorer">
+    <div className="ume-v2 openmmodel-explorer">
       <aside className="ume-sidebar">
         <div className="ume-sidebar-tabs">
           <button className={sidebarTab === 'summary' ? 'active' : ''} onClick={() => setSidebarTab('summary')} type="button" title="Summary">
@@ -568,7 +568,7 @@ export function ExplorerPage({
                 }
                 if (event.key === 'Escape') setSearchPanelOpen(false)
               }}
-              placeholder="Search UModel..."
+              placeholder="Search MModel..."
             />
             {searchPanelOpen && (
               <SearchPanel
@@ -655,13 +655,13 @@ export function ExplorerPage({
 
         <div className="ume-content-area">
           <main className="ume-content-main">
-            {loading && draftElements.length === 0 && <div className="ume-loading">Loading UModel graph...</div>}
+            {loading && draftElements.length === 0 && <div className="ume-loading">Loading MModel graph...</div>}
             {loading && draftElements.length > 0 && <div className="ume-layout-badge">Refreshing API</div>}
             {!loading && draftElements.length === 0 && (
               <div className="ume-empty-wrap">
                 <EmptyState
-                  title="No UModel elements"
-                  detail="Import the bundled multi-domain UModel plus matching DevOps, k8s, automaker, game, and supplier entities."
+                  title="No MModel elements"
+                  detail="Import the bundled multi-domain MModel plus matching DevOps, k8s, automaker, game, and supplier entities."
                   action={
                     <Button variant="primary" onClick={() => void importSample()}>
                       <Database size={16} />
@@ -765,10 +765,10 @@ function TableView({
   onDelete,
   onSelect,
 }: {
-  elements: UModelElement[]
-  selected: UModelElement | null
-  onDelete: (element: UModelElement, cascade: boolean) => void
-  onSelect: (element: UModelElement) => void
+  elements: MModelElement[]
+  selected: MModelElement | null
+  onDelete: (element: MModelElement, cascade: boolean) => void
+  onSelect: (element: MModelElement) => void
 }) {
   type SortKey = 'name' | 'domain' | 'kind' | 'description'
   const [sortKey, setSortKey] = useState<SortKey>('name')
@@ -884,8 +884,8 @@ function TableDeleteButton({
   element,
   onDelete,
 }: {
-  element: UModelElement
-  onDelete: (element: UModelElement, cascade: boolean) => void
+  element: MModelElement
+  onDelete: (element: MModelElement, cascade: boolean) => void
 }) {
   const [open, setOpen] = useState(false)
   const [rect, setRect] = useState<DOMRect | null>(null)
@@ -955,12 +955,12 @@ function DetailPanel({
   onApply,
   onWidthChange,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
-  element: UModelElement | null
+  element: MModelElement | null
   width: number
   onClose: () => void
-  onApply: (element: UModelElement) => void
+  onApply: (element: MModelElement) => void
   onWidthChange: (width: number) => void
 }) {
   const [json, setJson] = useState('')
@@ -1009,8 +1009,8 @@ function DetailPanel({
     setBusy(true)
     setStatus('')
     try {
-      const next = parseJson<UModelElement>(json, 'UModel element')
-      const validation = await api.validateUModel(workspaceId, [next])
+      const next = parseJson<MModelElement>(json, 'MModel element')
+      const validation = await api.validateMModel(workspaceId, [next])
       if (!validation.valid) {
         setStatus((validation.errors || []).map((item) => `${item.field || 'element'}: ${item.reason}`).join('\n') || 'Validation failed')
         return
@@ -1082,11 +1082,11 @@ function CreateNodeDialog({
   onClose,
   onCreate,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
-  elements: UModelElement[]
+  elements: MModelElement[]
   onClose: () => void
-  onCreate: (element: UModelElement) => void
+  onCreate: (element: MModelElement) => void
 }) {
   const [selectedKind, setSelectedKind] = useState('entity_set')
   const [json, setJson] = useState(() => stringify(defaultNewNode('entity_set')))
@@ -1102,13 +1102,13 @@ function CreateNodeDialog({
     setBusy(true)
     setStatus('')
     try {
-      const next = parseJson<UModelElement>(json, 'UModel element')
+      const next = parseJson<MModelElement>(json, 'MModel element')
       const key = elementKey(next)
       if (elements.some((element) => elementKey(element) === key)) {
         setStatus(`Element already exists: ${key}`)
         return
       }
-      const validation = await api.validateUModel(workspaceId, [next])
+      const validation = await api.validateMModel(workspaceId, [next])
       if (!validation.valid) {
         setStatus((validation.errors || []).map((item) => `${item.field || 'element'}: ${item.reason}`).join('\n') || 'Validation failed')
         return
@@ -1126,7 +1126,7 @@ function CreateNodeDialog({
       <section className="ume-dialog ume-dialog-wide ume-create-node-dialog">
         <header>
           <div>
-            <strong>New UModel Node</strong>
+            <strong>New MModel Node</strong>
             <span>Select a type, edit JSON, then create it in draft.</span>
           </div>
           <button className="ume-icon-button subtle" onClick={onClose} type="button">
@@ -1181,11 +1181,11 @@ function UploadDialog({
   onClose,
   onUpload,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
-  elements: UModelElement[]
+  elements: MModelElement[]
   onClose: () => void
-  onUpload: (elements: UModelElement[]) => void
+  onUpload: (elements: MModelElement[]) => void
 }) {
   const [text, setText] = useState(() => stringify([defaultNewNode()]))
   const [status, setStatus] = useState('')
@@ -1199,12 +1199,12 @@ function UploadDialog({
     setBusy(true)
     setStatus('')
     try {
-      const next = parseUModelElementsFromYamlOrJson(text)
+      const next = parseMModelElementsFromYamlOrJson(text)
       if (next.length === 0) {
-        setStatus('No UModel elements found.')
+        setStatus('No MModel elements found.')
         return
       }
-      const validation = await api.validateUModel(workspaceId, next)
+      const validation = await api.validateMModel(workspaceId, next)
       if (!validation.valid) {
         setStatus((validation.errors || []).map((item) => `${item.field || 'element'}: ${item.reason}`).join('\n') || 'Validation failed')
         return
@@ -1283,14 +1283,14 @@ function UploadDialog({
 
 interface NodePickerRow {
   id: string
-  element: UModelElement
+  element: MModelElement
   title: string
   domain: string
   kind: string
   isTemp: boolean
 }
 
-function buildNodePickerRows(elements: UModelElement[], serverElements?: UModelElement[]): NodePickerRow[] {
+function buildNodePickerRows(elements: MModelElement[], serverElements?: MModelElement[]): NodePickerRow[] {
   const serverIds = new Set((serverElements || []).map(elementKey))
   return elements
     .filter((element) => !isLinkElement(element))
@@ -1416,10 +1416,10 @@ function ConnectDialog({
   onClose,
   onConnect,
 }: {
-  source: UModelElement | null
-  elements: UModelElement[]
+  source: MModelElement | null
+  elements: MModelElement[]
   onClose: () => void
-  onConnect: (source: UModelElement, targets: UModelElement[]) => void
+  onConnect: (source: MModelElement, targets: MModelElement[]) => void
 }) {
   const allRows = useMemo(() => buildNodePickerRows(elements), [elements])
   const [step, setStep] = useState<'source' | 'target'>(source ? 'target' : 'source')
@@ -1511,10 +1511,10 @@ function DiffDialog({
   onSubmit,
 }: {
   diff: DraftDiff
-  serverElements: UModelElement[]
+  serverElements: MModelElement[]
   committing: boolean
   onClose: () => void
-  onFocusElement: (element: UModelElement) => void
+  onFocusElement: (element: MModelElement) => void
   onSubmit: () => void
 }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -1538,7 +1538,7 @@ function DiffDialog({
         <header>
           <div>
             <strong>Submit Preview</strong>
-            <span>Review draft diff before writing to UModel API.</span>
+            <span>Review draft diff before writing to MModel API.</span>
           </div>
           <button className="ume-icon-button subtle" onClick={onClose} type="button">
             <X size={15} />
@@ -1630,7 +1630,7 @@ function DiffDialog({
   )
 }
 
-function rowToElement(row: Record<string, unknown>): UModelElement {
+function rowToElement(row: Record<string, unknown>): MModelElement {
   const metadata = isObject(row.metadata) ? row.metadata : undefined
   const domain = optionalString(row.domain) || optionalString(metadata?.domain)
   const name = optionalString(row.name) || optionalString(metadata?.name)
@@ -1643,11 +1643,11 @@ function rowToElement(row: Record<string, unknown>): UModelElement {
   }
 }
 
-export function parseUModelElementsFromJson(json: string): UModelElement[] {
-  return asArray(parseJson<UModelElement | UModelElement[]>(json, 'UModel elements'))
+export function parseMModelElementsFromJson(json: string): MModelElement[] {
+  return asArray(parseJson<MModelElement | MModelElement[]>(json, 'MModel elements'))
 }
 
-export function parseUModelElementsFromYamlOrJson(input: string): UModelElement[] {
+export function parseMModelElementsFromYamlOrJson(input: string): MModelElement[] {
   const text = input.trim()
   if (!text) return []
   let parsed: unknown
@@ -1656,28 +1656,28 @@ export function parseUModelElementsFromYamlOrJson(input: string): UModelElement[
   } catch {
     parsed = YAML.load(text)
   }
-  return normalizeUModelPayload(parsed)
+  return normalizeMModelPayload(parsed)
 }
 
-function parseUploadPreview(input: string): UModelElement[] {
+function parseUploadPreview(input: string): MModelElement[] {
   try {
-    return parseUModelElementsFromYamlOrJson(input)
+    return parseMModelElementsFromYamlOrJson(input)
   } catch {
     return []
   }
 }
 
-function normalizeUModelPayload(payload: unknown): UModelElement[] {
-  if (Array.isArray(payload)) return payload.map(normalizeUModelElement)
-  if (isObject(payload) && Array.isArray(payload.elements)) return payload.elements.map(normalizeUModelElement)
-  if (isObject(payload) && Array.isArray(payload.items)) return payload.items.map(normalizeUModelElement)
-  if (isObject(payload) && Array.isArray(payload.rows)) return payload.rows.map((row) => normalizeUModelElement(row))
-  if (isObject(payload)) return [normalizeUModelElement(payload)]
-  throw new Error('YAML/JSON must contain one UModel element, an array, or an object with elements/items/rows.')
+function normalizeMModelPayload(payload: unknown): MModelElement[] {
+  if (Array.isArray(payload)) return payload.map(normalizeMModelElement)
+  if (isObject(payload) && Array.isArray(payload.elements)) return payload.elements.map(normalizeMModelElement)
+  if (isObject(payload) && Array.isArray(payload.items)) return payload.items.map(normalizeMModelElement)
+  if (isObject(payload) && Array.isArray(payload.rows)) return payload.rows.map((row) => normalizeMModelElement(row))
+  if (isObject(payload)) return [normalizeMModelElement(payload)]
+  throw new Error('YAML/JSON must contain one MModel element, an array, or an object with elements/items/rows.')
 }
 
-function normalizeUModelElement(value: unknown): UModelElement {
-  if (!isObject(value)) throw new Error('Each UModel element must be an object.')
+function normalizeMModelElement(value: unknown): MModelElement {
+  if (!isObject(value)) throw new Error('Each MModel element must be an object.')
   const element = rowToElement(value)
   if (!element.kind) throw new Error(`Element ${elementKey(element) || '<unknown>'} is missing kind.`)
   if (!element.domain) throw new Error(`Element ${element.name || '<unknown>'} is missing domain.`)

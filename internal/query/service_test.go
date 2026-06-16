@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestExecuteRequiresUnifiedSPLSource(t *testing.T) {
@@ -17,12 +17,12 @@ func TestExecuteRequiresUnifiedSPLSource(t *testing.T) {
 	}
 }
 
-func TestExecuteUModelQuery(t *testing.T) {
+func TestExecuteMModelQuery(t *testing.T) {
 	ctx := context.Background()
 	store := graphstore.NewMemoryStore()
-	_, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	_, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{{
+		Elements: []model.MModelElement{{
 			Kind:   "entity_set",
 			Domain: "apm",
 			Name:   "service",
@@ -32,22 +32,22 @@ func TestExecuteUModelQuery(t *testing.T) {
 		}},
 	})
 	if err != nil {
-		t.Fatalf("put umodel: %v", err)
+		t.Fatalf("put mmodel: %v", err)
 	}
 
 	svc := NewService(store)
-	result, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".umodel with(kind='entity_set') | limit 20"})
+	result, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".mmodel with(kind='entity_set') | limit 20"})
 	if err != nil {
 		t.Fatalf("execute query: %v", err)
 	}
 	if len(result.Rows) != 1 {
 		t.Fatalf("expected one row, got %d", len(result.Rows))
 	}
-	if result.Explain == nil || result.Explain.Source != ".umodel" {
+	if result.Explain == nil || result.Explain.Source != ".mmodel" {
 		t.Fatalf("missing explain: %+v", result.Explain)
 	}
 
-	searchResult, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".umodel with(query='Service ID') | limit 20"})
+	searchResult, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".mmodel with(query='Service ID') | limit 20"})
 	if err != nil {
 		t.Fatalf("execute spec search: %v", err)
 	}
@@ -56,23 +56,23 @@ func TestExecuteUModelQuery(t *testing.T) {
 	}
 }
 
-func TestExecuteUModelPipeline(t *testing.T) {
+func TestExecuteMModelPipeline(t *testing.T) {
 	ctx := context.Background()
 	store := graphstore.NewMemoryStore()
-	_, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	_, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{
+		Elements: []model.MModelElement{
 			{Kind: "entity_set", Domain: "apm", Name: "operation"},
 			{Kind: "entity_set", Domain: "apm", Name: "service"},
 			{Kind: "entity_set", Domain: "k8s", Name: "pod"},
 		},
 	})
 	if err != nil {
-		t.Fatalf("put umodel: %v", err)
+		t.Fatalf("put mmodel: %v", err)
 	}
 
 	svc := NewService(store)
-	result, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".umodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name desc | limit 1"})
+	result, err := svc.Execute(ctx, "demo", model.QueryRequest{Query: ".mmodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name desc | limit 1"})
 	if err != nil {
 		t.Fatalf("execute query: %v", err)
 	}

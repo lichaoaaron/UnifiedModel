@@ -1,8 +1,8 @@
-# UModel Schema Overview
+# MModel Schema Overview
 
 中文版本：[README.md](README.md)
 
-UModel schemas define the syntax and validation rules for model elements. They are the source for generated SDK types, generated HTML references, and example validation.
+MModel schemas define the syntax and validation rules for model elements. They are the source for generated SDK types, generated HTML references, and example validation.
 
 ## Layout
 

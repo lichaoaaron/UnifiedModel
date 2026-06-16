@@ -2,12 +2,12 @@
 
 中文：[Storage 与 GraphStore](../../zh/concepts/storage-and-graphstore.md)
 
-UModel separates modeled storage from runtime GraphStore providers.
+MModel separates modeled storage from runtime GraphStore providers.
 
 
 ## Storage Definitions
 
-Storage definitions are UModel elements. They describe where telemetry datasets live.
+Storage definitions are MModel elements. They describe where telemetry datasets live.
 
 Supported storage kinds include:
 
@@ -34,7 +34,7 @@ spec:
 
 ## GraphStore Providers
 
-GraphStore providers are runtime implementations behind the local UModel service.
+GraphStore providers are runtime implementations behind the local MModel service.
 
 | Provider | Role |
 |---|---|
@@ -45,23 +45,23 @@ GraphStore providers are runtime implementations behind the local UModel service
 Start the service with a specific provider:
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 ## Separation Rule
 
-Storage definitions define domain telemetry organization. GraphStore providers persist and query UModel's own model graph, entity records, and relation records.
+Storage definitions define domain telemetry organization. GraphStore providers persist and query MModel's own model graph, entity records, and relation records.
 
 ```mermaid
 flowchart LR
-  UModel["UModel elements"]
+  MModel["MModel elements"]
   Entity["Entity records"]
   Relation["Relation records"]
   GraphStore["GraphStore provider"]
   StorageDef["Storage definitions"]
   Telemetry["External telemetry stores"]
 
-  UModel --> GraphStore
+  MModel --> GraphStore
   Entity --> GraphStore
   Relation --> GraphStore
   StorageDef --> Telemetry

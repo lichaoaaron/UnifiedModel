@@ -2,5 +2,5 @@
 {"jsonrpc":"2.0","method":"notifications/initialized"}
 {"jsonrpc":"2.0","id":2,"method":"tools/list","params":{"workspace":"demo"}}
 {"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"workspace":"demo","name":"query_spl_examples","arguments":{}}}
-{"jsonrpc":"2.0","id":4,"method":"resources/read","params":{"workspace":"demo","uri":"umodel://workspace/demo/query-templates"}}
-{"jsonrpc":"2.0","id":5,"method":"prompts/get","params":{"name":"umodel_query_context","arguments":{"workspace":"demo","query":".umodel | limit 20"}}}
+{"jsonrpc":"2.0","id":4,"method":"resources/read","params":{"workspace":"demo","uri":"mmodel://workspace/demo/query-templates"}}
+{"jsonrpc":"2.0","id":5,"method":"prompts/get","params":{"name":"mmodel_query_context","arguments":{"workspace":"demo","query":".mmodel | limit 20"}}}

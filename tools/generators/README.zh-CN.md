@@ -2,7 +2,7 @@
 
 English version: [README.md](README.md)
 
-本目录包含 UModel schema 相关代码生成器。生成器会根据 schema 生成 SDK、类型定义或文档资产。
+本目录包含 MModel schema 相关代码生成器。生成器会根据 schema 生成 SDK、类型定义或文档资产。
 
 ## 常见工作流
 

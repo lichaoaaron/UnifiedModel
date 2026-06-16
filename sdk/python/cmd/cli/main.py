@@ -15,13 +15,13 @@ import time
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 try:
-    from umodel import umodel
+    from mmodel import mmodel
 except ImportError as e:
-    print(f"错误: 无法导入umodel模块: {e}")
+    print(f"错误: 无法导入mmodel模块: {e}")
     print("请确保先运行 python scripts/generators/schema_python_generator_v2.py 生成SDK")
     sys.exit(1)
 
-class UModelCLI:
+class MModelCLI:
     def __init__(self):
         self.stats = {
             'total_files': 0,
@@ -31,17 +31,17 @@ class UModelCLI:
             'errors': []
         }
     
-    def find_umodel_files(self, directory: str) -> List[str]:
-        """查找目录中所有的UModel文件"""
+    def find_mmodel_files(self, directory: str) -> List[str]:
+        """查找目录中所有的MModel文件"""
         patterns = ['*.json', '*.yaml', '*.yml']
-        umodel_files = []
+        mmodel_files = []
         
         for pattern in patterns:
             # 递归查找所有匹配的文件
             files = glob.glob(os.path.join(directory, '**', pattern), recursive=True)
-            umodel_files.extend(files)
+            mmodel_files.extend(files)
         
-        return sorted(umodel_files)
+        return sorted(mmodel_files)
     
     def detect_format(self, filepath: str, content: bytes) -> str:
         """自动检测文件格式"""
@@ -63,7 +63,7 @@ class UModelCLI:
         return 'yaml'
     
     def parse_file(self, filepath: str) -> Optional[Any]:
-        """解析单个UModel文件"""
+        """解析单个MModel文件"""
         try:
             with open(filepath, 'rb') as f:
                 content = f.read()
@@ -73,9 +73,9 @@ class UModelCLI:
             
             # 解析文件
             if format_type == 'json':
-                result = umodel.parse_umodel_json(content)
+                result = mmodel.parse_mmodel_json(content)
             else:
-                result = umodel.parse_umodel_yaml(content)
+                result = mmodel.parse_mmodel_yaml(content)
             
             # 记录统计信息
             if hasattr(result, '__class__'):
@@ -147,7 +147,7 @@ class UModelCLI:
         elif os.path.isdir(input_path):
             # 目录
             print(f"🔍 扫描目录: {input_path}")
-            files = self.find_umodel_files(input_path)
+            files = self.find_mmodel_files(input_path)
             print(f"📁 找到 {len(files)} 个文件")
         else:
             print(f"错误: 路径不存在: {input_path}")
@@ -156,7 +156,7 @@ class UModelCLI:
         self.stats['total_files'] = len(files)
         
         if not files:
-            print("❌ 未找到任何UModel文件")
+            print("❌ 未找到任何MModel文件")
             return
         
         # 处理文件
@@ -215,7 +215,7 @@ class UModelCLI:
 def create_parser():
     """创建命令行参数解析器"""
     parser = argparse.ArgumentParser(
-        description='UModel CLI - UModel文件解析和转换工具',
+        description='MModel CLI - MModel文件解析和转换工具',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
@@ -262,7 +262,7 @@ def main():
     args = parser.parse_args()
     
     # 创建CLI实例并运行
-    cli = UModelCLI()
+    cli = MModelCLI()
     cli.run(args)
 
 if __name__ == '__main__':

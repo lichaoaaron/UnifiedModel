@@ -2,17 +2,17 @@
 
 English: [Model Elements](../../en/concepts/model-elements.md)
 
-UModel element 是版本化的模型定义。它描述对象图的结构，而不是运行时实体数据本身。
+MModel element 是版本化的模型定义。它描述对象图的结构，而不是运行时实体数据本身。
 
 
 ## 通用结构
 
-UModel YAML 通常采用以下结构：
+MModel YAML 通常采用以下结构：
 
 ```yaml
 kind: entity_set
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "devops.service"
@@ -48,7 +48,7 @@ flowchart LR
   Author["编写 YAML"]
   Validate["校验"]
   Import["导入 workspace"]
-  Query["通过 .umodel 读取"]
+  Query["通过 .mmodel 读取"]
   Use["Query / UI / Agent"]
 
   Author --> Validate
@@ -70,7 +70,7 @@ curl -X POST http://localhost:8080/api/v1/samples/demo/multi-domain-quickstart:i
 导入自定义模型包：
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 umodel import demo examples/quickstart-multidomain
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel import demo examples/quickstart-multidomain
 ```
 
 ## 校验与引用

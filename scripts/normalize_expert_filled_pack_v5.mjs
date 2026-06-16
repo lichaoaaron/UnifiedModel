@@ -3,9 +3,9 @@ import path from "node:path";
 import { FileBlob, SpreadsheetFile } from "@oai/artifact-tool";
 
 const inputPath =
-  "C:/Users/chaoJ/Desktop/UnifiedModel/outputs/cmcc4a_expert_minimal_confirmation_pack.presentation_ready.v5.xlsx";
+  "C:/Users/chaoJ/Desktop/MModel/outputs/cmcc4a_expert_minimal_confirmation_pack.presentation_ready.v5.xlsx";
 const outputPath =
-  "C:/Users/chaoJ/Desktop/UnifiedModel/outputs/cmcc4a_expert_minimal_confirmation_pack.presentation_ready.v6.xlsx";
+  "C:/Users/chaoJ/Desktop/MModel/outputs/cmcc4a_expert_minimal_confirmation_pack.presentation_ready.v6.xlsx";
 
 const inputBlob = await FileBlob.load(inputPath);
 const workbook = await SpreadsheetFile.importXlsx(inputBlob);

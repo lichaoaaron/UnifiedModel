@@ -22,7 +22,7 @@ test.describe('Quickstart demo data validation', () => {
   })
 
   test('model has sufficient entity_sets', async () => {
-    const result = await queryAPI(".umodel with(kind='entity_set') | limit 100")
+    const result = await queryAPI(".mmodel with(kind='entity_set') | limit 100")
     expect(result.rows.length).toBeGreaterThanOrEqual(30)
   })
 
@@ -40,7 +40,7 @@ test.describe('Quickstart demo data validation', () => {
 
   test('all domains present in model', async () => {
     for (const domain of ['devops', 'k8s', 'automaker', 'game', 'supplier']) {
-      const result = await queryAPI(`.umodel with(kind='entity_set') | where domain = '${domain}' | limit 100`)
+      const result = await queryAPI(`.mmodel with(kind='entity_set') | where domain = '${domain}' | limit 100`)
       expect(result.rows.length).toBeGreaterThan(0)
     }
   })

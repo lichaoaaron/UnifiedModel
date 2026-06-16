@@ -9,7 +9,7 @@ Runtime paths for startup, model import, entity/relation writes, Query Service, 
 
 ```mermaid
 sequenceDiagram
-  participant Main as umodel-server
+  participant Main as mmodel-server
   participant Bootstrap as internal/bootstrap
   participant Workspace as Workspace Store
   participant Graph as GraphStore Provider
@@ -36,17 +36,17 @@ Runtime flags:
 sequenceDiagram
   participant Client
   participant API as REST API
-  participant UModel as UModel Service
+  participant MModel as MModel Service
   participant Validator as Schema Validator
   participant Graph as GraphStore
 
-  Client->>API: POST /api/v1/umodel/{workspace}/import
-  API->>UModel: import path or pack
-  UModel->>Validator: validate elements
-  Validator-->>UModel: validation result
-  UModel->>Graph: put UModel elements
-  Graph-->>UModel: write result
-  UModel-->>Client: import result
+  Client->>API: POST /api/v1/mmodel/{workspace}/import
+  API->>MModel: import path or pack
+  MModel->>Validator: validate elements
+  Validator-->>MModel: validation result
+  MModel->>Graph: put MModel elements
+  Graph-->>MModel: write result
+  MModel-->>Client: import result
 ```
 
 The bundled multi-domain quickstart sample uses the same path, wrapped by:
@@ -101,7 +101,7 @@ AgentGateway exposes a safe agent-facing layer:
 - Resources expose metadata and templates.
 - Write tools stay disabled unless explicitly enabled.
 
-`umodel-mcp` connects MCP clients to the same AgentGateway semantics used by REST.
+`mmodel-mcp` connects MCP clients to the same AgentGateway semantics used by REST.
 
 ## Local Persistence
 
@@ -109,7 +109,7 @@ With `file.memory`, GraphStore data is saved under:
 
 ```text
 data/graphstore/file-memory/workspaces/<workspace>/
-├── umodels.json
+├── mmodels.json
 ├── entities.json
 └── relations.json
 ```

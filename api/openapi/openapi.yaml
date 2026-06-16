@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
-  title: UModel Open Source API
+  title: MModel Open Source API
   version: 0.1.0
-  description: Public REST contract for the UModel open-source service.
+  description: Public REST contract for the MModel open-source service.
 servers:
   - url: http://localhost:8080
 paths:
@@ -118,9 +118,9 @@ paths:
                 $ref: "#/components/schemas/WorkspaceMetadata"
         "409":
           $ref: "#/components/responses/Error"
-  /api/v1/umodel/{workspace}/validate:
+  /api/v1/mmodel/{workspace}/validate:
     post:
-      operationId: validateUModel
+      operationId: validateMModel
       parameters:
         - $ref: "#/components/parameters/Workspace"
       requestBody:
@@ -128,7 +128,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UModelElementBatch"
+              $ref: "#/components/schemas/MModelElementBatch"
       responses:
         "200":
           description: Validation result.
@@ -136,9 +136,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ValidationResult"
-  /api/v1/umodel/{workspace}/import:
+  /api/v1/mmodel/{workspace}/import:
     post:
-      operationId: importUModel
+      operationId: importMModel
       parameters:
         - $ref: "#/components/parameters/Workspace"
       requestBody:
@@ -146,17 +146,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UModelImportRequest"
+              $ref: "#/components/schemas/MModelImportRequest"
       responses:
         "200":
-          description: UModel elements imported from a local YAML/JSON file or directory.
+          description: MModel elements imported from a local YAML/JSON file or directory.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UModelImportResult"
-  /api/v1/umodel/{workspace}/elements:
+                $ref: "#/components/schemas/MModelImportResult"
+  /api/v1/mmodel/{workspace}/elements:
     post:
-      operationId: putUModelElements
+      operationId: putMModelElements
       parameters:
         - $ref: "#/components/parameters/Workspace"
       requestBody:
@@ -164,16 +164,16 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UModelElementBatch"
+              $ref: "#/components/schemas/MModelElementBatch"
       responses:
         "200":
-          description: UModel elements accepted.
+          description: MModel elements accepted.
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/WriteResult"
     delete:
-      operationId: deleteUModelElements
+      operationId: deleteMModelElements
       parameters:
         - $ref: "#/components/parameters/Workspace"
       requestBody:
@@ -181,10 +181,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DeleteUModelElementsRequest"
+              $ref: "#/components/schemas/DeleteMModelElementsRequest"
       responses:
         "200":
-          description: UModel elements deleted when dependency checks pass.
+          description: MModel elements deleted when dependency checks pass.
           content:
             application/json:
               schema:
@@ -268,7 +268,7 @@ paths:
         - $ref: "#/components/parameters/Workspace"
       responses:
         "200":
-          description: Bundled multi-domain quickstart sample imported into UModel, EntityStore, and topology.
+          description: Bundled multi-domain quickstart sample imported into MModel, EntityStore, and topology.
           content:
             application/json:
               schema:
@@ -512,7 +512,7 @@ components:
       properties:
         query:
           type: string
-          description: Unified SPL string beginning with .umodel, .entity, or .topo.
+          description: Unified SPL string beginning with .mmodel, .entity, or .topo.
         limit:
           type: integer
           minimum: 1
@@ -563,7 +563,7 @@ components:
       properties:
         source:
           type: string
-          enum: [.umodel, .entity, .topo]
+          enum: [.mmodel, .entity, .topo]
         provider:
           type: string
           description: Active GraphStore provider that planned the query.
@@ -590,7 +590,7 @@ components:
           type: integer
         time_range_applied:
           type: boolean
-    UModelElementBatch:
+    MModelElementBatch:
       type: object
       required: [elements]
       properties:
@@ -599,8 +599,8 @@ components:
         elements:
           type: array
           items:
-            $ref: "#/components/schemas/UModelElement"
-    UModelImportRequest:
+            $ref: "#/components/schemas/MModelElement"
+    MModelImportRequest:
       type: object
       required: [path]
       properties:
@@ -612,7 +612,7 @@ components:
           items:
             type: string
           description: Reserved hook for future CommonSchema pack loading.
-    UModelImportResult:
+    MModelImportResult:
       type: object
       required: [workspace, source, imported, skipped]
       properties:
@@ -627,22 +627,22 @@ components:
         elements:
           type: array
           items:
-            $ref: "#/components/schemas/UModelElement"
+            $ref: "#/components/schemas/MModelElement"
         errors:
           type: array
           items:
             $ref: "#/components/schemas/ErrorDetail"
     SampleImportResult:
       type: object
-      required: [workspace, sample, umodel, entities, relations, entity_count, relation_count]
+      required: [workspace, sample, mmodel, entities, relations, entity_count, relation_count]
       properties:
         workspace:
           type: string
         sample:
           type: string
           enum: [multi-domain-quickstart]
-        umodel:
-          $ref: "#/components/schemas/UModelImportResult"
+        mmodel:
+          $ref: "#/components/schemas/MModelImportResult"
         entities:
           $ref: "#/components/schemas/WriteResult"
         relations:
@@ -651,7 +651,7 @@ components:
           type: integer
         relation_count:
           type: integer
-    DeleteUModelElementsRequest:
+    DeleteMModelElementsRequest:
       type: object
       required: [ids]
       properties:
@@ -669,7 +669,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ErrorDetail"
-    UModelElement:
+    MModelElement:
       type: object
       required: [kind, domain, name]
       properties:

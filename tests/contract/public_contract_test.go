@@ -15,8 +15,8 @@ func TestOpenAPIContainsPublicContracts(t *testing.T) {
 	text := string(body)
 	required := []string{
 		"/api/v1/workspaces",
-		"/api/v1/umodel/{workspace}/elements",
-		"/api/v1/umodel/{workspace}/import",
+		"/api/v1/mmodel/{workspace}/elements",
+		"/api/v1/mmodel/{workspace}/import",
 		"/api/v1/samples/{workspace}/multi-domain-quickstart:import",
 		"/api/v1/entitystore/{workspace}/entities:write",
 		"/api/v1/entitystore/{workspace}/relations:write",
@@ -30,18 +30,18 @@ func TestOpenAPIContainsPublicContracts(t *testing.T) {
 		"HealthResponse:",
 		"WorkspacePage:",
 		"WorkspacePaths:",
-		"DeleteUModelElementsRequest:",
+		"DeleteMModelElementsRequest:",
 		"ExpireRequest:",
 		"ValidationResult:",
 		"QueryRequest:",
 		"QueryResult:",
 		"BatchItemResult:",
-		"UModelImportRequest:",
-		"UModelImportResult:",
+		"MModelImportRequest:",
+		"MModelImportResult:",
 		"SampleImportResult:",
 		"AgentToolCallRequest:",
 		"AgentResource:",
-		"operationId: deleteUModelElements",
+		"operationId: deleteMModelElements",
 		"operationId: importMultiDomainQuickstartSample",
 		"operationId: expireEntities",
 		"operationId: expireRelations",
@@ -75,7 +75,7 @@ func TestMCPToolSchemaDefaults(t *testing.T) {
 		t.Fatalf("invalid schema json: %v", err)
 	}
 	text := string(body)
-	for _, tool := range []string{"query_spl_execute", "query_spl_explain", "query_spl_examples", "umodel_validate", "entity_write", "entity_expire"} {
+	for _, tool := range []string{"query_spl_execute", "query_spl_explain", "query_spl_examples", "mmodel_validate", "entity_write", "entity_expire"} {
 		if !strings.Contains(text, tool) {
 			t.Fatalf("mcp schema missing tool %q", tool)
 		}

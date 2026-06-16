@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inspect a UModel model pack with the generated Python SDK."""
+"""Inspect a MModel model pack with the generated Python SDK."""
 
 from __future__ import annotations
 
@@ -18,19 +18,19 @@ PYTHON_SDK = REPO_ROOT / "sdk" / "python"
 if PYTHON_SDK.exists():
     sys.path.insert(0, str(PYTHON_SDK))
 
-from umodel import (  # noqa: E402
+from mmodel import (  # noqa: E402
     VERSION,
     get_link_endpoints,
     get_object_metadata,
     get_object_schema,
     is_link_object,
-    parse_umodel_json,
-    parse_umodel_yaml,
+    parse_mmodel_json,
+    parse_mmodel_yaml,
 )
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Inspect a UModel pack with the generated Python SDK.")
+    parser = argparse.ArgumentParser(description="Inspect a MModel pack with the generated Python SDK.")
     parser.add_argument("--path", default=str(REPO_ROOT / "examples" / "quickstart-multidomain"), help="model file or directory")
     parser.add_argument("--limit", type=int, default=20, help="maximum rows to print; use 0 for all rows")
     args = parser.parse_args()
@@ -43,7 +43,7 @@ def main() -> int:
     skipped = 0
     for path in iter_model_candidates(root):
         data = path.read_bytes()
-        if not looks_like_umodel(data):
+        if not looks_like_mmodel(data):
             skipped += 1
             continue
 
@@ -68,9 +68,9 @@ def main() -> int:
                 row["link"] = f"{src.kind}/{src.name} -> {dest.kind}/{dest.name}"
         rows.append(row)
 
-    print(f"UModel Python SDK {VERSION}")
+    print(f"MModel Python SDK {VERSION}")
     suffix = f" ({skipped} non-model files skipped)" if skipped else ""
-    print(f"Parsed {len(rows)} UModel files{suffix}")
+    print(f"Parsed {len(rows)} MModel files{suffix}")
 
     counts = Counter(row["kind"] for row in rows)
     for kind in sorted(counts):
@@ -100,11 +100,11 @@ def iter_model_candidates(root: Path) -> list[Path]:
 
 def parse_model(path: Path, data: bytes) -> Any:
     if path.suffix.lower() == ".json":
-        return parse_umodel_json(data)
-    return parse_umodel_yaml(data)
+        return parse_mmodel_json(data)
+    return parse_mmodel_yaml(data)
 
 
-def looks_like_umodel(data: bytes) -> bool:
+def looks_like_mmodel(data: bytes) -> bool:
     try:
         payload = json.loads(data)
     except json.JSONDecodeError:

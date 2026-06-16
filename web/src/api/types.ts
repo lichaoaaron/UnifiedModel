@@ -87,7 +87,7 @@ export interface ValidationResult {
   errors?: ErrorDetail[]
 }
 
-export interface UModelElement {
+export interface MModelElement {
   kind: string
   domain: string
   name: string
@@ -95,24 +95,24 @@ export interface UModelElement {
   spec?: Record<string, unknown>
 }
 
-export interface UModelImportRequest {
+export interface MModelImportRequest {
   path: string
   common_schema_packs?: string[]
 }
 
-export interface UModelImportResult {
+export interface MModelImportResult {
   workspace: string
   source: string
   imported: number
   skipped: number
-  elements?: UModelElement[]
+  elements?: MModelElement[]
   errors?: ErrorDetail[]
 }
 
 export interface SampleImportResult {
   workspace: string
   sample: string
-  umodel: UModelImportResult
+  mmodel: MModelImportResult
   entities: WriteResult
   relations: WriteResult
   entity_count: number
@@ -132,7 +132,7 @@ export interface QueryRequest {
 }
 
 export interface QueryExplain {
-  source?: '.umodel' | '.entity' | '.topo'
+  source?: '.mmodel' | '.entity' | '.topo'
   provider?: string
   storage_provider?: string
   cypher_dialect?: string

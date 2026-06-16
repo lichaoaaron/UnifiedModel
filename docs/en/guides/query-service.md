@@ -2,11 +2,11 @@
 
 中文：[Query Service 指南](../../zh/guides/query-service.md)
 
-Query Service is the only public read path for UModel definitions, entities, relations, and topology. It accepts SPL strings that start with `.umodel`, `.entity`, or `.topo`.
+Query Service is the only public read path for MModel definitions, entities, relations, and topology. It accepts SPL strings that start with `.mmodel`, `.entity`, or `.topo`.
 
 ## Why Reads Go Through Query Service
 
-UModel intentionally avoids separate public domain read APIs such as entity lookup, relation lookup, graph traversal, or model search endpoints. One read surface keeps the CLI, Web UI, REST API, MCP tools, and SDK clients aligned.
+MModel intentionally avoids separate public domain read APIs such as entity lookup, relation lookup, graph traversal, or model search endpoints. One read surface keeps the CLI, Web UI, REST API, MCP tools, and SDK clients aligned.
 
 ## Entry Points
 
@@ -20,22 +20,22 @@ POST /api/v1/query/{workspace}/explain
 CLI:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".mmodel | limit 5"
 ```
 
 Agent tool:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 agent tool demo query_spl_execute '{"query":".umodel | limit 5"}'
+go run ./cmd/mmctl --addr http://localhost:8080 agent tool demo query_spl_execute '{"query":".mmodel | limit 5"}'
 ```
 
-## `.umodel`
+## `.mmodel`
 
-`.umodel` reads UModel definitions.
+`.mmodel` reads MModel definitions.
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='entity_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='entity_set') | sort name | limit 20"
 ```
 
 Common reads:
@@ -49,7 +49,7 @@ Common reads:
 `.entity` reads runtime entity records.
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | project __entity_id__,display_name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".entity with(domain='devops', name='devops.service', query='checkout') | project __entity_id__,display_name | limit 20"
 ```
 
 Common reads:
@@ -74,7 +74,7 @@ Agent and REST callers can bind named parameters into `with(...)` filters and `w
 `.topo` reads runtime topology relations.
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 20"
 ```
 
 `.topo` supports graph-call style topology operations. The `memory`, `file.memory`, and optional `local.ladybug` providers support controlled read-only Cypher-compatible graph calls through the shared Go engine. `local.ladybug` still persists graph data in Ladybug when built with `-tags ladybug` and a local Ladybug runtime.
@@ -82,7 +82,7 @@ go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-ca
 Cypher can return full entity and relation property maps in one query:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 20`)"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".topo | graph-call cypher(`MATCH (src)-[r]->(dest) RETURN src, r AS relation, dest LIMIT 20`)"
 ```
 
 Use `properties(src)`, `properties(r)`, and `properties(dest)` when callers want to make the property-map shape explicit.
@@ -100,7 +100,7 @@ The local query layer supports the operations used by tests, examples, and the W
 Run the built-in examples:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query examples
+go run ./cmd/mmctl --addr http://localhost:8080 query examples
 ```
 
 ## Explain Output
@@ -108,12 +108,12 @@ go run ./cmd/umctl --addr http://localhost:8080 query examples
 Run `query explain` before wiring queries into UI or agent workflows:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query explain demo ".entity with(domain='devops', name='devops.service') | limit 5"
 ```
 
 Explain output reports:
 
-- Query source: `.umodel`, `.entity`, or `.topo`.
+- Query source: `.mmodel`, `.entity`, or `.topo`.
 - Active provider.
 - Storage provider.
 - Planned filters and limits.
@@ -121,7 +121,7 @@ Explain output reports:
 ## Boundary Rules
 
 - Do not add public entity, relation, or topology read endpoints outside Query Service.
-- Keep CLI domain reads behind `umctl query run` and `umctl query explain`.
+- Keep CLI domain reads behind `mmctl query run` and `mmctl query explain`.
 - Keep AgentGateway resources metadata-only. Runtime rows should be returned by tools, not resources.
 
 ## evidence(...) — Entity Telemetry Lookback
@@ -161,7 +161,7 @@ The `.entity` portion must resolve to **exactly one entity**. Zero or multiple e
 ### Execution Chain
 
 1. The entity query runs as normal and must return exactly one row.
-2. The executor reads the UModel snapshot to find a `data_link` element where:
+2. The executor reads the MModel snapshot to find a `data_link` element where:
    - `spec.src.domain` and `spec.src.name` match the entity type.
    - `spec.dest.kind` matches the requested `kind`.
 3. The `fields_mapping` in the `data_link` spec provides the entity-to-dataset field mapping. The executor reads the mapped entity field value (e.g. `display_name`) to obtain the service name filter.
@@ -246,13 +246,96 @@ The local file provider reads JSON arrays incrementally using `encoding/json.Dec
 
 ### Extending to OpenSearch
 
-To add an OpenSearch provider, implement the `telemetry.Provider` interface in a new package and register it in `internal/bootstrap/app.go`:
+MModel now supports `spec.type: opensearch` through the same `telemetry.Provider`
+extension point. Query syntax stays unchanged:
+
+```spl
+.entity with(domain='platform', name='platform.service', ids=('ENTITY_ID'))
+| evidence(kind='log_set', from='2026-06-03T01:00:00Z', to='2026-06-03T01:02:00Z')
+| project serviceName,time,severityText
+| limit 5
+```
+
+Provider selection is still driven by `storage.spec.type`:
+
+- `local_file` -> local JSON snapshot streaming provider.
+- `opensearch` -> online OpenSearch `_search` provider.
+
+The `skills/os-query` material is used as design reference for DSL and OTEL field
+conventions only. It is not a runtime dependency.
+
+To add and keep both providers available, register both in
+`internal/bootstrap/app.go`:
 
 ```go
 providers := []telemetry.Provider{
     localfile.New(config.DataRoot),
-    opensearch.New(opensearchConfig),
+    opensearch.New(),
 }
 ```
 
-The Query Service core and evidence executor require no changes. The storage type string in the model's Storage element selects the correct provider at runtime.
+### OpenSearch Storage Properties
+
+For `spec.type: opensearch`, use these `spec.properties` keys:
+
+Required:
+
+- `endpoint`
+- `username`
+- `password`
+- `log_index`
+- `metric_index`
+- `trace_index`
+
+Optional with defaults:
+
+- `time_field_log` (default `time`)
+- `time_field_metric` (default `time`)
+- `time_field_trace` (default `startTime`)
+- `service_name_field_log` (default `serviceName`)
+- `service_name_field_metric` (default `serviceName`)
+- `service_name_field_trace` (default `serviceName`)
+- `verify_tls` (default `true`)
+- `request_timeout_ms` (default `10000`)
+- `headers_json` (optional JSON object string)
+
+### Switching from local_file to opensearch
+
+You can keep both storage examples in the same model pack and switch storage
+links to point to either storage object:
+
+- `platform.local_snapshot` (`type: local_file`)
+- `platform.opensearch_live` (`type: opensearch`)
+
+No SPL query rewrite is needed.
+
+### OpenSearch Query Behavior (Minimum)
+
+For `log_set`, `trace_set`, and `metric_set`, the provider issues OpenSearch
+`POST /{index}/_search` with:
+
+- service name equality filter on configured service field
+- optional time range filter on configured time field
+- `size = limit`
+- stable sort by time field ascending then `_doc`
+
+### OpenSearch Errors and Safety
+
+- Credentials are read from storage properties or injected configuration, never
+  hardcoded in Query Service or evidence executor.
+- Empty password returns a clear provider error.
+- HTTP `401` and `403` map to `PROVIDER_UNAVAILABLE`.
+- HTTP `404` maps to `NOT_FOUND`.
+- Timeout maps to `TIMEOUT`.
+- Explain output contains endpoint/index/field metadata but never credentials.
+
+### Explain Output for OpenSearch Evidence
+
+When `storage_type` is `opensearch`, `evidence` explain includes additional fields:
+
+- `endpoint`
+- `index_name`
+- `service_field`
+- `time_field`
+
+These are explain-safe values that describe the effective request shape.

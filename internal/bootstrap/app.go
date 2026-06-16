@@ -11,25 +11,26 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alibaba/UnifiedModel/internal/agentgateway"
-	"github.com/alibaba/UnifiedModel/internal/entitystore"
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	_ "github.com/alibaba/UnifiedModel/internal/graphstore/provider/ladybug"
-	"github.com/alibaba/UnifiedModel/internal/query"
-	"github.com/alibaba/UnifiedModel/internal/sampledata"
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	"github.com/alibaba/UnifiedModel/internal/telemetry/localfile"
-	"github.com/alibaba/UnifiedModel/internal/umodel"
-	"github.com/alibaba/UnifiedModel/internal/workspace"
-	"github.com/alibaba/UnifiedModel/pkg/contract"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/agentgateway"
+	"github.com/alibaba/MModel/internal/entitystore"
+	"github.com/alibaba/MModel/internal/graphstore"
+	_ "github.com/alibaba/MModel/internal/graphstore/provider/ladybug"
+	"github.com/alibaba/MModel/internal/mmodel"
+	"github.com/alibaba/MModel/internal/query"
+	"github.com/alibaba/MModel/internal/sampledata"
+	"github.com/alibaba/MModel/internal/telemetry"
+	"github.com/alibaba/MModel/internal/telemetry/localfile"
+	"github.com/alibaba/MModel/internal/telemetry/opensearch"
+	"github.com/alibaba/MModel/internal/workspace"
+	"github.com/alibaba/MModel/pkg/contract"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type App struct {
 	Workspace    *workspace.Service
 	GraphStore   contract.GraphStore
-	UModel       *umodel.Service
+	MModel       *mmodel.Service
 	EntityStore  *entitystore.Service
 	Samples      *sampledata.Service
 	Query        *query.Service
@@ -76,22 +77,23 @@ func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig) (*A
 	if err != nil {
 		return nil, fmt.Errorf("create graphstore provider: %w", err)
 	}
-	umodelSvc := umodel.NewService(graph)
-	entitySvc := entitystore.NewService(graph, umodelSvc)
-	sampleSvc := sampledata.NewService(umodelSvc, entitySvc)
+	mmodelSvc := mmodel.NewService(graph)
+	entitySvc := entitystore.NewService(graph, mmodelSvc)
+	sampleSvc := sampledata.NewService(mmodelSvc, entitySvc)
 
 	// Wire telemetry providers. The local file provider resolves data paths
 	// relative to the data root directory.
 	providers := []telemetry.Provider{
 		localfile.New(config.DataRoot),
+		opensearch.New(),
 	}
 	querySvc := query.NewServiceWithProviders(graph, providers)
-	agentSvc := agentgateway.NewService(querySvc, agentgateway.WithWriteServices(umodelSvc, entitySvc))
+	agentSvc := agentgateway.NewService(querySvc, agentgateway.WithWriteServices(mmodelSvc, entitySvc))
 
 	return &App{
 		Workspace:    workspaceSvc,
 		GraphStore:   graph,
-		UModel:       umodelSvc,
+		MModel:       mmodelSvc,
 		EntityStore:  entitySvc,
 		Samples:      sampleSvc,
 		Query:        querySvc,
@@ -127,7 +129,7 @@ func (a *App) apiMux(includeRoot bool) *http.ServeMux {
 	mux.HandleFunc("/healthz", a.handleHealth)
 	mux.HandleFunc("/api/v1/workspaces", a.handleWorkspaces)
 	mux.HandleFunc("/api/v1/workspaces/", a.handleWorkspace)
-	mux.HandleFunc("/api/v1/umodel/", a.handleUModel)
+	mux.HandleFunc("/api/v1/mmodel/", a.handleMModel)
 	mux.HandleFunc("/api/v1/entitystore/", a.handleEntityStore)
 	mux.HandleFunc("/api/v1/samples/", a.handleSamples)
 	mux.HandleFunc("/api/v1/query/", a.handleQuery)
@@ -192,7 +194,7 @@ func applyCORSHeaders(w http.ResponseWriter, r *http.Request) bool {
 }
 
 func allowedCORSOrigin(origin string) bool {
-	for _, allowed := range strings.Split(os.Getenv("UMODEL_CORS_ORIGINS"), ",") {
+	for _, allowed := range strings.Split(os.Getenv("MMODEL_CORS_ORIGINS"), ",") {
 		allowed = strings.TrimSpace(allowed)
 		if allowed == "*" || allowed == origin {
 			return true
@@ -225,7 +227,7 @@ func (a *App) handleRoot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"service":    "umodel-server",
+		"service":    "mmodel-server",
 		"status":     "ok",
 		"graphstore": health,
 		"endpoints": map[string]string{
@@ -357,19 +359,19 @@ func (a *App) handleQuery(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *App) handleUModel(w http.ResponseWriter, r *http.Request) {
-	workspaceID, action, ok := workspaceAction(r.URL.Path, "/api/v1/umodel/")
+func (a *App) handleMModel(w http.ResponseWriter, r *http.Request) {
+	workspaceID, action, ok := workspaceAction(r.URL.Path, "/api/v1/mmodel/")
 	if !ok {
-		writeError(w, apperrors.New(apperrors.CodeInvalidArgument, "invalid umodel path"))
+		writeError(w, apperrors.New(apperrors.CodeInvalidArgument, "invalid mmodel path"))
 		return
 	}
 	switch {
 	case r.Method == http.MethodPost && action == "import":
-		var req model.UModelImportRequest
+		var req model.MModelImportRequest
 		if !decodeJSON(w, r, &req) {
 			return
 		}
-		result, err := a.UModel.Import(r.Context(), workspaceID, req)
+		result, err := a.MModel.Import(r.Context(), workspaceID, req)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -377,12 +379,12 @@ func (a *App) handleUModel(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, result)
 	case r.Method == http.MethodPost && action == "validate":
 		var req struct {
-			Elements []model.UModelElement `json:"elements"`
+			Elements []model.MModelElement `json:"elements"`
 		}
 		if !decodeJSON(w, r, &req) {
 			return
 		}
-		result, err := a.UModel.Validate(r.Context(), workspaceID, req.Elements)
+		result, err := a.MModel.Validate(r.Context(), workspaceID, req.Elements)
 		if err != nil {
 			writeError(w, err)
 			return
@@ -390,12 +392,12 @@ func (a *App) handleUModel(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, result)
 	case r.Method == http.MethodPost && action == "elements":
 		var req struct {
-			Elements []model.UModelElement `json:"elements"`
+			Elements []model.MModelElement `json:"elements"`
 		}
 		if !decodeJSON(w, r, &req) {
 			return
 		}
-		result, err := a.UModel.PutElements(r.Context(), model.UModelElementBatch{Workspace: workspaceID, Elements: req.Elements})
+		result, err := a.MModel.PutElements(r.Context(), model.MModelElementBatch{Workspace: workspaceID, Elements: req.Elements})
 		if err != nil {
 			writeError(w, err)
 			return
@@ -408,14 +410,14 @@ func (a *App) handleUModel(w http.ResponseWriter, r *http.Request) {
 		if !decodeJSON(w, r, &req) {
 			return
 		}
-		result, err := a.UModel.DeleteElements(r.Context(), workspaceID, req.IDs)
+		result, err := a.MModel.DeleteElements(r.Context(), workspaceID, req.IDs)
 		if err != nil {
 			writeError(w, err)
 			return
 		}
 		writeJSON(w, http.StatusOK, result)
 	default:
-		writeError(w, apperrors.New(apperrors.CodeNotFound, "umodel action not found"))
+		writeError(w, apperrors.New(apperrors.CodeNotFound, "mmodel action not found"))
 	}
 }
 

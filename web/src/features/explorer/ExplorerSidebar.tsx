@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import ReactDOM from 'react-dom'
 import { CircleDashed, Crosshair, Trash2, X } from 'lucide-react'
-import type { UModelElement } from '../../api/types'
+import type { MModelElement } from '../../api/types'
 import {
   colorForKind,
   elementKey,
@@ -60,7 +60,7 @@ export function SummarySidebar({
         >
           <span className="ume-diff-card-heading">
             <CircleDashed size={14} />
-            <strong>Unsaved draft UModel</strong>
+            <strong>Unsaved draft MModel</strong>
             <DraftHelpTooltip />
           </span>
           <span className="ume-diff-card-counts">
@@ -272,7 +272,7 @@ export function FilterBar({
   kindFilters: string[]
   domainFilters: string[]
   filterStacking: boolean
-  draftElements: UModelElement[]
+  draftElements: MModelElement[]
   currentView: ViewMode
   entitySetLinkDisplay: EntitySetLinkDisplay
   onClear: () => void

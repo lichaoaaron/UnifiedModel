@@ -5,8 +5,8 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PYTHON_BIN="${PYTHON:-python3}"
 PNPM_BIN="${PNPM:-pnpm}"
 PNPM_VERSION="${PNPM_VERSION:-}"
-API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
-WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
+API_URL="${API_URL:-${MMODEL_API_URL:-http://localhost:8080}}"
+WEB_PORT="${WEB_PORT:-${MMODEL_WEB_PORT:-5173}}"
 CHECK_OPTIONAL="${CHECK_OPTIONAL:-0}"
 WEB_PM=()
 USE_NPM_SCRIPTS=0
@@ -313,17 +313,17 @@ web_dev() {
 
   if [[ "${USE_NPM_SCRIPTS}" == "1" ]]; then
     echo "pnpm was not found; using existing web/node_modules with npm run dev."
-    (cd "${ROOT_DIR}/web" && UMODEL_API_TARGET="${API_URL}" npm run dev -- --port "${WEB_PORT}" --strictPort)
+    (cd "${ROOT_DIR}/web" && MMODEL_API_TARGET="${API_URL}" npm run dev -- --port "${WEB_PORT}" --strictPort)
     return
   fi
 
   if [[ "${USE_EXISTING_NODE_MODULES}" == "1" ]]; then
     echo "pnpm and npm were not found; using existing web/node_modules/.bin/vite."
-    (cd "${ROOT_DIR}/web" && UMODEL_API_TARGET="${API_URL}" ./node_modules/.bin/vite --host 0.0.0.0 --port "${WEB_PORT}" --strictPort)
+    (cd "${ROOT_DIR}/web" && MMODEL_API_TARGET="${API_URL}" ./node_modules/.bin/vite --host 0.0.0.0 --port "${WEB_PORT}" --strictPort)
     return
   fi
 
-  (cd "${ROOT_DIR}/web" && "${WEB_PM[@]}" install --frozen-lockfile && UMODEL_API_TARGET="${API_URL}" "${WEB_PM[@]}" dev --port "${WEB_PORT}" --strictPort)
+  (cd "${ROOT_DIR}/web" && "${WEB_PM[@]}" install --frozen-lockfile && MMODEL_API_TARGET="${API_URL}" "${WEB_PM[@]}" dev --port "${WEB_PORT}" --strictPort)
 }
 
 install_env() {

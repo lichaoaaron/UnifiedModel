@@ -2,7 +2,7 @@
 
 English: [Object Graph Semantic Layer](../../en/concepts/object-graph-semantic-layer.md)
 
-UModel 是厂商中立企业语义运行时中的对象图语义层，面向企业 AI、数据治理和智能运维。它不替代数据平台、OpenTelemetry、Prometheus、Kubernetes、链路追踪系统、CMDB 或 AI 工具，而是为这些系统提供统一对象词汇、关系语义和可查询的图上下文，让人、服务和 AI Agent 都能读取并使用。
+MModel 是厂商中立企业语义运行时中的对象图语义层，面向企业 AI、数据治理和智能运维。它不替代数据平台、OpenTelemetry、Prometheus、Kubernetes、链路追踪系统、CMDB 或 AI 工具，而是为这些系统提供统一对象词汇、关系语义和可查询的图上下文，让人、服务和 AI Agent 都能读取并使用。
 
 
 ## 问题
@@ -22,20 +22,20 @@ UModel 是厂商中立企业语义运行时中的对象图语义层，面向企�
 - 哪些字段、指标、存储、查询和拓扑定义支撑这种关系？
 - AI Agent 行动前的安全上下文是什么？
 
-## UModel 的角色
+## MModel 的角色
 
-UModel 将企业上下文建模成 workspace-scoped 的对象图：
+MModel 将企业上下文建模成 workspace-scoped 的对象图：
 
 - `EntitySet` 定义业务对象或运维对象类型，例如服务、实例、操作、数据库、资产和外部依赖。
 - `DataSet` 定义结构化数据集和遥测数据集，例如指标、日志、链路、事件、Profile 和 Runbook。
 - `Storage` 描述数据所在位置。
 - `Link` 连接实体、数据集和存储。
 - Entity 和 Relation records 提供运行时对象图。
-- Query Service 用 `.umodel`、`.entity`、`.topo` 提供统一读取入口。
+- Query Service 用 `.mmodel`、`.entity`、`.topo` 提供统一读取入口。
 
-## UModel 贡献
+## MModel 贡献
 
-| 层次 | 既有系统 | UModel 的贡献 |
+| 层次 | 既有系统 | MModel 的贡献 |
 |---|---|---|
 | 企业数据 | 数据仓库、数据目录、业务 API | 让数据集、字段、指标、Owner 和血缘拥有共享语义锚点。 |
 | 遥测与运维 | OpenTelemetry、日志、指标、链路 | 将运维信号映射到有语义的对象和关系。 |
@@ -54,8 +54,8 @@ UModel 将企业上下文建模成 workspace-scoped 的对象图：
 ## 公共入口
 
 - REST API：`api/openapi/openapi.yaml`
-- CLI：`umctl`
-- MCP server：`umodel-mcp`
+- CLI：`mmctl`
+- MCP server：`mmodel-mcp`
 - Web UI：`web/`
 - SDKs：`sdk/go`、`sdk/python` 和 `generated/java`
 

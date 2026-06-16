@@ -1,6 +1,6 @@
 # 故障排查 Demo
 
-基于场景驱动的示例，展示 UModel 对象图 + Runbook 如何支撑 AI Agent 故障排查。一次由上游重试风暴引发的支付网关 SLO 违规，需要跨域拓扑遍历和 Runbook 引导诊断才能定位根因。
+基于场景驱动的示例，展示 MModel 对象图 + Runbook 如何支撑 AI Agent 故障排查。一次由上游重试风暴引发的支付网关 SLO 违规，需要跨域拓扑遍历和 Runbook 引导诊断才能定位根因。
 
 ```
 payment-gateway (degraded, platinum SLO)
@@ -61,16 +61,16 @@ API: `http://localhost:8080` | Web UI: `http://localhost:5173`
 仅启动 API（不含 Web UI）：
 
 ```bash
-go run ./cmd/umodel-server --quickstart --sample examples/incident-investigation
+go run ./cmd/mmodel-server --quickstart --sample examples/incident-investigation
 ```
 
 Docker：
 
 ```bash
-docker build -t umodel-demo .
+docker build -t mmodel-demo .
 docker run -p 8080:8080 -p 5173:5173 \
   -e QUICKSTART_SAMPLE=examples/incident-investigation \
-  umodel-demo
+  mmodel-demo
 ```
 
 ## Runbook 能力总览
@@ -96,7 +96,7 @@ docker run -p 8080:8080 -p 5173:5173 \
 ### 第 1 步：找到故障服务
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.service', query='degraded') \
   | project display_name, status, owner, sla_tier"
 ```
@@ -106,7 +106,7 @@ umctl query run demo \
 ### 第 2 步：查看上游调用方（拓扑查询）
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".topo | graph-call getNeighborNodes('full', 1, \
   [(:\"platform@platform.service\" {__entity_id__: '63718b78868895d2590551b27ec6f51c'})]) \
   | with(__relation_type__='calls')"
@@ -117,7 +117,7 @@ umctl query run demo \
 ### 第 3 步：检查上游的配置变更
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.config_change', query='checkout') \
   | project display_name, change_detail, applied_at"
 ```
@@ -127,7 +127,7 @@ umctl query run demo \
 ### 第 4 步：排除最近部署（红鲱鱼）
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.deployment', query='payment') \
   | project display_name, change_summary, deployed_at"
 ```
@@ -137,7 +137,7 @@ umctl query run demo \
 ### 第 5 步：确认流量放大因子（跨域查询）
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='business', name='business.promotion', query='active') \
   | project display_name, traffic_multiplier, expected_peak_qps, actual_peak_qps"
 ```
@@ -147,7 +147,7 @@ umctl query run demo \
 ### 第 6 步：评估业务影响（跨域查询）
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='business', name='business.order_flow', query='impacted') \
   | project display_name, error_rate"
 ```
@@ -157,7 +157,7 @@ umctl query run demo \
 ### 第 7 步：加载 Runbook
 
 ```bash
-umctl query run demo ".umodel with(kind='runbook_set', name='platform.service.ops')"
+mmctl query run demo ".mmodel with(kind='runbook_set', name='platform.service.ops')"
 ```
 
 ## Agent 集成
@@ -215,10 +215,10 @@ Agent 按 Runbook 协议执行：
 ```json
 {
   "mcpServers": {
-    "umodel": {
+    "mmodel": {
       "command": "go",
       "args": [
-        "run", "./cmd/umodel-mcp",
+        "run", "./cmd/mmodel-mcp",
         "--quickstart",
         "--quickstart-sample", "examples/incident-investigation",
         "--graphstore", "memory"
@@ -233,7 +233,7 @@ Agent 按 Runbook 协议执行：
 启动服务：
 
 ```bash
-go run ./cmd/umodel-mcp --quickstart \
+go run ./cmd/mmodel-mcp --quickstart \
   --quickstart-sample examples/incident-investigation \
   --graphstore file.memory \
   --transport http --addr 0.0.0.0:8090
@@ -244,7 +244,7 @@ go run ./cmd/umodel-mcp --quickstart \
 ```json
 {
   "mcpServers": {
-    "umodel": {
+    "mmodel": {
       "type": "streamable-http",
       "url": "http://<remote-host>:8090/mcp"
     }

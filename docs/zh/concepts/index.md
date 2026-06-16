@@ -58,7 +58,7 @@ flowchart LR
 | 范围 | Workspace、domain | 隔离模型和运行时数据。 |
 | 模型定义 | EntitySet、DataSet、Storage、Link | 在写入运行时数据前定义语义契约。 |
 | 运行时图 | Entity、Relation | 提供 Query Service 可读取的对象图实例。 |
-| 读取入口 | `.umodel`、`.entity`、`.topo` | 让 REST、CLI、Web UI、SDK、MCP 使用同一套查询路径。 |
+| 读取入口 | `.mmodel`、`.entity`、`.topo` | 让 REST、CLI、Web UI、SDK、MCP 使用同一套查询路径。 |
 | 存储抽象 | GraphStore provider | 让同一服务可运行在内存、文件或 Ladybug-backed provider 上。 |
 
 ## 源码入口

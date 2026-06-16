@@ -1,11 +1,11 @@
 # 核心概念
 
-理解 UnifiedModel，先别急着看控制器和路由。先把“它把什么建模成什么”想清楚。
+理解 MModel，先别急着看控制器和路由。先把“它把什么建模成什么”想清楚。
 
 ## 你需要记住什么
 
 - `workspace` 是最外层隔离单元。
-- `UModel` 元素定义对象图词汇，而不是运行时数据本身。
+- `MModel` 元素定义对象图词汇，而不是运行时数据本身。
 - `entity` 和 `relation` 是运行时对象图数据。
 - `GraphStore` 负责存和读，但不直接成为公共读接口。
 - `Query Service` 是唯一公共读取入口。
@@ -14,7 +14,7 @@
 
 ```mermaid
 flowchart TD
-  WS["Workspace"] --> UM["UModel elements"]
+  WS["Workspace"] --> UM["MModel elements"]
   WS --> RT["Runtime graph"]
   UM --> ES["EntitySet"]
   UM --> DS["DataSet"]
@@ -41,9 +41,9 @@ flowchart TD
 - `ListWorkspaces` 如何做分页和过滤。
 - `file.memory` 场景下 `workspaces.json` 如何持久化。
 
-## UModel 元素
+## MModel 元素
 
-UModel 元素是“词汇层”，定义有哪些对象类型、数据集、链接和存储语义。
+MModel 元素是“词汇层”，定义有哪些对象类型、数据集、链接和存储语义。
 
 最重要的几类：
 
@@ -54,8 +54,8 @@ UModel 元素是“词汇层”，定义有哪些对象类型、数据集、链�
 
 关键源码：
 
-- `internal/umodel/service.go`
-- `internal/umodel/schemaspec/`
+- `internal/mmodel/service.go`
+- `internal/mmodel/schemaspec/`
 - `pkg/model/types.go`
 
 重点看什么：
@@ -100,11 +100,11 @@ GraphStore 是存储抽象层，不是业务入口层。它提供 provider-neutr
 
 ## Query Service
 
-UnifiedModel 的一个核心设计是：公共读取只走 Query Service。
+MModel 的一个核心设计是：公共读取只走 Query Service。
 
 公共查询源只有三个：
 
-- `.umodel`
+- `.mmodel`
 - `.entity`
 - `.topo`
 
@@ -142,7 +142,7 @@ AgentGateway 不是第二套数据访问层，而是 Query Service 的 agent-fac
 
 ## 一句话心智模型
 
-可以把 UnifiedModel 理解为：
+可以把 MModel 理解为：
 
 “用模型定义对象图词汇，用实体和关系填充运行时图，再通过统一查询面把这张图安全地暴露给人类界面、CLI 和 Agent。”
 

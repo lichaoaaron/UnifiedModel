@@ -9,10 +9,10 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/alibaba/UnifiedModel/internal/entitystore"
-	"github.com/alibaba/UnifiedModel/internal/umodel"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/entitystore"
+	"github.com/alibaba/MModel/internal/mmodel"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 const (
@@ -45,13 +45,13 @@ var sampleCatalog = []sampleDefinition{
 }
 
 type Service struct {
-	umodel      *umodel.Service
+	mmodel      *mmodel.Service
 	entityStore *entitystore.Service
 }
 
-func NewService(umodelSvc *umodel.Service, entitySvc *entitystore.Service) *Service {
+func NewService(mmodelSvc *mmodel.Service, entitySvc *entitystore.Service) *Service {
 	return &Service{
-		umodel:      umodelSvc,
+		mmodel:      mmodelSvc,
 		entityStore: entitySvc,
 	}
 }
@@ -120,11 +120,11 @@ func (s *Service) importPack(ctx context.Context, workspace string, def sampleDe
 		Workspace: workspace,
 		Sample:    def.Name,
 	}
-	umodelResult, err := s.umodel.Import(ctx, workspace, model.UModelImportRequest{Path: schemaRoot})
+	mmodelResult, err := s.mmodel.Import(ctx, workspace, model.MModelImportRequest{Path: schemaRoot})
 	if err != nil {
 		return result, err
 	}
-	result.UModel = umodelResult
+	result.MModel = mmodelResult
 
 	entities, err := loadPayloads[model.EntityPayload](entityPath)
 	if err != nil {

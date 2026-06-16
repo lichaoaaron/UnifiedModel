@@ -2,7 +2,7 @@
 
 English: [Installation](../../en/getting-started/installation.md)
 
-UModel 本地开发环境、服务构建、API/Web UI 启动和 GraphStore provider 选择。
+MModel 本地开发环境、服务构建、API/Web UI 启动和 GraphStore provider 选择。
 
 
 ## 依赖
@@ -45,9 +45,9 @@ make build-service
 
 构建产物：
 
-- `umodel-server`
-- `umctl`
-- `umodel-mcp`
+- `mmodel-server`
+- `mmctl`
+- `mmodel-mcp`
 
 ## 启动本地开发服务
 
@@ -87,7 +87,7 @@ make stop-all
 ## 只启动 API
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 ## 启动 Web UI
@@ -105,19 +105,19 @@ make dev-web
 常规本地开发：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 短生命周期测试：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --graphstore memory
+go run ./cmd/mmodel-server --addr :8080 --graphstore memory
 ```
 
 Ladybug runtime：
 
 ```bash
-go run -tags ladybug ./cmd/umodel-server --addr :8080 --data data --graphstore local.ladybug
+go run -tags ladybug ./cmd/mmodel-server --addr :8080 --data data --graphstore local.ladybug
 ```
 
 ## 验证仓库

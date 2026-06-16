@@ -10,17 +10,17 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/bootstrap"
 )
 
-func TestQuickstartWithUMCtl(t *testing.T) {
+func TestQuickstartWithMMCtl(t *testing.T) {
 	server := httptest.NewServer(bootstrap.NewMemoryApp(t.TempDir()).Handler())
 	defer server.Close()
 	root := filepath.Join("..", "..")
 	tmp := t.TempDir()
 
 	workspace := writeJSONFile(t, tmp, "workspace.json", map[string]any{"name": "Demo"})
-	umodel := writeJSONFile(t, tmp, "umodel.json", map[string]any{
+	mmodel := writeJSONFile(t, tmp, "mmodel.json", map[string]any{
 		"kind":   "entity_set",
 		"domain": "devops",
 		"name":   "devops.service",
@@ -47,47 +47,47 @@ func TestQuickstartWithUMCtl(t *testing.T) {
 		"__last_observed_time__":  200,
 	})
 
-	runUMCtl(t, root, server.URL, "workspace", "create", "demo", workspace)
-	runUMCtl(t, root, server.URL, "umodel", "put", "demo", umodel)
-	runUMCtl(t, root, server.URL, "umodel", "validate", "demo", umodel)
-	runUMCtl(t, root, server.URL, "entity", "write", "demo", entity)
-	runUMCtl(t, root, server.URL, "topo", "write", "demo", topo)
+	runMMCtl(t, root, server.URL, "workspace", "create", "demo", workspace)
+	runMMCtl(t, root, server.URL, "mmodel", "put", "demo", mmodel)
+	runMMCtl(t, root, server.URL, "mmodel", "validate", "demo", mmodel)
+	runMMCtl(t, root, server.URL, "entity", "write", "demo", entity)
+	runMMCtl(t, root, server.URL, "topo", "write", "demo", topo)
 
-	out := runUMCtl(t, root, server.URL, "query", "run", "demo", ".umodel with(kind='entity_set') | limit 5")
+	out := runMMCtl(t, root, server.URL, "query", "run", "demo", ".mmodel with(kind='entity_set') | limit 5")
 	if !bytes.Contains(out, []byte("devops.service")) {
-		t.Fatalf("expected umctl query output to include devops.service, got %s", out)
+		t.Fatalf("expected mmctl query output to include devops.service, got %s", out)
 	}
-	entityOut := runUMCtl(t, root, server.URL, "query", "run", "demo", ".entity with(domain='devops', name='devops.service', query='cart') | limit 5")
+	entityOut := runMMCtl(t, root, server.URL, "query", "run", "demo", ".entity with(domain='devops', name='devops.service', query='cart') | limit 5")
 	if !bytes.Contains(entityOut, []byte("cart")) {
 		t.Fatalf("expected entity query output to include cart, got %s", entityOut)
 	}
-	topoOut := runUMCtl(t, root, server.URL, "query", "run", "demo", ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 5")
+	topoOut := runMMCtl(t, root, server.URL, "query", "run", "demo", ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 5")
 	if !bytes.Contains(topoOut, []byte("calls")) {
 		t.Fatalf("expected topo query output to include calls, got %s", topoOut)
 	}
-	explain := runUMCtl(t, root, server.URL, "query", "explain", "demo", ".entity with(domain='devops', name='devops.service') | limit 5")
+	explain := runMMCtl(t, root, server.URL, "query", "explain", "demo", ".entity with(domain='devops', name='devops.service') | limit 5")
 	if !bytes.Contains(explain, []byte("memory")) {
 		t.Fatalf("expected query explain to include storage provider, got %s", explain)
 	}
 
-	agent := runUMCtl(t, root, server.URL, "query", "examples")
+	agent := runMMCtl(t, root, server.URL, "query", "examples")
 	if !bytes.Contains(agent, []byte(".entity")) {
 		t.Fatalf("expected query examples, got %s", agent)
 	}
-	discovery := runUMCtl(t, root, server.URL, "agent", "discover", "demo")
+	discovery := runMMCtl(t, root, server.URL, "agent", "discover", "demo")
 	if !bytes.Contains(discovery, []byte("query_spl_execute")) {
 		t.Fatalf("expected agent discovery tools, got %s", discovery)
 	}
-	tool := runUMCtl(t, root, server.URL, "agent", "tool", "demo", "query_spl_explain", `{"query":".umodel | limit 5"}`)
+	tool := runMMCtl(t, root, server.URL, "agent", "tool", "demo", "query_spl_explain", `{"query":".mmodel | limit 5"}`)
 	if !bytes.Contains(tool, []byte(`"ok":true`)) {
 		t.Fatalf("expected agent tool success, got %s", tool)
 	}
 
-	expired := runUMCtl(t, root, server.URL, "entity", "expire", "demo", "devops/devops.service/10000000000000000000000000000101")
+	expired := runMMCtl(t, root, server.URL, "entity", "expire", "demo", "devops/devops.service/10000000000000000000000000000101")
 	if !bytes.Contains(expired, []byte(`"accepted":1`)) {
 		t.Fatalf("expected entity expire result, got %s", expired)
 	}
-	topoExpired := runUMCtl(t, root, server.URL, "topo", "delete", "demo", "devops/devops.service/10000000000000000000000000000101/calls/devops/devops.service/10000000000000000000000000000102")
+	topoExpired := runMMCtl(t, root, server.URL, "topo", "delete", "demo", "devops/devops.service/10000000000000000000000000000101/calls/devops/devops.service/10000000000000000000000000000102")
 	if !bytes.Contains(topoExpired, []byte(`"accepted":1`)) {
 		t.Fatalf("expected topo delete result, got %s", topoExpired)
 	}
@@ -95,31 +95,31 @@ func TestQuickstartWithUMCtl(t *testing.T) {
 
 func TestMCPStdioToolsAndResources(t *testing.T) {
 	root := filepath.Join("..", "..")
-	cmd := exec.Command("go", "run", "./cmd/umodel-mcp", "--data", t.TempDir(), "--graphstore", "memory")
+	cmd := exec.Command("go", "run", "./cmd/mmodel-mcp", "--data", t.TempDir(), "--graphstore", "memory")
 	cmd.Dir = root
 	cmd.Stdin = strings.NewReader(strings.Join([]string{
 		`{"id":1,"method":"tools/list","params":{"workspace":"demo"}}`,
 		`{"id":2,"method":"tools/call","params":{"workspace":"demo","name":"query_spl_examples","arguments":{}}}`,
 		`{"id":3,"method":"resources/list","params":{"workspace":"demo"}}`,
-		`{"id":4,"method":"resources/read","params":{"workspace":"demo","uri":"umodel://workspace/demo/query-templates"}}`,
+		`{"id":4,"method":"resources/read","params":{"workspace":"demo","uri":"mmodel://workspace/demo/query-templates"}}`,
 	}, "\n"))
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Fatalf("umodel-mcp failed: %v\n%s", err, out)
+		t.Fatalf("mmodel-mcp failed: %v\n%s", err, out)
 	}
 	if !bytes.Contains(out, []byte("query_spl_execute")) || !bytes.Contains(out, []byte("query_spl_examples")) || !bytes.Contains(out, []byte("query-templates")) {
 		t.Fatalf("expected MCP output to include query tool and resources, got %s", out)
 	}
 }
 
-func runUMCtl(t *testing.T, root, addr string, args ...string) []byte {
+func runMMCtl(t *testing.T, root, addr string, args ...string) []byte {
 	t.Helper()
-	all := append([]string{"run", "./cmd/umctl", "--addr", addr}, args...)
+	all := append([]string{"run", "./cmd/mmctl", "--addr", addr}, args...)
 	cmd := exec.Command("go", all...)
 	cmd.Dir = root
 	out, err := cmd.CombinedOutput()
 	if err != nil {
-		t.Fatalf("umctl %v failed: %v\n%s", args, err, out)
+		t.Fatalf("mmctl %v failed: %v\n%s", args, err, out)
 	}
 	return out
 }

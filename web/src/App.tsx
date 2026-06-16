@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Database, GitBranch, Layers, Network, PanelLeft, Settings2, Sparkles, TerminalSquare, UploadCloud } from 'lucide-react'
-import { UModelApi } from './api/client'
+import { MModelApi } from './api/client'
 import type { HealthResponse, WorkspaceMetadata } from './api/types'
 import { Button, Badge, StatusDot, Field, TextInput } from './design/components'
 import { useLocalStorageState } from './lib/storage'
@@ -8,8 +8,8 @@ import { WorkspaceLanding } from './features/workspaces/WorkspaceLanding'
 import { WorkspaceShell, type WorkspaceView } from './features/workspace/WorkspaceShell'
 
 const storageKeys = {
-  apiBase: 'openumodel.apiBase',
-  workspace: 'openumodel.workspace',
+  apiBase: 'openmmodel.apiBase',
+  workspace: 'openmmodel.workspace',
 }
 
 export function App() {
@@ -19,7 +19,7 @@ export function App() {
   const [workspace, setWorkspace] = useState<WorkspaceMetadata | null>(null)
   const [view, setView] = useState<WorkspaceView>('explorer')
 
-  const api = useMemo(() => new UModelApi(apiBase), [apiBase])
+  const api = useMemo(() => new MModelApi(apiBase), [apiBase])
 
   if (!selectedWorkspace) {
     return (
@@ -77,11 +77,11 @@ export function HealthBadge({ health }: { health: HealthResponse | null }) {
 
 export function Brand({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={compact ? 'brand brand-compact' : 'brand'} aria-label="UModel">
+    <div className={compact ? 'brand brand-compact' : 'brand'} aria-label="MModel">
       <div className="brand-mark">
         <img
           className="brand-logo-image"
-          src={compact ? '/openumodel-mark.svg' : '/openumodel-logo.svg'}
+          src={compact ? '/openmmodel-mark.svg' : '/openmmodel-logo.svg'}
           alt=""
           draggable={false}
         />
@@ -118,7 +118,7 @@ export function SmallReloadButton({ onClick }: { onClick: () => void }) {
 }
 
 const navItems = [
-  { value: 'explorer' as const, label: 'UModel Explorer', icon: <GitBranch size={16} /> },
+  { value: 'explorer' as const, label: 'MModel Explorer', icon: <GitBranch size={16} /> },
   { value: 'entityTopo' as const, label: 'EntityTopo Explorer', icon: <Network size={16} /> },
   { value: 'query' as const, label: 'Query', icon: <TerminalSquare size={16} /> },
   { value: 'imports' as const, label: 'Imports & Writes', icon: <UploadCloud size={16} /> },

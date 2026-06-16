@@ -9,8 +9,8 @@ versions:
       properties:
         url:
           description: 
-            zh_cn: Schema 的 URL。Core 部分都为 "umodel.aliyun.com"
-            en_us: The url of the schema. The Core part is "umodel.aliyun.com"
+            zh_cn: Schema 的 URL。Core 部分都为 "mmodel.aliyun.com"
+            en_us: The url of the schema. The Core part is "mmodel.aliyun.com"
           type: string
           constraint:
             required: true

@@ -2,7 +2,7 @@
 
 English: [Web UI Guide](../../en/guides/web-ui.md)
 
-UModel Web：面向 workspace、模型定义、运行时数据、Query Service 行为和 AgentGateway 元数据的本地控制台。
+MModel Web：面向 workspace、模型定义、运行时数据、Query Service 行为和 AgentGateway 元数据的本地控制台。
 
 
 ## 启动
@@ -28,7 +28,7 @@ Workspace Launcher 覆盖：
 
 ## Explorer
 
-Explorer 显示已导入的 UModel 定义，支持图视图和表视图。
+Explorer 显示已导入的 MModel 定义，支持图视图和表视图。
 
 Explorer 范围：
 
@@ -42,7 +42,7 @@ Explorer 范围：
 
 Query 是交互式查询入口：
 
-- `.umodel`
+- `.mmodel`
 - `.entity`
 - `.topo`
 
@@ -52,7 +52,7 @@ Query 负责在 CLI、SDK、MCP 或文档复用之前验证工作流。
 
 Imports & Writes 支持：
 
-- UModel 模型导入。
+- MModel 模型导入。
 - Entity 写入。
 - Relation 写入。
 

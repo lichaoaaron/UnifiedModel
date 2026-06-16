@@ -1,7 +1,7 @@
 name: schema_metadata_definition
 description:
-  zh_cn: UModel Schema元数据定义规范，用于定义基础语法、数据结构以及所有schema.yaml文件的标准格式。
-  en_us: UModel Schema metadata definition specification, used to define the basic syntax, data structure and standard format of all schema.yaml files.
+  zh_cn: MModel Schema元数据定义规范，用于定义基础语法、数据结构以及所有schema.yaml文件的标准格式。
+  en_us: MModel Schema metadata definition specification, used to define the basic syntax, data structure and standard format of all schema.yaml files.
 schema_spec:
   type: object
   description:
@@ -59,8 +59,8 @@ schema_spec:
 
 metadata_properties:
   description:
-    zh_cn: 元数据的基础定义语法，作为组成schema.yaml文件的最基础单元。这部分逻辑需要 HardCode 实现在 UModel 系统中。
-    en_us: The basic definition syntax of metadata, as the most basic unit of the schema.yaml file. This part of the logic needs to be HardCode implemented in the UModel system.
+    zh_cn: 元数据的基础定义语法，作为组成schema.yaml文件的最基础单元。这部分逻辑需要 HardCode 实现在 MModel 系统中。
+    en_us: The basic definition syntax of metadata, as the most basic unit of the schema.yaml file. This part of the logic needs to be HardCode implemented in the MModel system.
   properties:
     type:
       description:

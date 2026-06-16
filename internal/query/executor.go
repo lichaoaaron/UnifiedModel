@@ -7,14 +7,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/telemetry"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type Executor struct {
-	graph     graphStore
-	evidence  *evidenceExecutor
+	graph    graphStore
+	evidence *evidenceExecutor
 }
 
 func NewExecutor(graph graphStore, providers []telemetry.Provider) *Executor {
@@ -37,8 +37,8 @@ func (e *Executor) Execute(ctx context.Context, workspace string, plan model.Que
 	var result model.QueryResult
 	var err error
 	switch plan.Source {
-	case ".umodel":
-		result, err = e.executeUModel(ctx, workspace, plan)
+	case ".mmodel":
+		result, err = e.executeMModel(ctx, workspace, plan)
 	case ".entity":
 		result, err = e.graph.QueryEntities(ctx, model.EntityQueryPlan(plan))
 	case ".topo":
@@ -174,7 +174,7 @@ func filterEntityRowsForEvidence(rows []map[string]any, plan model.QueryPlan) []
 			if operator.Predicate != nil {
 				rows = filterPredicate(rows, *operator.Predicate)
 			}
-		// project/sort/limit intentionally skipped — they must not touch entity rows
+			// project/sort/limit intentionally skipped — they must not touch entity rows
 		}
 	}
 	return rows
@@ -207,8 +207,8 @@ func applyPostEvidencePipeline(rows []map[string]any, columns []string, plan mod
 	return rows, columns
 }
 
-func (e *Executor) executeUModel(ctx context.Context, workspace string, plan model.QueryPlan) (model.QueryResult, error) {
-	snapshot, err := e.graph.GetUModelSnapshot(ctx, model.UModelSnapshotRequest{Workspace: workspace})
+func (e *Executor) executeMModel(ctx context.Context, workspace string, plan model.QueryPlan) (model.QueryResult, error) {
+	snapshot, err := e.graph.GetMModelSnapshot(ctx, model.MModelSnapshotRequest{Workspace: workspace})
 	if err != nil {
 		return model.QueryResult{}, err
 	}
@@ -281,7 +281,7 @@ func filterRows(source string, rows []map[string]any, filters map[string]any) []
 
 func rowMatchesFilters(source string, row map[string]any, filters map[string]any) bool {
 	switch source {
-	case ".umodel":
+	case ".mmodel":
 		if _, ok := filters["id"]; ok {
 			return false
 		}

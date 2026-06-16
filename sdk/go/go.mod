@@ -1,4 +1,4 @@
-module umodel_go_cli
+module mmodel_go_cli
 
 go 1.22.2
 

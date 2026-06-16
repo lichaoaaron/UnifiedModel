@@ -9,11 +9,11 @@ import (
 	"strings"
 	"time"
 
-	"umodel_go_cli/service"
+	"mmodel_go_cli/service"
 )
 
 func main() {
-	addr := flag.String("addr", "http://localhost:8080", "UModel API base URL")
+	addr := flag.String("addr", "http://localhost:8080", "MModel API base URL")
 	workspace := flag.String("workspace", "sdk-demo", "workspace id to create or reuse")
 	pack := flag.String("pack", "", "model pack path; defaults to the repository multi-domain quickstart example")
 	flag.Parse()
@@ -46,15 +46,15 @@ func main() {
 		fmt.Printf("Workspace %q created.\n", *workspace)
 	}
 
-	imported, err := client.ImportUModel(ctx, *workspace, service.UModelImportRequest{Path: modelPack})
+	imported, err := client.ImportMModel(ctx, *workspace, service.MModelImportRequest{Path: modelPack})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "import model pack: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Imported %d UModel elements from %s.\n", imported.Imported, imported.Source)
+	fmt.Printf("Imported %d MModel elements from %s.\n", imported.Imported, imported.Source)
 
 	result, err := client.Query(ctx, *workspace, service.QueryRequest{
-		Query: ".umodel with(kind='entity_set') | limit 5",
+		Query: ".mmodel with(kind='entity_set') | limit 5",
 	})
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "query workspace: %v\n", err)

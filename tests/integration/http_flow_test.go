@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/bootstrap"
+	"github.com/alibaba/MModel/internal/bootstrap"
 )
 
 func TestHTTPQuickFlow(t *testing.T) {
@@ -17,7 +17,7 @@ func TestHTTPQuickFlow(t *testing.T) {
 	defer server.Close()
 
 	root := get(t, server.URL+"/")
-	if root["service"] != "umodel-server" {
+	if root["service"] != "mmodel-server" {
 		t.Fatalf("unexpected root response: %+v", root)
 	}
 	graphstore, ok := root["graphstore"].(map[string]any)
@@ -26,7 +26,7 @@ func TestHTTPQuickFlow(t *testing.T) {
 	}
 
 	post(t, server.URL+"/api/v1/workspaces", map[string]any{"id": "demo"})
-	post(t, server.URL+"/api/v1/umodel/demo/elements", map[string]any{"elements": []map[string]any{{
+	post(t, server.URL+"/api/v1/mmodel/demo/elements", map[string]any{"elements": []map[string]any{{
 		"kind":   "entity_set",
 		"domain": "devops",
 		"name":   "devops.service",
@@ -53,9 +53,9 @@ func TestHTTPQuickFlow(t *testing.T) {
 		"__last_observed_time__":  200,
 	}}})
 
-	umodelRows := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{"query": ".umodel with(kind='entity_set') | where domain = 'devops' | project domain,name,kind | sort name | limit 10"})
-	if len(rows(t, umodelRows)) != 1 {
-		t.Fatalf("expected one umodel row: %+v", umodelRows)
+	mmodelRows := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{"query": ".mmodel with(kind='entity_set') | where domain = 'devops' | project domain,name,kind | sort name | limit 10"})
+	if len(rows(t, mmodelRows)) != 1 {
+		t.Fatalf("expected one mmodel row: %+v", mmodelRows)
 	}
 	entityRows := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{"query": ".entity with(domain='devops', name='devops.service', ids=['10000000000000000000000000000101'], topk=1) | project __entity_id__,display_name"})
 	if len(rows(t, entityRows)) != 1 {
@@ -108,7 +108,7 @@ func TestHTTPQuickFlow(t *testing.T) {
 	}
 	toolResult := post(t, server.URL+"/api/v1/agent/demo/tools:execute", map[string]any{
 		"name":      "query_spl_explain",
-		"arguments": map[string]any{"query": ".umodel | limit 1"},
+		"arguments": map[string]any{"query": ".mmodel | limit 1"},
 	})
 	if toolResult["ok"] != true {
 		t.Fatalf("expected query_spl_explain tool success: %+v", toolResult)
@@ -155,22 +155,22 @@ func TestHTTPErrorContractsAndWriteToolDefault(t *testing.T) {
 	}
 }
 
-func TestHTTPUModelImportThenQuery(t *testing.T) {
+func TestHTTPMModelImportThenQuery(t *testing.T) {
 	server := httptest.NewServer(bootstrap.NewMemoryApp(t.TempDir()).Handler())
 	defer server.Close()
 
 	post(t, server.URL+"/api/v1/workspaces", map[string]any{"id": "demo"})
-	importResult := post(t, server.URL+"/api/v1/umodel/demo/import", map[string]any{
+	importResult := post(t, server.URL+"/api/v1/mmodel/demo/import", map[string]any{
 		"path": filepath.Join("..", "..", "examples", "quickstart-multidomain", "devops", "entity_set", "devops.service.yaml"),
 	})
 	if importResult["imported"] != float64(1) {
 		t.Fatalf("unexpected import result: %+v", importResult)
 	}
-	umodelRows := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
-		"query": ".umodel with(kind='entity_set', domain='devops', name='devops.service') | limit 10",
+	mmodelRows := post(t, server.URL+"/api/v1/query/demo/execute", map[string]any{
+		"query": ".mmodel with(kind='entity_set', domain='devops', name='devops.service') | limit 10",
 	})
-	if len(rows(t, umodelRows)) != 1 {
-		t.Fatalf("expected imported umodel row: %+v", umodelRows)
+	if len(rows(t, mmodelRows)) != 1 {
+		t.Fatalf("expected imported mmodel row: %+v", mmodelRows)
 	}
 }
 
@@ -199,7 +199,7 @@ func TestHTTPSampleImportThenQuery(t *testing.T) {
 
 func TestHTTPServesSPAWhenUIDirConfigured(t *testing.T) {
 	uiDir := t.TempDir()
-	if err := os.WriteFile(filepath.Join(uiDir, "index.html"), []byte(`<html><body>UModel UI</body></html>`), 0o644); err != nil {
+	if err := os.WriteFile(filepath.Join(uiDir, "index.html"), []byte(`<html><body>MModel UI</body></html>`), 0o644); err != nil {
 		t.Fatalf("write index: %v", err)
 	}
 	if err := os.Mkdir(filepath.Join(uiDir, "assets"), 0o755); err != nil {

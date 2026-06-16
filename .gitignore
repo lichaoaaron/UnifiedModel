@@ -10,6 +10,7 @@ dist/
 data/workspaces.json
 data/instances/
 data/graphstore/
+tmp/
 
 # Web UI dependencies and build output
 web/node_modules/

@@ -2,7 +2,7 @@
 
 English version: [README_testing.md](README_testing.md)
 
-本目录包含 UModel Python SDK 的测试说明和测试入口。
+本目录包含 MModel Python SDK 的测试说明和测试入口。
 
 ## 运行
 

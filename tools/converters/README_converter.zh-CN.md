@@ -2,7 +2,7 @@
 
 English version: [README_converter.md](README_converter.md)
 
-本目录包含 UModel schema 转换相关工具说明。转换工具用于将源 schema、展开 schema 或中间表示转换为生成器和文档流程需要的格式。
+本目录包含 MModel schema 转换相关工具说明。转换工具用于将源 schema、展开 schema 或中间表示转换为生成器和文档流程需要的格式。
 
 ## 使用原则
 

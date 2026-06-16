@@ -2,12 +2,12 @@
 
 English: [Model Authoring Guide](../../en/guides/model-authoring.md)
 
-UModel 模型包编写和导入流程。
+MModel 模型包编写和导入流程。
 
 
 ## 模型包结构
 
-模型包是一个包含 YAML 或 JSON UModel elements 的目录。多域 quickstart 样例使用以下结构：
+模型包是一个包含 YAML 或 JSON MModel elements 的目录。多域 quickstart 样例使用以下结构：
 
 ```text
 examples/quickstart-multidomain/
@@ -40,7 +40,7 @@ examples/quickstart-multidomain/
 ```yaml
 kind: entity_set
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "demo.service"
@@ -58,7 +58,7 @@ spec:
 ```yaml
 kind: entity_set_link
 schema:
-  url: "umodel.aliyun.com"
+  url: "mmodel.aliyun.com"
   version: "v0.1.0"
 metadata:
   name: "demo.service_calls_demo.service"
@@ -91,14 +91,14 @@ make verify
 ## 导入到 Workspace
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
-go run ./cmd/umctl --addr http://localhost:8080 umodel import demo examples/quickstart-multidomain
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel import demo examples/quickstart-multidomain
 ```
 
 ## 检查模型
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | sort kind,name | limit 50"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | sort kind,name | limit 50"
 ```
 
 ## 审阅清单

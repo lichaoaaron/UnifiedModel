@@ -1,10 +1,10 @@
 # Deployments
 
-This directory contains local deployment assets for UModel Open Source.
+This directory contains local deployment assets for MModel Open Source.
 
 | Path | Purpose |
 |---|---|
-| `docker/Dockerfile` | Builds `umodel-server` into a small runtime image. |
+| `docker/Dockerfile` | Builds `mmodel-server` into a small runtime image. |
 | `compose/docker-compose.yaml` | Runs the server with a persistent local Docker volume. |
 
 ## Provider Default
@@ -22,7 +22,7 @@ Use `local.ladybug` only in an environment that has:
 Build the image from the repository root:
 
 ```bash
-docker build -f deployments/docker/Dockerfile -t umodel-open-source:local .
+docker build -f deployments/docker/Dockerfile -t mmodel-open-source:local .
 ```
 
 Run the server:
@@ -30,14 +30,14 @@ Run the server:
 ```bash
 docker run --rm \
   -p 8080:8080 \
-  -v umodel-data:/data \
-  umodel-open-source:local
+  -v mmodel-data:/data \
+  mmodel-open-source:local
 ```
 
 The container starts:
 
 ```bash
-umodel-server --addr :8080 --data /data --graphstore file.memory
+mmodel-server --addr :8080 --data /data --graphstore file.memory
 ```
 
 Check health:
@@ -71,7 +71,7 @@ docker compose -f deployments/compose/docker-compose.yaml down -v
 | Setting | Default | Notes |
 |---|---|---|
 | API port | `8080` | Exposed as `http://localhost:8080`. |
-| Data directory | `/data` | Mounted to the `umodel-data` Docker volume in Compose. |
+| Data directory | `/data` | Mounted to the `mmodel-data` Docker volume in Compose. |
 | GraphStore provider | `file.memory` | Stores JSON snapshots under `/data/graphstore/file-memory/`. |
 
 Workspace metadata is persisted separately at `/data/workspaces.json` when using `file.memory`.
@@ -81,11 +81,11 @@ Workspace metadata is persisted separately at `/data/workspaces.json` when using
 After the server starts:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
+go run ./cmd/mmctl --addr http://localhost:8080 workspace create demo '{"name":"Demo"}'
 curl -X POST http://localhost:8080/api/v1/samples/demo/multi-domain-quickstart:import \
   -H 'Content-Type: application/json' \
   -d '{}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
 ```
 
 ## Compatibility Notes

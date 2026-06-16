@@ -2,9 +2,9 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-API_ADDR="${API_ADDR:-${UMODEL_API_ADDR:-:8080}}"
-API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
-WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
+API_ADDR="${API_ADDR:-${MMODEL_API_ADDR:-:8080}}"
+API_URL="${API_URL:-${MMODEL_API_URL:-http://localhost:8080}}"
+WEB_PORT="${WEB_PORT:-${MMODEL_WEB_PORT:-5173}}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
 FORCE="${FORCE:-0}"
 DRY_RUN="${DRY_RUN:-0}"
@@ -53,11 +53,11 @@ matches_expected_process() {
   case "${kind}" in
     api)
       [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
-      [[ "${cmd}" == *"umodel-server"* ]] && is_in_repo "${cwd}"
+      [[ "${cmd}" == *"mmodel-server"* ]] && is_in_repo "${cwd}"
       ;;
     dev-api)
       [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
-      [[ "${cmd}" == *"umodel-server"* && "${cmd}" != *"--ui-dir"* ]] && is_in_repo "${cwd}"
+      [[ "${cmd}" == *"mmodel-server"* && "${cmd}" != *"--ui-dir"* ]] && is_in_repo "${cwd}"
       ;;
     web)
       [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
@@ -65,7 +65,7 @@ matches_expected_process() {
       ;;
     deploy)
       [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
-      [[ "${cmd}" == *"umodel-server"* && "${cmd}" == *"--ui-dir"* ]] && is_in_repo "${cwd}"
+      [[ "${cmd}" == *"mmodel-server"* && "${cmd}" == *"--ui-dir"* ]] && is_in_repo "${cwd}"
       ;;
     *)
       return 1
@@ -172,19 +172,19 @@ fi
 
 case "${STOP_MODE}" in
   dev)
-    stop_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid"
-    stop_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid"
+    stop_pid_file "dev api" "${PID_DIR}/openmmodel-dev-api.pid"
+    stop_pid_file "dev web" "${PID_DIR}/openmmodel-dev-web.pid"
     stop_port dev-api "${API_PORT}"
     stop_port web "${WEB_PORT}"
     ;;
   deploy)
-    stop_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid"
+    stop_pid_file "deploy" "${PID_DIR}/openmmodel-deploy.pid"
     stop_port deploy "${API_PORT}"
     ;;
   all)
-    stop_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid"
-    stop_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid"
-    stop_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid"
+    stop_pid_file "dev api" "${PID_DIR}/openmmodel-dev-api.pid"
+    stop_pid_file "dev web" "${PID_DIR}/openmmodel-dev-web.pid"
+    stop_pid_file "deploy" "${PID_DIR}/openmmodel-deploy.pid"
     stop_port api "${API_PORT}"
     stop_port web "${WEB_PORT}"
     ;;
@@ -197,16 +197,16 @@ esac
 if [[ "${DRY_RUN}" != "1" ]]; then
   case "${STOP_MODE}" in
     dev)
-      rm -f "${PID_DIR}/openumodel-dev-api.pid" "${PID_DIR}/openumodel-dev-web.pid"
+      rm -f "${PID_DIR}/openmmodel-dev-api.pid" "${PID_DIR}/openmmodel-dev-web.pid"
       ;;
     deploy)
-      rm -f "${PID_DIR}/openumodel-deploy.pid"
+      rm -f "${PID_DIR}/openmmodel-deploy.pid"
       ;;
     all)
       rm -f \
-        "${PID_DIR}/openumodel-dev-api.pid" \
-        "${PID_DIR}/openumodel-dev-web.pid" \
-        "${PID_DIR}/openumodel-deploy.pid"
+        "${PID_DIR}/openmmodel-dev-api.pid" \
+        "${PID_DIR}/openmmodel-dev-web.pid" \
+        "${PID_DIR}/openmmodel-deploy.pid"
       ;;
   esac
 fi

@@ -6,17 +6,17 @@ const rows = [
   ['Workspace shell', 'GET /api/v1/workspaces/{workspace}', 'Load selected workspace.'],
   ['Workspace settings', 'PUT /api/v1/workspaces/{workspace}', 'Update name, description, labels, config.'],
   ['Workspace delete', 'DELETE /api/v1/workspaces/{workspace}', 'Soft-delete workspace metadata.'],
-  ['Explorer graph/table', 'POST /api/v1/query/{workspace}/execute', 'Run .umodel queries.'],
-  ['Element edit', 'POST /api/v1/umodel/{workspace}/validate', 'Validate JSON editor payload.'],
-  ['Element save', 'POST /api/v1/umodel/{workspace}/elements', 'Write UModel elements.'],
-  ['Element delete', 'DELETE /api/v1/umodel/{workspace}/elements', 'Request deletion by IDs.'],
-  ['Import by path', 'POST /api/v1/umodel/{workspace}/import', 'Import YAML/JSON from server-readable path.'],
-  ['Import sample data', 'POST /api/v1/samples/{workspace}/multi-domain-quickstart:import', 'Import bundled UModel, entities, and topology.'],
+  ['Explorer graph/table', 'POST /api/v1/query/{workspace}/execute', 'Run .mmodel queries.'],
+  ['Element edit', 'POST /api/v1/mmodel/{workspace}/validate', 'Validate JSON editor payload.'],
+  ['Element save', 'POST /api/v1/mmodel/{workspace}/elements', 'Write MModel elements.'],
+  ['Element delete', 'DELETE /api/v1/mmodel/{workspace}/elements', 'Request deletion by IDs.'],
+  ['Import by path', 'POST /api/v1/mmodel/{workspace}/import', 'Import YAML/JSON from server-readable path.'],
+  ['Import sample data', 'POST /api/v1/samples/{workspace}/multi-domain-quickstart:import', 'Import bundled MModel, entities, and topology.'],
   ['Entity write', 'POST /api/v1/entitystore/{workspace}/entities:write', 'Write CMS 2.0 entities.'],
   ['Relation write', 'POST /api/v1/entitystore/{workspace}/relations:write', 'Write CMS 2.0 relations.'],
   ['Expire entities', 'POST /api/v1/entitystore/{workspace}/entities:expire', 'Expire entity IDs.'],
   ['Expire relations', 'POST /api/v1/entitystore/{workspace}/relations:expire', 'Expire relation IDs.'],
-  ['Query console', 'POST /api/v1/query/{workspace}/execute', 'Execute .umodel, .entity, or .topo SPL.'],
+  ['Query console', 'POST /api/v1/query/{workspace}/execute', 'Execute .mmodel, .entity, or .topo SPL.'],
   ['Query explain', 'POST /api/v1/query/{workspace}/explain', 'Read provider plan and limits.'],
   ['Agent discovery', 'GET /api/v1/agent/{workspace}/discover', 'Read tools, resources, next actions.'],
   ['Agent resources', 'POST /api/v1/agent/{workspace}/resources:read', 'Read safe metadata resources.'],
@@ -32,7 +32,7 @@ export function ApiMapPage() {
       >
         <div className="stack">
           <p className="muted" style={{ marginTop: 0 }}>
-            The UI is implemented entirely on public UModel REST contracts. No internal packages, obviz modules, or cloud console APIs are required.
+            The UI is implemented entirely on public MModel REST contracts. No internal packages, obviz modules, or cloud console APIs are required.
           </p>
           <div style={{ overflow: 'auto' }}>
             <table className="om-table">

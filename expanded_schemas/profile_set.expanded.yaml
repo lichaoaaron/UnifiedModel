@@ -23,8 +23,8 @@ versions:
         properties:
           url:
             description:
-              zh_cn: Schema 的 URL。Core 部分都为 "umodel.aliyun.com"
-              en_us: The url of the schema. The Core part is "umodel.aliyun.com"
+              zh_cn: Schema 的 URL。Core 部分都为 "mmodel.aliyun.com"
+              en_us: The url of the schema. The Core part is "mmodel.aliyun.com"
             type: string
             constraint:
               required: true
@@ -42,9 +42,9 @@ versions:
         properties:
           name:
             description:
-              zh_cn: 元素在 UModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
+              zh_cn: 元素在 MModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
               en_us: >-
-                The name of the Element in UModel System. The value cannot be empty.The value format is lowercase alphanumeric
+                The name of the Element in MModel System. The value cannot be empty.The value format is lowercase alphanumeric
                 characters.
             type: string
             constraint:
@@ -54,8 +54,8 @@ versions:
               max_len: 128
           display_name:
             description:
-              zh_cn: 元素在 UModel 系统中的显示名称。值不能为空。
-              en_us: The display name of the Element in UModel System. The value cannot be empty.
+              zh_cn: 元素在 MModel 系统中的显示名称。值不能为空。
+              en_us: The display name of the Element in MModel System. The value cannot be empty.
             type: object
             properties:
               zh_cn:
@@ -70,8 +70,8 @@ versions:
                 type: string
           description:
             description:
-              zh_cn: 元素在 UModel 系统中的描述。
-              en_us: The description of the Element in UModel System.
+              zh_cn: 元素在 MModel 系统中的描述。
+              en_us: The description of the Element in MModel System.
             type: object
             properties:
               zh_cn:
@@ -86,8 +86,8 @@ versions:
                 type: string
           short_description:
             description:
-              zh_cn: 元素在 UModel系统中的简短描述。
-              en_us: The short description of the Element in UModel System.
+              zh_cn: 元素在 MModel系统中的简短描述。
+              en_us: The short description of the Element in MModel System.
             type: object
             properties:
               zh_cn:
@@ -126,8 +126,8 @@ versions:
               default_value: preview
           icon:
             description:
-              zh_cn: 元素在UModel系统中的图标。值格式为'url'。
-              en_us: The icon of the Element in UModel System. The value format is 'url'.
+              zh_cn: 元素在MModel系统中的图标。值格式为'url'。
+              en_us: The icon of the Element in MModel System. The value format is 'url'.
             type: string
             release_stage: experimental
             constraint: null
@@ -167,14 +167,14 @@ versions:
             type: object
             description:
               zh_cn: >
-                背景：在阿里云可观测业务使用中，内置的UModel数据会作为公共UModel（CommonSchema）默认存在，公共UModel数据以引用方式（CommonSchemaRef）配置在UModel，在查询时动态生成UModel实例并附加该字段作为额外说明。
-                使用方式：该字段不需要手动配置，仅供查看。若存在该字段，则说明对应的UModel实例只可查看，不支持编辑或删除；若不存在该字段，则可根据业务需求按需编辑。
+                背景：在阿里云可观测业务使用中，内置的MModel数据会作为公共MModel（CommonSchema）默认存在，公共MModel数据以引用方式（CommonSchemaRef）配置在MModel，在查询时动态生成MModel实例并附加该字段作为额外说明。
+                使用方式：该字段不需要手动配置，仅供查看。若存在该字段，则说明对应的MModel实例只可查看，不支持编辑或删除；若不存在该字段，则可根据业务需求按需编辑。
               en_us: >
-                Background: In the use of Alibaba Cloud Observability business, the built-in UModel data will be defaulted
-                as a common UModel (CommonSchema), and the common UModel data will be configured as a reference (CommonSchemaRef)
-                in the UModel. When querying, a UModel instance will be dynamically generated and the field will be added
+                Background: In the use of Alibaba Cloud Observability business, the built-in MModel data will be defaulted
+                as a common MModel (CommonSchema), and the common MModel data will be configured as a reference (CommonSchemaRef)
+                in the MModel. When querying, a MModel instance will be dynamically generated and the field will be added
                 as an additional description.  Usage: This field does not need to be manually configured, and is only for
-                viewing. If this field exists, it means that the corresponding UModel instance can only be viewed, and editing
+                viewing. If this field exists, it means that the corresponding MModel instance can only be viewed, and editing
                 or deletion is not supported; if this field does not exist, it can be edited according to business needs.
             properties:
               group:
@@ -204,9 +204,9 @@ versions:
                   properties:
                     name:
                       description:
-                        zh_cn: Field 在 UModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
+                        zh_cn: Field 在 MModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
                         en_us: >
-                          The name of the Field in UModel System. The value cannot be empty.The value format is lowercase
+                          The name of the Field in MModel System. The value cannot be empty.The value format is lowercase
                           alphanumeric characters.
                       type: string
                       constraint:
@@ -216,8 +216,8 @@ versions:
                         max_len: 127
                     display_name:
                       description:
-                        zh_cn: Field 在 UModel 系统中的显示名称。值不能为空。
-                        en_us: The display name of the Element in UModel System. The value cannot be empty.
+                        zh_cn: Field 在 MModel 系统中的显示名称。值不能为空。
+                        en_us: The display name of the Element in MModel System. The value cannot be empty.
                       type: object
                       properties:
                         zh_cn:
@@ -232,8 +232,8 @@ versions:
                           type: string
                     description:
                       description:
-                        zh_cn: Field 在 UModel 系统中的描述。
-                        en_us: The description of the Element in UModel System.
+                        zh_cn: Field 在 MModel 系统中的描述。
+                        en_us: The description of the Element in MModel System.
                       type: object
                       properties:
                         zh_cn:
@@ -248,8 +248,8 @@ versions:
                           type: string
                     short_description:
                       description:
-                        zh_cn: Field 在 UModel 系统中的简短描述。
-                        en_us: The short description of the Element in UModel System.
+                        zh_cn: Field 在 MModel 系统中的简短描述。
+                        en_us: The short description of the Element in MModel System.
                       type: object
                       properties:
                         zh_cn:
@@ -314,9 +314,9 @@ versions:
                             properties:
                               name:
                                 description:
-                                  zh_cn: 在 UModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
+                                  zh_cn: 在 MModel 系统中的名称。值不能为空。值格式为小写字母数字字符。
                                   en_us: >
-                                    The name of the Element in UModel System. The value cannot be empty.The value format is
+                                    The name of the Element in MModel System. The value cannot be empty.The value format is
                                     lowercase alphanumeric characters.
                                 type: string
                                 constraint:
@@ -326,8 +326,8 @@ versions:
                                   max_len: 127
                               display_name:
                                 description:
-                                  zh_cn: 在 UModel 系统中的显示名称。值不能为空。
-                                  en_us: The display name of the Element in UModel System. The value cannot be empty.
+                                  zh_cn: 在 MModel 系统中的显示名称。值不能为空。
+                                  en_us: The display name of the Element in MModel System. The value cannot be empty.
                                 type: object
                                 properties:
                                   zh_cn:
@@ -342,8 +342,8 @@ versions:
                                     type: string
                               description:
                                 description:
-                                  zh_cn: 在 UModel 系统中的描述。
-                                  en_us: The description of the Element in UModel System.
+                                  zh_cn: 在 MModel 系统中的描述。
+                                  en_us: The description of the Element in MModel System.
                                 type: object
                                 properties:
                                   zh_cn:
@@ -358,8 +358,8 @@ versions:
                                     type: string
                               short_description:
                                 description:
-                                  zh_cn: 在 UModel 系统中的简短描述。
-                                  en_us: The short description of the Element in UModel System.
+                                  zh_cn: 在 MModel 系统中的简短描述。
+                                  en_us: The short description of the Element in MModel System.
                                 type: object
                                 properties:
                                   zh_cn:
@@ -554,8 +554,8 @@ versions:
                       type: any
                     icon:
                       description:
-                        zh_cn: Field 在 UModel 系统中的图标。值格式为'url'。
-                        en_us: The icon of the Element in UModel System. The value format is 'url'.
+                        zh_cn: Field 在 MModel 系统中的图标。值格式为'url'。
+                        en_us: The icon of the Element in MModel System. The value format is 'url'.
                       type: string
                       release_stage: experimental
                       constraint: null

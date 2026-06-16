@@ -2,10 +2,10 @@
 
 中文：[GraphStore Providers](../zh/graphstore-providers.md)
 
-UModel stores UModel elements, CMS 2.0 entities, and topology relations behind the `GraphStore` interface. Go entry binaries default to `local.ladybug` when `--graphstore` is omitted; select another provider with `--graphstore` on `umodel-server` or `umodel-mcp`.
+MModel stores MModel elements, CMS 2.0 entities, and topology relations behind the `GraphStore` interface. Go entry binaries default to `local.ladybug` when `--graphstore` is omitted; select another provider with `--graphstore` on `mmodel-server` or `mmodel-mcp`.
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 Active provider locations:
@@ -28,8 +28,8 @@ Active provider locations:
 - Default directory: `<data-root>/graphstore/file-memory/`
 - Custom directory from code: `graphstore.ProviderConfig{Options: map[string]string{"path": "/path/to/file-memory-dir"}}`
 - Loading: reads workspace collection files once during provider startup
-- Querying: serves `.umodel`, `.entity`, and `.topo` from memory
-- Saving: atomically rewrites the changed workspace collection files after successful UModel, entity, relation, or direct GraphStore workspace/schema writes
+- Querying: serves `.mmodel`, `.entity`, and `.topo` from memory
+- Saving: atomically rewrites the changed workspace collection files after successful MModel, entity, relation, or direct GraphStore workspace/schema writes
 
 The default layout splits data by workspace and collection:
 
@@ -37,7 +37,7 @@ The default layout splits data by workspace and collection:
 <data-root>/graphstore/file-memory/
 └── workspaces/
     └── demo/
-        ├── umodels.json
+        ├── mmodels.json
         ├── entities.json
         └── relations.json
 ```
@@ -60,7 +60,7 @@ Current entity and topology queries hide expired/deleted rows unless a historica
 
 ## Scope And Limits
 
-- `file.memory` persists GraphStore data: UModel elements, entities, and relations.
+- `file.memory` persists GraphStore data: MModel elements, entities, and relations.
 - Workspace metadata managed by `/api/v1/workspaces` is persisted separately at `<data-root>/workspaces.json` when the server starts with the `file.memory` provider.
 - Single local process only. Do not run multiple writers against the same file-memory directory.
 - The JSON files are useful for inspection and demos, but they are not a long-term storage compatibility contract.
@@ -68,10 +68,10 @@ Current entity and topology queries hide expired/deleted rows unless a historica
 ## Smoke Test
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data /tmp/umodel-demo --graphstore file.memory
-go run ./cmd/umctl --addr http://localhost:8080 umodel put demo '{"id":"devops.service","kind":"entity_set","domain":"devops","name":"devops.service"}'
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel | limit 5"
-find /tmp/umodel-demo/graphstore/file-memory -maxdepth 4 -type f
+go run ./cmd/mmodel-server --addr :8080 --data /tmp/mmodel-demo --graphstore file.memory
+go run ./cmd/mmctl --addr http://localhost:8080 mmodel put demo '{"id":"devops.service","kind":"entity_set","domain":"devops","name":"devops.service"}'
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel | limit 5"
+find /tmp/mmodel-demo/graphstore/file-memory -maxdepth 4 -type f
 ```
 
 Restart the server with the same `--data` path and rerun the query to confirm the data was loaded back from disk.

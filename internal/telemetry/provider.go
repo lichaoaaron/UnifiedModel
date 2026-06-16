@@ -1,5 +1,5 @@
 // Package telemetry defines the provider-neutral interface for querying telemetry data
-// (metrics, logs, traces) associated with UnifiedModel entities.
+// (metrics, logs, traces) associated with MModel entities.
 //
 // The first implementation is the local file provider (localfile sub-package), which
 // streams OpenSearch export snapshots from the local filesystem. Future implementations
@@ -9,7 +9,7 @@ package telemetry
 import (
 	"context"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 // Kind identifies the telemetry dataset type for a query.
@@ -54,6 +54,9 @@ type QueryRequest struct {
 type QueryResult struct {
 	Rows         []map[string]any
 	ScannedFiles []string
+	// Metadata contains provider-specific explain-safe values such as endpoint,
+	// index, and selected field names. It must not contain secrets.
+	Metadata map[string]string
 }
 
 // Provider is the provider-neutral interface for querying telemetry evidence.
@@ -71,6 +74,12 @@ type Provider interface {
 	//
 	// Errors should use the project's apperrors package with appropriate codes.
 	Query(ctx context.Context, req QueryRequest) (QueryResult, error)
+}
+
+// ExplainMetadataProvider is an optional extension implemented by providers that
+// can expose explain-safe metadata without performing a full data query.
+type ExplainMetadataProvider interface {
+	ExplainMetadata(req QueryRequest) (map[string]string, error)
 }
 
 // EvidenceRequest is the resolved, ready-to-execute evidence query built by the executor.

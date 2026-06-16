@@ -1,33 +1,33 @@
-# UModel
+# MModel
 
-[![CI](https://github.com/alibaba/UnifiedModel/actions/workflows/ci.yml/badge.svg)](https://github.com/alibaba/UnifiedModel/actions/workflows/ci.yml)
+[![CI](https://github.com/alibaba/MModel/actions/workflows/ci.yml/badge.svg)](https://github.com/alibaba/MModel/actions/workflows/ci.yml)
 ![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8)
 ![Node 22+](https://img.shields.io/badge/Node.js-22%2B-339933)
 ![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
 English version: [README.md](README.md)
 
-UModel（Unified Model）是面向企业 AI、数据治理和智能运维的厂商中立语义运行时。它把分散的 schema、实体、业务对象、遥测链接和拓扑关系组织成 workspace-scoped 的对象图上下文，让人、系统和 AI Agent 通过一个本地服务理解并使用这些语义。
+MModel（Unified Model）是面向企业 AI、数据治理和智能运维的厂商中立语义运行时。它把分散的 schema、实体、业务对象、遥测链接和拓扑关系组织成 workspace-scoped 的对象图上下文，让人、系统和 AI Agent 通过一个本地服务理解并使用这些语义。
 
-UModel 支持：
+MModel 支持：
 
 - 编写和导入模型包，定义企业对象、运维对象、数据集、链接、存储和拓扑语义。
 - 写入 CMS 2.0 兼容的运行时实体与关系。
-- 通过 `.umodel`、`.entity`、`.topo` 这一组 SPL 入口统一查询模型、实体和拓扑。
+- 通过 `.mmodel`、`.entity`、`.topo` 这一组 SPL 入口统一查询模型、实体和拓扑。
 - 通过本地 Web UI 探索 workspace。
 - 通过 AgentGateway 和 MCP 连接 Agent client。
 - 使用公开 REST、CLI 和 SDK 契约，不依赖服务端内部实现。
 
-## 为什么需要 UModel
+## 为什么需要 MModel
 
 - 加速企业 AI 规模化落地。统一语义标准让 AI 模型理解来自不同平台、不同部门、不同工具和不同领域的数据含义，提升智能运维、智能客服、智能分析、智能预测和 Agent 工作流的落地效率。
 - 降低数据治理成本。多数据源、多工具、多系统共享同一套语义语言，数据团队不再反复消耗在口径对齐、字段翻译和上下文重建上，可以把更多精力投入数据价值挖掘。
-- 保障厂商中立与选择自由。UModel 独立于特定平台、数据工具、可观测技术栈或 AI 供应商，企业构建数字化基础设施时可以避免语义层面的厂商锁定。
-- 构建企业级语义操作系统。UModel 从被动查阅的数据辞典，升级为活的、主动的、可被 AI Agent 编程调用的语义运行时，为未来企业多智能体协作提供共享上下文。
+- 保障厂商中立与选择自由。MModel 独立于特定平台、数据工具、可观测技术栈或 AI 供应商，企业构建数字化基础设施时可以避免语义层面的厂商锁定。
+- 构建企业级语义操作系统。MModel 从被动查阅的数据辞典，升级为活的、主动的、可被 AI Agent 编程调用的语义运行时，为未来企业多智能体协作提供共享上下文。
 
 ## 项目范围
 
-本仓库包含本地 UModel 服务、`umctl` CLI、MCP server、OpenAPI 契约、React Web UI、生成 SDK 资产、示例包、Docker/Compose 资产和测试套件。
+本仓库包含本地 MModel 服务、`mmctl` CLI、MCP server、OpenAPI 契约、React Web UI、生成 SDK 资产、示例包、Docker/Compose 资产和测试套件。
 
 开源核心聚焦本地运行、公共契约、语义建模、Agent 集成和 contributor-friendly 扩展点。Cloud-hosted control plane、multi-tenant authorization、Aliyun 内部前端包，以及 Query Service 之外的领域专用读取 API 不属于公共核心。
 
@@ -57,7 +57,7 @@ make quickstart
 下一步：
 
 - 打开 `http://localhost:5173`，选择 `demo`，通过 Explorer、Query、Data Store 和 Agent 视图查看 workspace。
-- 通过 AgentGateway 或 MCP 集成 Agent。先运行 `umctl agent discover demo`，再通过 `umodel-mcp` 连接 MCP client。
+- 通过 AgentGateway 或 MCP 集成 Agent。先运行 `mmctl agent discover demo`，再通过 `mmodel-mcp` 连接 MCP client。
 - 通过 CLI 或 REST 使用 Query Service 查询模型、实体和拓扑。
 
 详细流程：
@@ -75,13 +75,13 @@ make stop-all
 
 ## 架构
 
-![UModel 架构](images/architecture.png)
+![MModel 架构](images/architecture.png)
 
-UModel 围绕 workspace-scoped object graph 运行本地服务：
+MModel 围绕 workspace-scoped object graph 运行本地服务：
 
 - 模型包定义对象词汇：EntitySet、DataSet、Link、Storage 和关系语义。
 - EntityStore 写入运行时实体与拓扑关系，用运行时数据实例化模型。
-- Query Service 是 `.umodel`、`.entity`、`.topo` 的统一读取入口。
+- Query Service 是 `.mmodel`、`.entity`、`.topo` 的统一读取入口。
 - AgentGateway 和 MCP 为 Agent client 暴露 discovery、resources、query examples 和安全工具。
 - Web UI、CLI、REST 和 SDK client 共享同一套公开契约。
 

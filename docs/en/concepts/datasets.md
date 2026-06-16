@@ -72,7 +72,7 @@ flowchart LR
 List metric sets:
 
 ```bash
-go run ./cmd/umctl --addr http://localhost:8080 query run demo ".umodel with(kind='metric_set') | sort name | limit 20"
+go run ./cmd/mmctl --addr http://localhost:8080 query run demo ".mmodel with(kind='metric_set') | sort name | limit 20"
 ```
 
 Inspect datasets and storage links in the Web UI Explorer after importing a model pack that includes telemetry definitions.

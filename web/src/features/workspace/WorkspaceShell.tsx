@@ -1,7 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { ArrowLeft, PanelLeftClose, PanelLeftOpen, RefreshCcw } from 'lucide-react'
 import type { HealthResponse, WorkspaceMetadata } from '../../api/types'
-import { UModelApi } from '../../api/client'
+import { MModelApi } from '../../api/client'
 import { Brand, HealthBadge } from '../../App'
 import { Button, Badge, IconButton } from '../../design/components'
 import { formatError } from '../../lib/json'
@@ -35,7 +35,7 @@ export function WorkspaceShell({
   onHealthChange,
   onBack,
 }: {
-  api: UModelApi
+  api: MModelApi
   workspaceId: string
   workspace: WorkspaceMetadata | null
   health: HealthResponse | null
@@ -173,7 +173,7 @@ export function WorkspaceShell({
 function viewLabel(view: WorkspaceView): string {
   switch (view) {
     case 'explorer':
-      return 'UModel Explorer'
+      return 'MModel Explorer'
     case 'entityTopo':
       return 'EntityTopo Explorer'
     case 'query':

@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/internal/query"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/internal/query"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestQueryGoldenResults(t *testing.T) {
@@ -23,8 +23,8 @@ func TestQueryGoldenResults(t *testing.T) {
 		want  string
 	}{
 		{
-			name:  "umodel",
-			query: ".umodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name | limit 2",
+			name:  "mmodel",
+			query: ".mmodel with(kind='entity_set') | where domain = 'apm' | project domain,name,kind | sort name | limit 2",
 			want: `{
   "columns": [
     "domain",
@@ -47,7 +47,7 @@ func TestQueryGoldenResults(t *testing.T) {
     "limit": 2
   },
   "explain": {
-    "source": ".umodel",
+    "source": ".mmodel",
     "provider": "memory",
     "storage_provider": "memory",
     "fallback": [
@@ -171,16 +171,16 @@ func TestQueryGoldenResults(t *testing.T) {
 
 func seedQueryGoldenData(t *testing.T, ctx context.Context, store *graphstore.MemoryStore) {
 	t.Helper()
-	_, err := store.PutUModelElements(ctx, model.UModelElementBatch{
+	_, err := store.PutMModelElements(ctx, model.MModelElementBatch{
 		Workspace: "demo",
-		Elements: []model.UModelElement{
+		Elements: []model.MModelElement{
 			{Kind: "entity_set", Domain: "apm", Name: "operation"},
 			{Kind: "entity_set", Domain: "apm", Name: "service"},
 			{Kind: "entity_set", Domain: "k8s", Name: "pod"},
 		},
 	})
 	if err != nil {
-		t.Fatalf("put umodel: %v", err)
+		t.Fatalf("put mmodel: %v", err)
 	}
 	_, err = store.WriteEntities(ctx, model.EntityWriteBatch{
 		Workspace: "demo",

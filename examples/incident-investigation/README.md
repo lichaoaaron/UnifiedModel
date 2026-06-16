@@ -1,6 +1,6 @@
 # Incident Investigation Demo
 
-A scenario-driven example showing how UModel's object graph + Runbook enables AI Agent-assisted incident investigation. A payment gateway SLO breach requires cross-domain topology traversal and runbook-guided diagnostics to resolve.
+A scenario-driven example showing how MModel's object graph + Runbook enables AI Agent-assisted incident investigation. A payment gateway SLO breach requires cross-domain topology traversal and runbook-guided diagnostics to resolve.
 
 ```
 payment-gateway (degraded, platinum SLO)
@@ -61,16 +61,16 @@ Loads 3 domains (Platform / Runtime / Business), 11 entity sets, 65 entities, 83
 Alternative (API only, no Web UI):
 
 ```bash
-go run ./cmd/umodel-server --quickstart --sample examples/incident-investigation
+go run ./cmd/mmodel-server --quickstart --sample examples/incident-investigation
 ```
 
 Docker:
 
 ```bash
-docker build -t umodel-demo .
+docker build -t mmodel-demo .
 docker run -p 8080:8080 -p 5173:5173 \
   -e QUICKSTART_SAMPLE=examples/incident-investigation \
-  umodel-demo
+  mmodel-demo
 ```
 
 ## Runbook Capabilities
@@ -96,7 +96,7 @@ The `platform.service.ops` runbook provides structured diagnostic protocol for A
 ### Step 1: Identify the degraded service
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.service', query='degraded') \
   | project display_name, status, owner, sla_tier"
 ```
@@ -106,7 +106,7 @@ Expected: `payment-gateway | degraded | payments-backend | platinum`
 ### Step 2: Check upstream callers via topology
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".topo | graph-call getNeighborNodes('full', 1, \
   [(:\"platform@platform.service\" {__entity_id__: '63718b78868895d2590551b27ec6f51c'})]) \
   | with(__relation_type__='calls')"
@@ -117,7 +117,7 @@ Expected: `checkout-service` and `order-service` call payment-gateway.
 ### Step 3: Find config changes on upstream
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.config_change', query='checkout') \
   | project display_name, change_detail, applied_at"
 ```
@@ -127,7 +127,7 @@ Expected: `checkout-retry-increase` — max_retries 2->5, applied 24h ago.
 ### Step 4: Rule out recent deployment (red herring)
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='platform', name='platform.deployment', query='payment') \
   | project display_name, change_summary, deployed_at"
 ```
@@ -137,7 +137,7 @@ Expected: `payment-gw v3.2.1 | Minor: updated logging format | 12h ago` — rule
 ### Step 5: Check business traffic amplification (cross-domain)
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='business', name='business.promotion', query='active') \
   | project display_name, traffic_multiplier, expected_peak_qps, actual_peak_qps"
 ```
@@ -147,7 +147,7 @@ Expected: `618 Flash Sale | 3.5 | 12000 | 38000` — actual traffic far exceeds 
 ### Step 6: Assess business impact (cross-domain)
 
 ```bash
-umctl query run demo \
+mmctl query run demo \
   ".entity with(domain='business', name='business.order_flow', query='impacted') \
   | project display_name, error_rate"
 ```
@@ -157,7 +157,7 @@ Expected: Standard Purchase Flow (3.2%) and Subscription Renewal (1.8%) impacted
 ### Step 7: Load the runbook
 
 ```bash
-umctl query run demo ".umodel with(kind='runbook_set', name='platform.service.ops')"
+mmctl query run demo ".mmodel with(kind='runbook_set', name='platform.service.ops')"
 ```
 
 ## Agent Integration
@@ -215,10 +215,10 @@ Add to `.mcp.json`:
 ```json
 {
   "mcpServers": {
-    "umodel": {
+    "mmodel": {
       "command": "go",
       "args": [
-        "run", "./cmd/umodel-mcp",
+        "run", "./cmd/mmodel-mcp",
         "--quickstart",
         "--quickstart-sample", "examples/incident-investigation",
         "--graphstore", "memory"
@@ -233,7 +233,7 @@ Add to `.mcp.json`:
 Start server:
 
 ```bash
-go run ./cmd/umodel-mcp --quickstart \
+go run ./cmd/mmodel-mcp --quickstart \
   --quickstart-sample examples/incident-investigation \
   --graphstore file.memory \
   --transport http --addr 0.0.0.0:8090
@@ -244,7 +244,7 @@ Connect from `.mcp.json`:
 ```json
 {
   "mcpServers": {
-    "umodel": {
+    "mmodel": {
       "type": "streamable-http",
       "url": "http://<remote-host>:8090/mcp"
     }

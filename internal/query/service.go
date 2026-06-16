@@ -3,12 +3,12 @@ package query
 import (
 	"context"
 
-	"github.com/alibaba/UnifiedModel/internal/telemetry"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/telemetry"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type graphStore interface {
-	GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error)
+	GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error)
 	QueryEntities(ctx context.Context, plan model.EntityQueryPlan) (model.QueryResult, error)
 	QueryTopo(ctx context.Context, plan model.TopoQueryPlan) (model.QueryResult, error)
 	Capabilities(ctx context.Context) (model.GraphStoreCapabilities, error)
@@ -83,7 +83,7 @@ func (s *Service) Explain(ctx context.Context, workspace string, req model.Query
 
 func (s *Service) Examples(ctx context.Context) ([]string, error) {
 	return []string{
-		".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",
+		".mmodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20",
 		".entity with(domain='devops', name='devops.service', query='checkout', topk=20)",
 		".entity with(domain='k8s', name='k8s.workload', query='checkout', topk=20)",
 		".topo | graph-call getNeighborNodes('full', 2, [(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 20",

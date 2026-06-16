@@ -1,7 +1,7 @@
 {
   "kind": "entity_set_link",
   "schema": {
-    "url": "umodel.aliyun.com",
+    "url": "mmodel.aliyun.com",
     "version": "v0.1.0"
   },
   "metadata": {

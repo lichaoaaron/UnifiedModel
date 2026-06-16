@@ -148,14 +148,14 @@ class YamlToHtmlConverter:
         content_html = '\n'.join(self.output)
         toc_html = self._generate_tree_toc()
         
-        title = data.get('name', 'UModel Documentation')
+        title = data.get('name', 'MModel Documentation')
         # 添加语言后缀到标题
         if self.language == 'cn':
-            title_suffix = ' - UModel 文档'
+            title_suffix = ' - MModel 文档'
         elif self.language == 'en':
-            title_suffix = ' - UModel Documentation'
+            title_suffix = ' - MModel Documentation'
         else:  # mixed
-            title_suffix = ' - UModel Documentation'
+            title_suffix = ' - MModel Documentation'
         
         return template_content.format(
             title=title + title_suffix,
@@ -990,7 +990,7 @@ class YamlToHtmlConverter:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title} - UModel Documentation</title>
+    <title>{title} - MModel Documentation</title>
     <style>
         {css_content}
     </style>

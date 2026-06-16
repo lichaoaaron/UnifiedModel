@@ -1,7 +1,7 @@
 {
   "sample": "incident-investigation",
   "title": "Incident Investigation Demo",
-  "description": "A scenario-driven demo showing how UModel enables AI Agent-assisted incident investigation. Features a payment gateway SLO breach caused by upstream retry storm during a promotion, with runbook-guided diagnostics.",
+  "description": "A scenario-driven demo showing how MModel enables AI Agent-assisted incident investigation. Features a payment gateway SLO breach caused by upstream retry storm during a promotion, with runbook-guided diagnostics.",
   "schema_pack": "examples/incident-investigation",
   "domains": [
     "platform",

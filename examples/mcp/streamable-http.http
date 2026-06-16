@@ -24,4 +24,4 @@ POST http://127.0.0.1:8090/mcp
 Content-Type: application/json
 MCP-Protocol-Version: 2025-06-18
 
-{"jsonrpc":"2.0","id":4,"method":"resources/read","params":{"workspace":"demo","uri":"umodel://workspace/demo/overview"}}
+{"jsonrpc":"2.0","id":4,"method":"resources/read","params":{"workspace":"demo","uri":"mmodel://workspace/demo/overview"}}

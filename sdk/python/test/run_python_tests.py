@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-UModel Python SDK 自动化测试脚本
+MModel Python SDK 自动化测试脚本
 
 这个脚本会自动完成以下流程：
 1. 生成Python SDK
@@ -196,9 +196,9 @@ def print_summary(report: dict):
     # 建议
     print(f"\n📝 建议:")
     if overall_success:
-        print("  - UModel Python SDK工作正常")
+        print("  - MModel Python SDK工作正常")
         print("  - 可以开始使用生成的SDK")
-        print("  - 查看generated/python/umodel/README.md了解更多用法")
+        print("  - 查看generated/python/mmodel/README.md了解更多用法")
     else:
         print("  - 检查错误输出，修复问题后重新运行")
         print("  - 确保schemas目录结构正确")
@@ -211,7 +211,7 @@ def main():
     """主函数"""
     start_time = time.time()
     
-    print("🚀 UModel Python SDK 自动化测试")
+    print("🚀 MModel Python SDK 自动化测试")
     print("=" * 60)
     print(f"开始时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()

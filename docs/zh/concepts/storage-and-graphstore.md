@@ -2,12 +2,12 @@
 
 English: [Storage And GraphStore Providers](../../en/concepts/storage-and-graphstore.md)
 
-UModel 区分模型中的 Storage 定义和服务运行时的 GraphStore provider。
+MModel 区分模型中的 Storage 定义和服务运行时的 GraphStore provider。
 
 
 ## Storage 定义
 
-Storage 是 UModel element，描述遥测数据存放在哪里。
+Storage 是 MModel element，描述遥测数据存放在哪里。
 
 | Kind | 典型目标 |
 |---|---|
@@ -32,7 +32,7 @@ spec:
 
 ## GraphStore Providers
 
-GraphStore provider 是本地 UModel 服务背后的运行时实现。
+GraphStore provider 是本地 MModel 服务背后的运行时实现。
 
 | Provider | 角色 |
 |---|---|
@@ -43,23 +43,23 @@ GraphStore provider 是本地 UModel 服务背后的运行时实现。
 启动示例：
 
 ```bash
-go run ./cmd/umodel-server --addr :8080 --data data --graphstore file.memory
+go run ./cmd/mmodel-server --addr :8080 --data data --graphstore file.memory
 ```
 
 ## 分离规则
 
-Storage 定义领域遥测数据组织方式；GraphStore provider 保存并查询 UModel 自身的模型图、实体记录和关系记录。
+Storage 定义领域遥测数据组织方式；GraphStore provider 保存并查询 MModel 自身的模型图、实体记录和关系记录。
 
 ```mermaid
 flowchart LR
-  UModel["UModel elements"]
+  MModel["MModel elements"]
   Entity["Entity records"]
   Relation["Relation records"]
   GraphStore["GraphStore provider"]
   StorageDef["Storage definitions"]
   Telemetry["External telemetry stores"]
 
-  UModel --> GraphStore
+  MModel --> GraphStore
   Entity --> GraphStore
   Relation --> GraphStore
   StorageDef --> Telemetry

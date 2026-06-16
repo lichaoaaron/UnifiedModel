@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Architecture guard for the UModel open-source project."""
+"""Architecture guard for the MModel open-source project."""
 
 from __future__ import annotations
 
+import os
 import pathlib
 import re
 import sys
@@ -20,9 +21,9 @@ TEXT_SUFFIXES = {
 
 FORBIDDEN_PATTERNS = [
     (re.compile(r"/api/v1/workspaces/\{?workspace\}?/(start|stop|restart|backup|restore)"), "workspace lifecycle API is forbidden"),
-    (re.compile(r"\bumodelassistant\b", re.IGNORECASE), "UModelAssistant is not part of the current open-source runtime"),
+    (re.compile(r"\bmmodelassistant\b", re.IGNORECASE), "MModelAssistant is not part of the current open-source runtime"),
     (re.compile(r"/api/v1/(entities|relations|graph|related|neighbors)\b"), "domain read APIs must go through Query Service"),
-    (re.compile(r"\bumctl\s+(entity|get|list|search|topo\s+neighbors|topo\s+subgraph)"), "CLI domain read commands are forbidden"),
+    (re.compile(r"\bmmctl\s+(entity|get|list|search|topo\s+neighbors|topo\s+subgraph)"), "CLI domain read commands are forbidden"),
 ]
 
 PROVIDER_IMPORT = re.compile(r'internal/graphstore/provider/(ladybug|cloud|custom)')
@@ -34,14 +35,25 @@ ALLOWED_PROVIDER_IMPORTS = {
 
 
 def iter_files() -> list[pathlib.Path]:
-    ignored_parts = {".git", ".venv", "__pycache__", "node_modules"}
+    ignored_parts = {
+        ".git",
+        ".run",
+        ".venv",
+        "__pycache__",
+        "data",
+        "dist",
+        "node_modules",
+        "outputs",
+        "tmp",
+    }
     files: list[pathlib.Path] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or path.suffix not in TEXT_SUFFIXES:
-            continue
-        if ignored_parts.intersection(path.parts):
-            continue
-        files.append(path)
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = [name for name in dirnames if name not in ignored_parts]
+        base = pathlib.Path(dirpath)
+        for filename in filenames:
+            path = base / filename
+            if path.suffix in TEXT_SUFFIXES:
+                files.append(path)
     return files
 
 

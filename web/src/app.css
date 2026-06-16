@@ -2174,7 +2174,7 @@
 }
 
 .landing .landing-stage::after {
-  content: "OPENUMODEL";
+  content: "OPENMMODEL";
   position: absolute;
   right: -12px;
   bottom: -28px;
@@ -2837,7 +2837,7 @@
 }
 
 .landing .vector-glass-card,
-.landing .vector-umodel-panel,
+.landing .vector-mmodel-panel,
 .landing .vector-side-card,
 .landing .vector-node,
 .landing .realtime-pill {
@@ -2894,7 +2894,7 @@
 .landing .vector-glass-card:hover,
 .landing .vector-node:hover,
 .landing .vector-side-card:hover,
-.landing .vector-umodel-panel:hover {
+.landing .vector-mmodel-panel:hover {
   border-color: rgba(45, 108, 255, 0.42);
   box-shadow:
     0 34px 88px rgba(65, 105, 220, 0.18),
@@ -3174,7 +3174,7 @@
   filter: drop-shadow(0 0 8px rgba(55, 118, 255, 0.58));
 }
 
-.landing .vector-umodel-panel {
+.landing .vector-mmodel-panel {
   left: 28%;
   top: 31%;
   z-index: 9;
@@ -3187,61 +3187,61 @@
   transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.landing .vector-umodel-panel:hover {
+.landing .vector-mmodel-panel:hover {
   transform: translateY(-7px);
 }
 
-.landing .umodel-panel-copy {
+.landing .mmodel-panel-copy {
   padding: 22px;
 }
 
-.landing .umodel-panel-copy strong {
+.landing .mmodel-panel-copy strong {
   display: block;
   color: #102044;
   font-size: 15px;
   font-weight: 760;
 }
 
-.landing .umodel-panel-copy > span,
-.landing .umodel-panel-copy small {
+.landing .mmodel-panel-copy > span,
+.landing .mmodel-panel-copy small {
   color: rgba(33, 50, 86, 0.62);
   font-size: 12px;
 }
 
-.landing .umodel-panel-copy > span {
+.landing .mmodel-panel-copy > span {
   display: block;
   margin-top: 10px;
 }
 
-.landing .umodel-panel-copy div {
+.landing .mmodel-panel-copy div {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
   margin-top: 15px;
 }
 
-.landing .umodel-panel-copy b {
+.landing .mmodel-panel-copy b {
   color: #102044;
 }
 
-.landing .umodel-code {
+.landing .mmodel-code {
   padding: 14px 18px 14px 16px;
   border-left: 1px solid rgba(71, 103, 255, 0.16);
   background: rgba(255, 255, 255, 0.36);
 }
 
-.landing .umodel-code span {
+.landing .mmodel-code span {
   margin-right: 18px;
   color: #6b748a;
   font-size: 12px;
   font-weight: 720;
 }
 
-.landing .umodel-code span:first-child {
+.landing .mmodel-code span:first-child {
   color: #245cff;
 }
 
-.landing .umodel-code pre {
+.landing .mmodel-code pre {
   margin: 12px 0 0;
   color: #307a9a;
   font-family: var(--om-mono);
@@ -3533,7 +3533,7 @@
     right: 1%;
   }
 
-  .landing .vector-umodel-panel {
+  .landing .vector-mmodel-panel {
     left: 24%;
     width: min(540px, 57%);
   }
@@ -3559,7 +3559,7 @@
     width: min(360px, 72%);
   }
 
-  .landing .vector-umodel-panel {
+  .landing .vector-mmodel-panel {
     left: 50%;
     top: 28%;
     width: min(560px, 76%);
@@ -3588,13 +3588,13 @@
     height: 360px;
   }
 
-  .landing .vector-umodel-panel {
+  .landing .vector-mmodel-panel {
     top: 26%;
     width: 84%;
     grid-template-columns: 1fr;
   }
 
-  .landing .umodel-code {
+  .landing .mmodel-code {
     display: none;
   }
 

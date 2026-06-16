@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-UModel HTML 文档索引生成器
+MModel HTML 文档索引生成器
 自动扫描 docs/html 目录下的 HTML 文件并生成 index.html
 支持多语言版本：mixed(混合)、cn(中文)、en(英文)
 """
@@ -17,14 +17,14 @@ def get_ui_text(key, language='mixed'):
     """获取UI界面文本"""
     ui_texts = {
         'document_center': {
-            'mixed': '📚 UModel 文档中心',
-            'cn': '📚 UModel 文档中心', 
-            'en': '📚 UModel Documentation Center'
+            'mixed': '📚 MModel 文档中心',
+            'cn': '📚 MModel 文档中心',
+            'en': '📚 MModel Documentation Center'
         },
         'explore_description': {
-            'mixed': '探索 UModel 系统的完整文档和规范',
-            'cn': '探索 UModel 系统的完整文档和规范',
-            'en': 'Explore complete documentation and specifications for UModel system'
+            'mixed': '探索 MModel 系统的完整文档和规范',
+            'cn': '探索 MModel 系统的完整文档和规范',
+            'en': 'Explore complete documentation and specifications for MModel system'
         },
         'auto_generated': {
             'mixed': 'ℹ️ 本页面自动生成于 {time}，包含 {count} 个文档，总大小 {size} KB',
@@ -43,7 +43,7 @@ def get_ui_text(key, language='mixed'):
         },
         'total_size': {
             'mixed': '总大小 (KB)',
-            'cn': '总大小 (KB)', 
+            'cn': '总大小 (KB)',
             'en': 'Total Size (KB)'
         },
         'view_button': {
@@ -62,9 +62,9 @@ def get_ui_text(key, language='mixed'):
             'en': 'Please try searching with different keywords'
         },
         'copyright': {
-            'mixed': '&copy; 2024 UModel Documentation Center. 自动生成于 {time}',
-            'cn': '&copy; 2024 UModel 文档中心. 自动生成于 {time}',
-            'en': '&copy; 2024 UModel Documentation Center. Auto-generated at {time}'
+            'mixed': '&copy; 2024 MModel Documentation Center. 自动生成于 {time}',
+            'cn': '&copy; 2024 MModel 文档中心. 自动生成于 {time}',
+            'en': '&copy; 2024 MModel Documentation Center. Auto-generated at {time}'
         },
         'regenerate_tip': {
             'mixed': '使用 <code>python scripts/converters/generate_index.py</code> 重新生成此页面',
@@ -137,12 +137,12 @@ def get_ui_text(key, language='mixed'):
             'en': 'Unknown Document'
         },
         'default_description': {
-            'mixed': 'UModel 系统文档',
-            'cn': 'UModel 系统文档',
-            'en': 'UModel System Documentation'
+            'mixed': 'MModel 系统文档',
+            'cn': 'MModel 系统文档',
+            'en': 'MModel System Documentation'
         }
     }
-    
+
     text_dict = ui_texts.get(key, {})
     return text_dict.get(language, text_dict.get('mixed', key))
 
@@ -151,11 +151,11 @@ def extract_title_from_html(file_path, language='mixed'):
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-            
+
         # 提取页面标题
         title_match = re.search(r'<title>(.*?)</title>', content, re.IGNORECASE)
         title = title_match.group(1) if title_match else get_ui_text('unknown_doc', language)
-        
+
         # 提取主标题
         main_title_match = re.search(r'<h1[^>]*class="main-title"[^>]*>(.*?)</h1>', content, re.IGNORECASE | re.DOTALL)
         if main_title_match:
@@ -163,19 +163,19 @@ def extract_title_from_html(file_path, language='mixed'):
         else:
             # 根据语言模式清理标题
             title_suffixes = [
-                ' - UModel Documentation',
-                ' - UModel 文档'
+                ' - MModel Documentation',
+                ' - MModel 文档'
             ]
             main_title = title
             for suffix in title_suffixes:
                 main_title = main_title.replace(suffix, '')
-        
+
         # 提取描述
         desc_match = re.search(r'<p class="description-text">(.*?)</p>', content, re.IGNORECASE)
         description = desc_match.group(1) if desc_match else get_ui_text('default_description', language)
-        
+
         return main_title, description
-        
+
     except Exception as e:
         print(f"解析文件 {file_path} 时出错: {e}")
         return get_ui_text('unknown_doc', language), get_ui_text('default_description', language)
@@ -183,7 +183,7 @@ def extract_title_from_html(file_path, language='mixed'):
 def categorize_doc(filename, language='mixed'):
     """根据文件名推断文档类别"""
     filename_lower = filename.lower()
-    
+
     if 'link' in filename_lower:
         return 'connection', '🔗'
     elif 'runbook' in filename_lower:
@@ -192,7 +192,7 @@ def categorize_doc(filename, language='mixed'):
         return 'entity', '🏗️'
     elif 'storage' in filename_lower or 'store' in filename_lower or 'prometheus' in filename_lower or 'entity_source' in filename_lower:
         return 'storage', '💾'
-    elif 'event' in filename_lower or 'log' in filename_lower or 'metric' in filename_lower or 'trace' in filename_lower or 'profile' in filename_lower or 'telemetry' in filename_lower or 'data' in filename_lower: 
+    elif 'event' in filename_lower or 'log' in filename_lower or 'metric' in filename_lower or 'trace' in filename_lower or 'profile' in filename_lower or 'telemetry' in filename_lower or 'data' in filename_lower:
         return 'telemetry', '📊'
     else:
         return 'general', '📄'
@@ -209,20 +209,20 @@ def scan_html_files(html_dir, language='mixed'):
     """扫描 HTML 目录并收集文档信息"""
     docs = []
     html_path = Path(html_dir)
-    
+
     if not html_path.exists():
         print(f"目录 {html_dir} 不存在")
         return docs
-    
+
     for file_path in html_path.glob('*.html'):
         if file_path.name == 'index.html':
             continue  # 跳过索引文件本身
-            
+
         filename = file_path.name
         title, description = extract_title_from_html(file_path, language)
         category, icon = categorize_doc(filename, language)
         size_kb = get_file_size_kb(file_path)
-        
+
         # 生成副标题
         subtitle_map = {
             'telemetry': get_ui_text('subtitle_telemetry', language),
@@ -233,7 +233,7 @@ def scan_html_files(html_dir, language='mixed'):
             'general': get_ui_text('subtitle_general', language)
         }
         subtitle = subtitle_map.get(category, get_ui_text('subtitle_general', language))
-        
+
         docs.append({
             'filename': filename,
             'title': title,
@@ -243,7 +243,7 @@ def scan_html_files(html_dir, language='mixed'):
             'size': size_kb,
             'category': category
         })
-    
+
     # 按类型优先排序，然后按文件名排序
     category_order = {
         'entity': 1,
@@ -258,14 +258,14 @@ def scan_html_files(html_dir, language='mixed'):
 
 def generate_index_html(docs, output_path, language='mixed'):
     """生成 index.html 文件"""
-    
+
     total_size = sum(doc['size'] for doc in docs)
     total_docs = len(docs)
     current_time = datetime.now().strftime('%Y-%m-%d %H:%M')
-    
+
     # 生成 JavaScript 文档数据
     docs_js = json.dumps(docs, ensure_ascii=False, indent=12)
-    
+
     # 获取UI文本
     document_center = get_ui_text('document_center', language)
     explore_description = get_ui_text('explore_description', language)
@@ -280,10 +280,10 @@ def generate_index_html(docs, output_path, language='mixed'):
     no_results_desc = get_ui_text('no_results_desc', language)
     copyright_text = get_ui_text('copyright', language).format(time=current_time)
     regenerate_tip = get_ui_text('regenerate_tip', language)
-    
+
     # 设置语言
     lang_code = 'zh-CN' if language in ['mixed', 'cn'] else 'en'
-    
+
     html_template = f'''<!DOCTYPE html>
 <html lang="{lang_code}">
 <head>
@@ -640,25 +640,25 @@ def generate_index_html(docs, output_path, language='mixed'):
         function renderDocs(docsToRender = docs) {{
             const docsList = document.getElementById('docsList');
             const noResults = document.getElementById('noResults');
-            
+
             if (docsToRender.length === 0) {{
                 docsList.innerHTML = '';
                 noResults.classList.remove('hidden');
                 return;
             }}
-            
+
             noResults.classList.add('hidden');
-            
+
             const groupedDocs = groupDocsByCategory(docsToRender);
             const categoryOrder = ['entity', 'telemetry', 'connection', 'storage', 'runbook', 'general'];
-            
+
             let html = '';
-            
+
             categoryOrder.forEach(category => {{
                 if (groupedDocs[category] && groupedDocs[category].length > 0) {{
                     const categoryName = getCategoryName(category);
                     const categoryIcon = groupedDocs[category][0].icon;
-                    
+
                     html += `
                         <div class="category-section">
                             <div class="category-header">
@@ -666,7 +666,7 @@ def generate_index_html(docs, output_path, language='mixed'):
                                 <span>${{categoryName}} (${{groupedDocs[category].length}})</span>
                             </div>
                     `;
-                    
+
                     groupedDocs[category].forEach(doc => {{
                         html += `
                             <div class="doc-item">
@@ -684,11 +684,11 @@ def generate_index_html(docs, output_path, language='mixed'):
                             </div>
                         `;
                     }});
-                    
+
                     html += '</div>';
                 }}
             }});
-            
+
             docsList.innerHTML = html;
         }}
 
@@ -708,22 +708,22 @@ def generate_index_html(docs, output_path, language='mixed'):
         // 搜索功能
         function setupSearch() {{
             const searchInput = document.getElementById('searchInput');
-            
+
             searchInput.addEventListener('input', (e) => {{
                 const searchTerm = e.target.value.toLowerCase().trim();
-                
+
                 if (searchTerm === '') {{
                     renderDocs(docs);
                     return;
                 }}
-                
-                const filteredDocs = docs.filter(doc => 
+
+                const filteredDocs = docs.filter(doc =>
                     doc.title.toLowerCase().includes(searchTerm) ||
                     doc.subtitle.toLowerCase().includes(searchTerm) ||
                     doc.description.toLowerCase().includes(searchTerm) ||
                     getCategoryName(doc.category).toLowerCase().includes(searchTerm)
                 );
-                
+
                 renderDocs(filteredDocs);
             }});
         }}
@@ -742,17 +742,17 @@ def generate_index_html(docs, output_path, language='mixed'):
 
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description='生成 UModel HTML 文档索引')
+    parser = argparse.ArgumentParser(description='生成 MModel HTML 文档索引')
     parser.add_argument('-l', '--language', choices=['mixed', 'cn', 'en'], default='mixed',
                        help='输出语言模式: mixed(中英文), cn(中文), en(英文), 默认为 mixed')
     parser.add_argument('-d', '--html-dir', help='HTML文档目录路径（可选）')
     parser.add_argument('-o', '--output', help='输出文件路径（可选）')
-    
+
     args = parser.parse_args()
-    
+
     # 获取脚本所在目录
     script_dir = Path(__file__).parent
-    
+
     # 根据语言确定目录名
     if args.html_dir:
         html_dir = Path(args.html_dir)
@@ -763,27 +763,27 @@ def main():
             html_dir = script_dir / '..' / '..' / 'docs' / 'html_en'
         else:  # mixed
             html_dir = script_dir / '..' / '..' / 'docs' / 'html'
-    
+
     # 确定输出文件路径
     if args.output:
         output_path = Path(args.output)
     else:
         output_path = html_dir / 'index.html'
-    
+
     print(f"🔍 扫描 HTML 文档 ({args.language} 模式)...")
     docs = scan_html_files(html_dir, args.language)
-    
+
     if not docs:
         print("❌ 未找到任何 HTML 文档")
         return
-    
+
     print(f"📄 找到 {len(docs)} 个文档:")
     for doc in docs:
         print(f"  - {doc['filename']} ({doc['size']} KB)")
-    
+
     print(f"📝 生成索引文件: {output_path}")
     generate_index_html(docs, output_path, args.language)
-    
+
     print("✅ 索引文件生成完成!")
     print(f"🌐 访问: file://{output_path.absolute()}")
     print(f"🌐 语言模式: {args.language}")

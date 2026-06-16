@@ -8,20 +8,20 @@ import (
 	"sync"
 	"time"
 
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type MemoryStore struct {
 	mu        sync.RWMutex
-	umodels   map[string]map[string]model.UModelElement
+	mmodels   map[string]map[string]model.MModelElement
 	entities  map[string]map[string]model.EntityPayload
 	relations map[string]map[string]model.RelationPayload
 }
 
 func NewMemoryStore() *MemoryStore {
 	return &MemoryStore{
-		umodels:   make(map[string]map[string]model.UModelElement),
+		mmodels:   make(map[string]map[string]model.MModelElement),
 		entities:  make(map[string]map[string]model.EntityPayload),
 		relations: make(map[string]map[string]model.RelationPayload),
 	}
@@ -41,7 +41,7 @@ func (s *MemoryStore) EnsureSchema(ctx context.Context, workspace string) error 
 	return nil
 }
 
-func (s *MemoryStore) PutUModelElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error) {
+func (s *MemoryStore) PutMModelElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error) {
 	if batch.Workspace == "" {
 		return model.WriteResult{}, fmt.Errorf("workspace is required")
 	}
@@ -52,31 +52,31 @@ func (s *MemoryStore) PutUModelElements(ctx context.Context, batch model.UModelE
 
 	items := make([]model.BatchItemResult, 0, len(batch.Elements))
 	for _, element := range batch.Elements {
-		key := model.UModelElementKey(element)
-		s.umodels[batch.Workspace][key] = cloneUModelElement(element)
+		key := model.MModelElementKey(element)
+		s.mmodels[batch.Workspace][key] = cloneMModelElement(element)
 		items = append(items, model.BatchItemResult{ID: key, OK: true})
 	}
 	return model.WriteResult{Accepted: len(batch.Elements), Items: items}, nil
 }
 
-func (s *MemoryStore) GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error) {
+func (s *MemoryStore) GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
-	source := s.umodels[req.Workspace]
-	elements := make([]model.UModelElement, 0, len(source))
+	source := s.mmodels[req.Workspace]
+	elements := make([]model.MModelElement, 0, len(source))
 	for _, element := range source {
-		elements = append(elements, cloneUModelElement(element))
+		elements = append(elements, cloneMModelElement(element))
 	}
 	sort.Slice(elements, func(i, j int) bool {
-		return model.UModelElementKey(elements[i]) < model.UModelElementKey(elements[j])
+		return model.MModelElementKey(elements[i]) < model.MModelElementKey(elements[j])
 	})
 
 	version := req.Version
 	if version == "" {
 		version = "memory"
 	}
-	return model.UModelSnapshot{Workspace: req.Workspace, Version: version, Elements: elements}, nil
+	return model.MModelSnapshot{Workspace: req.Workspace, Version: version, Elements: elements}, nil
 }
 
 func (s *MemoryStore) WriteEntities(ctx context.Context, batch model.EntityWriteBatch) (model.WriteResult, error) {
@@ -266,13 +266,22 @@ func (s *MemoryStore) Health(ctx context.Context) (model.GraphStoreHealth, error
 }
 
 func (s *MemoryStore) ensureWorkspaceLocked(workspace string) {
-	if _, ok := s.umodels[workspace]; !ok {
-		s.umodels[workspace] = make(map[string]model.UModelElement)
+	if s.mmodels == nil {
+		s.mmodels = make(map[string]map[string]model.MModelElement)
 	}
-	if _, ok := s.entities[workspace]; !ok {
+	if s.entities == nil {
+		s.entities = make(map[string]map[string]model.EntityPayload)
+	}
+	if s.relations == nil {
+		s.relations = make(map[string]map[string]model.RelationPayload)
+	}
+	if s.mmodels[workspace] == nil {
+		s.mmodels[workspace] = make(map[string]model.MModelElement)
+	}
+	if s.entities[workspace] == nil {
 		s.entities[workspace] = make(map[string]model.EntityPayload)
 	}
-	if _, ok := s.relations[workspace]; !ok {
+	if s.relations[workspace] == nil {
 		s.relations[workspace] = make(map[string]model.RelationPayload)
 	}
 }
@@ -560,7 +569,7 @@ func boolValue(value any) bool {
 	}
 }
 
-func cloneUModelElement(element model.UModelElement) model.UModelElement {
+func cloneMModelElement(element model.MModelElement) model.MModelElement {
 	element.Spec = cloneMap(element.Spec)
 	return element
 }

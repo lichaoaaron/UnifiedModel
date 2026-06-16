@@ -3,7 +3,7 @@ package query
 import (
 	"strings"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func buildExplain(plan model.QueryPlan, caps model.GraphStoreCapabilities, health model.GraphStoreHealth) model.QueryExplain {
@@ -50,7 +50,7 @@ func pushdownForPlan(plan model.QueryPlan, caps model.GraphStoreCapabilities) []
 
 func fallbackForPlan(plan model.QueryPlan, caps model.GraphStoreCapabilities) []string {
 	fallback := []string{}
-	if plan.Source == ".umodel" {
+	if plan.Source == ".mmodel" {
 		fallback = append(fallback, "snapshot_filter")
 	}
 	if plan.Source == ".entity" && !caps.ServerSideFilter {

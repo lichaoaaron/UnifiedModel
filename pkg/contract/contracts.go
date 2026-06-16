@@ -3,7 +3,7 @@ package contract
 import (
 	"context"
 
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 type WorkspaceManager interface {
@@ -26,8 +26,8 @@ type WorkspaceConfigSchemaRegistry interface {
 type GraphStore interface {
 	OpenWorkspace(ctx context.Context, workspace model.WorkspaceMetadata) error
 	EnsureSchema(ctx context.Context, workspace string) error
-	PutUModelElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error)
-	GetUModelSnapshot(ctx context.Context, req model.UModelSnapshotRequest) (model.UModelSnapshot, error)
+	PutMModelElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error)
+	GetMModelSnapshot(ctx context.Context, req model.MModelSnapshotRequest) (model.MModelSnapshot, error)
 	WriteEntities(ctx context.Context, batch model.EntityWriteBatch) (model.WriteResult, error)
 	WriteRelations(ctx context.Context, batch model.RelationWriteBatch) (model.WriteResult, error)
 	QueryEntities(ctx context.Context, plan model.EntityQueryPlan) (model.QueryResult, error)
@@ -36,15 +36,15 @@ type GraphStore interface {
 	Health(ctx context.Context) (model.GraphStoreHealth, error)
 }
 
-type UModelService interface {
-	Import(ctx context.Context, workspace string, req model.UModelImportRequest) (model.UModelImportResult, error)
-	Validate(ctx context.Context, workspace string, elements []model.UModelElement) (model.ValidationResult, error)
-	PutElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error)
+type MModelService interface {
+	Import(ctx context.Context, workspace string, req model.MModelImportRequest) (model.MModelImportResult, error)
+	Validate(ctx context.Context, workspace string, elements []model.MModelElement) (model.ValidationResult, error)
+	PutElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error)
 	DeleteElements(ctx context.Context, workspace string, ids []string) (model.WriteResult, error)
 	RebuildIndex(ctx context.Context, workspace string) error
 }
 
-type UModelSchemaResolver interface {
+type MModelSchemaResolver interface {
 	ResolveEntitySet(ctx context.Context, ref model.EntityTypeRef) (model.EntitySetSchema, error)
 	ResolveRelationType(ctx context.Context, ref model.RelationTypeRef) (model.RelationSchema, error)
 	ValidateEntityPayload(ctx context.Context, payload model.EntityPayload) (model.ValidationResult, error)

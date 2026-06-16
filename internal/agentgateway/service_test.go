@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alibaba/UnifiedModel/internal/graphstore"
-	"github.com/alibaba/UnifiedModel/internal/umodel"
-	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
-	"github.com/alibaba/UnifiedModel/pkg/model"
+	"github.com/alibaba/MModel/internal/graphstore"
+	"github.com/alibaba/MModel/internal/mmodel"
+	apperrors "github.com/alibaba/MModel/pkg/errors"
+	"github.com/alibaba/MModel/pkg/model"
 )
 
 func TestToolsKeepWriteToolsDisabledByDefault(t *testing.T) {
@@ -31,8 +31,8 @@ func TestToolsKeepWriteToolsDisabledByDefault(t *testing.T) {
 	if byName["entity_write"].Enabled || !byName["entity_write"].RequiresExplicitWriteEnable {
 		t.Fatalf("write tool should be disabled by default: %+v", byName["entity_write"])
 	}
-	if byName["umodel_import"].Enabled || byName["entity_expire"].Enabled {
-		t.Fatalf("all write tools should be disabled by default: %+v %+v", byName["umodel_import"], byName["entity_expire"])
+	if byName["mmodel_import"].Enabled || byName["entity_expire"].Enabled {
+		t.Fatalf("all write tools should be disabled by default: %+v %+v", byName["mmodel_import"], byName["entity_expire"])
 	}
 }
 
@@ -40,7 +40,7 @@ func TestExecuteQueryTool(t *testing.T) {
 	svc := NewService(fakeQuery{})
 	result, err := svc.ExecuteTool(context.Background(), "demo", model.AgentToolCallRequest{
 		Name:      "query_spl_execute",
-		Arguments: map[string]any{"query": ".umodel | limit 1"},
+		Arguments: map[string]any{"query": ".mmodel | limit 1"},
 	})
 	if err != nil {
 		t.Fatalf("execute tool: %v", err)
@@ -82,7 +82,7 @@ func TestExecuteExplainToolAndRejectUnknownToolOrResource(t *testing.T) {
 	if !apperrors.IsCode(err, apperrors.CodeToolNotFound) {
 		t.Fatalf("expected unknown tool error, got %v", err)
 	}
-	_, err = svc.ReadResource(context.Background(), "demo", model.AgentResourceReadRequest{URI: "umodel://workspace/demo/runtime-rows"})
+	_, err = svc.ReadResource(context.Background(), "demo", model.AgentResourceReadRequest{URI: "mmodel://workspace/demo/runtime-rows"})
 	if !apperrors.IsCode(err, apperrors.CodeNotFound) {
 		t.Fatalf("expected unknown resource error, got %v", err)
 	}
@@ -138,14 +138,14 @@ func TestReadResourcesDoNotLeakRuntimeResults(t *testing.T) {
 	}
 }
 
-func TestUModelValidateSurfacesSchemaErrorsAndWarnings(t *testing.T) {
+func TestMModelValidateSurfacesSchemaErrorsAndWarnings(t *testing.T) {
 	graph := graphstore.NewMemoryStore()
-	umodelSvc := umodel.NewService(graph)
-	svc := NewService(fakeQuery{}, WithWriteServices(umodelSvc, &fakeEntityStore{}))
+	mmodelSvc := mmodel.NewService(graph)
+	svc := NewService(fakeQuery{}, WithWriteServices(mmodelSvc, &fakeEntityStore{}))
 
 	// entity_set_link with bad shape: wrong field names + missing required entity_link_type.
 	result, err := svc.ExecuteTool(context.Background(), "demo", model.AgentToolCallRequest{
-		Name: "umodel_validate",
+		Name: "mmodel_validate",
 		Arguments: map[string]any{"elements": []map[string]any{{
 			"kind":   "entity_set_link",
 			"domain": "demo",
@@ -158,7 +158,7 @@ func TestUModelValidateSurfacesSchemaErrorsAndWarnings(t *testing.T) {
 		}}},
 	})
 	if err != nil {
-		t.Fatalf("umodel_validate: %v", err)
+		t.Fatalf("mmodel_validate: %v", err)
 	}
 	if !result.OK {
 		t.Fatalf("expected ok envelope, got %+v", result)
@@ -183,12 +183,12 @@ func TestUModelValidateSurfacesSchemaErrorsAndWarnings(t *testing.T) {
 }
 
 func TestWriteToolsCallServiceLayerWhenExplicitlyEnabled(t *testing.T) {
-	umodelSvc := &fakeUModel{}
+	mmodelSvc := &fakeMModel{}
 	entitySvc := &fakeEntityStore{}
-	svc := NewService(fakeQuery{}, WithWriteToolsEnabled(true), WithWriteServices(umodelSvc, entitySvc))
+	svc := NewService(fakeQuery{}, WithWriteToolsEnabled(true), WithWriteServices(mmodelSvc, entitySvc))
 
 	_, err := svc.ExecuteTool(context.Background(), "demo", model.AgentToolCallRequest{
-		Name: "umodel_import",
+		Name: "mmodel_import",
 		Arguments: map[string]any{"elements": []map[string]any{{
 			"kind":   "entity_set",
 			"domain": "apm",
@@ -196,10 +196,10 @@ func TestWriteToolsCallServiceLayerWhenExplicitlyEnabled(t *testing.T) {
 		}}},
 	})
 	if err != nil {
-		t.Fatalf("umodel_import: %v", err)
+		t.Fatalf("mmodel_import: %v", err)
 	}
-	if umodelSvc.putCalls != 1 {
-		t.Fatalf("umodel_import should call service layer, got %d", umodelSvc.putCalls)
+	if mmodelSvc.putCalls != 1 {
+		t.Fatalf("mmodel_import should call service layer, got %d", mmodelSvc.putCalls)
 	}
 
 	_, err = svc.ExecuteTool(context.Background(), "demo", model.AgentToolCallRequest{
@@ -236,11 +236,11 @@ func (fakeQuery) Execute(ctx context.Context, workspace string, req model.QueryR
 }
 
 func (fakeQuery) Explain(ctx context.Context, workspace string, req model.QueryRequest) (model.QueryExplain, error) {
-	return model.QueryExplain{Source: ".umodel"}, nil
+	return model.QueryExplain{Source: ".mmodel"}, nil
 }
 
 func (fakeQuery) Examples(ctx context.Context) ([]string, error) {
-	return []string{".umodel | limit 1"}, nil
+	return []string{".mmodel | limit 1"}, nil
 }
 
 type recordingQuery struct {
@@ -257,17 +257,17 @@ func (f *recordingQuery) Explain(ctx context.Context, workspace string, req mode
 	return model.QueryExplain{Source: ".entity", Provider: "memory"}, nil
 }
 
-type fakeUModel struct {
+type fakeMModel struct {
 	validateCalls int
 	putCalls      int
 }
 
-func (f *fakeUModel) Validate(ctx context.Context, workspace string, elements []model.UModelElement) (model.ValidationResult, error) {
+func (f *fakeMModel) Validate(ctx context.Context, workspace string, elements []model.MModelElement) (model.ValidationResult, error) {
 	f.validateCalls++
 	return model.ValidationResult{Valid: true}, nil
 }
 
-func (f *fakeUModel) PutElements(ctx context.Context, batch model.UModelElementBatch) (model.WriteResult, error) {
+func (f *fakeMModel) PutElements(ctx context.Context, batch model.MModelElementBatch) (model.WriteResult, error) {
 	f.putCalls++
 	return model.WriteResult{Accepted: len(batch.Elements)}, nil
 }
