@@ -1,0 +1,23 @@
+kind: entity_set_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.frontend_web_calls_otel.frontend_proxy"
+  domain: otel
+  display_name:
+    en_us: "Frontend Web Calls Frontend Proxy"
+    zh_cn: "前端浏览器调用前端代理"
+  description:
+    en_us: "The browser-side frontend-web SDK captures client-side spans for HTTP requests routed through the frontend-proxy."
+    zh_cn: "浏览器端 frontend-web SDK 捕获通过前端代理路由的 HTTP 请求的客户端 span。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  entity_link_type: calls

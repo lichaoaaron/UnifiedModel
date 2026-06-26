@@ -4,6 +4,7 @@ Choose a language:
 
 - [English documentation](en/README.md)
 - [中文文档](zh/README.md)
+- [Product docs](docs/README.md)
 
 Generated schema references:
 

@@ -1,0 +1,23 @@
+kind: entity_set_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.shipping_calls_otel.quote"
+  domain: otel
+  display_name:
+    en_us: "Shipping Calls Quote"
+    zh_cn: "物流调用报价"
+  description:
+    en_us: "The shipping service calls the quote service to get per-product shipping cost estimates."
+    zh_cn: "物流服务调用报价服务以获取每个商品的运费估算。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  entity_link_type: calls

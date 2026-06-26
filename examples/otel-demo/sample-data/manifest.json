@@ -1,0 +1,26 @@
+{
+  "sample": "otel-demo",
+  "title": "OpenTelemetry Demo (Astronomy Shop) sample",
+  "schema_pack": "examples/otel-demo",
+  "source_hint": "Service entity definitions and topology based on the official OpenTelemetry Demo (Astronomy Shop) microservice architecture. Dataset (metric, log, trace) and storage definitions point to a local OpenSearch instance.",
+  "domains": [
+    "otel"
+  ],
+  "entities": "entities.json",
+  "relations": "relations.json",
+  "seed_entities": {
+    "frontend_proxy": "a0000000000000000000000000000001",
+    "frontend": "a0000000000000000000000000000002",
+    "checkout": "a000000000000000000000000000000e"
+  },
+  "counts": {
+    "entity_sets": 2,
+    "entity_set_links": 20,
+    "data_sets": 3,
+    "data_links": 3,
+    "storage_links": 3,
+    "external_storages": 2,
+    "entities": 21,
+    "relations": 28
+  }
+}

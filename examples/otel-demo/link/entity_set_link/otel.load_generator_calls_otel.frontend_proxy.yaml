@@ -1,0 +1,23 @@
+kind: entity_set_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.load_generator_calls_otel.frontend_proxy"
+  domain: otel
+  display_name:
+    en_us: "Load Generator Calls Frontend Proxy"
+    zh_cn: "负载生成器调用前端代理"
+  description:
+    en_us: "The load-generator (Locust) simulates user traffic by hitting frontend-proxy endpoints."
+    zh_cn: "负载生成器（Locust）通过访问前端代理端点来模拟用户流量。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  entity_link_type: calls

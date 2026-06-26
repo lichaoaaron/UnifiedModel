@@ -1,0 +1,23 @@
+kind: entity_set_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.frontend_calls_otel.currency"
+  domain: otel
+  display_name:
+    en_us: "Frontend Calls Currency"
+    zh_cn: "前端调用货币"
+  description:
+    en_us: "The frontend service calls the currency service."
+    zh_cn: "前端服务调用货币转换服务。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  entity_link_type: calls

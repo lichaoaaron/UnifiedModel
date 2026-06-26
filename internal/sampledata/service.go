@@ -42,6 +42,13 @@ var sampleCatalog = []sampleDefinition{
 		EntityFile:   "examples/incident-investigation/sample-data/entities.json",
 		RelationFile: "examples/incident-investigation/sample-data/relations.json",
 	},
+	{
+		Name:         "otel-demo",
+		Aliases:      []string{"opentelemetry-demo", "otel", "examples/otel-demo"},
+		SchemaRoot:   "examples/otel-demo",
+		EntityFile:   "examples/otel-demo/sample-data/entities.json",
+		RelationFile: "examples/otel-demo/sample-data/relations.json",
+	},
 }
 
 type Service struct {

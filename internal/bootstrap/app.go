@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/alibaba/MModel/internal/agentgateway"
+	"github.com/alibaba/MModel/internal/diagnosis"
 	"github.com/alibaba/MModel/internal/entitystore"
 	"github.com/alibaba/MModel/internal/graphstore"
 	_ "github.com/alibaba/MModel/internal/graphstore/provider/ladybug"
@@ -35,6 +36,7 @@ type App struct {
 	Samples      *sampledata.Service
 	Query        *query.Service
 	AgentGateway *agentgateway.Service
+	Diagnosis    *diagnosis.Builder
 }
 
 func NewApp(dataRoot string) *App {
@@ -98,6 +100,7 @@ func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig) (*A
 		Samples:      sampleSvc,
 		Query:        querySvc,
 		AgentGateway: agentSvc,
+		Diagnosis:    diagnosis.NewBuilder(querySvc),
 	}, nil
 }
 
@@ -134,6 +137,7 @@ func (a *App) apiMux(includeRoot bool) *http.ServeMux {
 	mux.HandleFunc("/api/v1/samples/", a.handleSamples)
 	mux.HandleFunc("/api/v1/query/", a.handleQuery)
 	mux.HandleFunc("/api/v1/agent/", a.handleAgent)
+	mux.HandleFunc("/api/v1/diagnosis/", a.handleDiagnosis)
 	return mux
 }
 
@@ -543,6 +547,32 @@ func (a *App) handleAgent(w http.ResponseWriter, r *http.Request) {
 	default:
 		writeError(w, apperrors.New(apperrors.CodeNotFound, "agent action not found"))
 	}
+}
+
+func (a *App) handleDiagnosis(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		writeError(w, apperrors.New(apperrors.CodeInvalidArgument, "method not allowed"))
+		return
+	}
+	workspaceID, action, ok := workspaceAction(r.URL.Path, "/api/v1/diagnosis/")
+	if !ok {
+		writeError(w, apperrors.New(apperrors.CodeInvalidArgument, "invalid diagnosis path"))
+		return
+	}
+	if action != "dcc" {
+		writeError(w, apperrors.New(apperrors.CodeNotFound, "diagnosis action not found"))
+		return
+	}
+	var req diagnosis.DCCBuildRequest
+	if !decodeJSON(w, r, &req) {
+		return
+	}
+	dcc, err := a.Diagnosis.Build(r.Context(), workspaceID, req)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, dcc)
 }
 
 func workspaceAction(path, prefix string) (string, string, bool) {

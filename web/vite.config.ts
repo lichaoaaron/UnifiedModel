@@ -5,6 +5,7 @@ const apiTarget = process.env.MMODEL_API_TARGET || 'http://localhost:8080'
 
 export default defineConfig({
   plugins: [react()],
+
   build: {
     chunkSizeWarningLimit: 900,
     rollupOptions: {
@@ -36,8 +37,13 @@ export default defineConfig({
       },
     },
   },
+
   server: {
     port: 5173,
+
+    // 允许 Cloudflare Tunnel 等外部域名访问
+    allowedHosts: true,
+
     proxy: {
       '/api': apiTarget,
       '/healthz': apiTarget,

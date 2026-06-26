@@ -1,0 +1,37 @@
+kind: external_storage
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.opensearch_live"
+  domain: otel
+  display_name:
+    en_us: "OpenSearch Live OTel Telemetry"
+    zh_cn: "OpenSearch 在线 OTel 遥测"
+  description:
+    en_us: >
+      OpenSearch-backed telemetry storage for otel.service evidence lookback.
+      Stores metrics, logs, and traces emitted by the OpenTelemetry Demo (Astronomy Shop).
+      Replace placeholder credentials and endpoint in production configuration.
+    zh_cn: >
+      基于 OpenSearch 的 otel.service 实体回查遥测存储。
+      存储 OpenTelemetry Demo（天文商店）产出的指标、日志和链路数据。
+      请在生产配置中替换示例 endpoint 与凭据占位值。
+spec:
+  type: opensearch
+  name: otel.opensearch_live
+  properties:
+    endpoint: "http://localhost:13121"
+    username: "admin"
+    password: "MorenMima@123456"
+    log_index: "otel-logs-*"
+    metric_index: "otel-metrics-*"
+    trace_index: "otel-v1-apm-span-*"
+    time_field_log: "observedTimestamp"
+    time_field_metric: "time"
+    time_field_trace: "startTime"
+    service_name_field_log: "serviceName"
+    service_name_field_metric: "serviceName"
+    service_name_field_trace: "serviceName"
+    verify_tls: "false"
+    request_timeout_ms: "10000"

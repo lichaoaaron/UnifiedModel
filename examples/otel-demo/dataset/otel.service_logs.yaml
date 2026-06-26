@@ -1,0 +1,48 @@
+kind: log_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service_logs"
+  domain: otel
+  display_name:
+    en_us: "OTel Service Logs"
+    zh_cn: "OTel 服务日志"
+  description:
+    en_us: "OpenTelemetry logs emitted by OTel Demo microservices."
+    zh_cn: "OTel Demo 微服务通过 OpenTelemetry 上报的日志数据。"
+spec:
+  fields:
+    - name: serviceName
+      type: string
+      display_name:
+        en_us: "Service Name"
+        zh_cn: "服务名称"
+    - name: observedTimestamp
+      type: string
+      display_name:
+        en_us: "Observed Time"
+        zh_cn: "观测时间"
+      description:
+        en_us: "Time when the log record was observed by the collector."
+        zh_cn: "日志被采集器观测到的时间。"
+    - name: severityText
+      type: string
+      display_name:
+        en_us: "Severity"
+        zh_cn: "日志级别"
+    - name: body
+      type: string
+      display_name:
+        en_us: "Body"
+        zh_cn: "日志内容"
+    - name: traceId
+      type: string
+      display_name:
+        en_us: "Trace ID"
+        zh_cn: "Trace ID"
+    - name: spanId
+      type: string
+      display_name:
+        en_us: "Span ID"
+        zh_cn: "Span ID"
