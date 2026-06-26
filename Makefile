@@ -1,5 +1,5 @@
-.PHONY: help check-env install-env setup setup-ui expand doc example-validate check-manifest
-.PHONY: build build-service build-cli install-cli build-ui build-sdk-go dev quickstart dev-api dev-web deploy serve-ui status stop-all stop-dev stop-deploy test test-service test-ui test-ui-e2e test-capability test-quickstart-health test-ladybug verify verify-go verify-python verify-java guard ci clean
+.PHONY: help check-env install-env setup setup-ui expand doc docs-schema docs-schema-check example-validate check-manifest
+.PHONY: build build-service build-cli install-cli build-ui build-sdk-go dev quickstart dev-api dev-web deploy serve-ui status stop-all stop-dev stop-deploy test test-service test-ui test-ui-e2e test-capability test-quickstart-health test-ladybug vulncheck verify verify-go verify-python verify-java guard ci clean
 
 VENV_PYTHON := .venv/bin/python
 CONDA_PYTHON := $(if $(CONDA_PREFIX),$(CONDA_PREFIX)/bin/python)
@@ -133,7 +133,12 @@ serve-ui: build-ui
 	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" --ui-dir web/dist $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
 
 test-service:
-	go test ./...
+	go test -race ./...
+
+# Scan for known vulnerabilities (the repo's modules + reachable stdlib). Std-lib
+# findings track the Go toolchain version; keep it current to clear them.
+vulncheck:
+	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 test-ui:
 	@PNPM="$(PNPM)" bash ./scripts/env.sh web-build
@@ -186,6 +191,12 @@ schemas-embed-check:
 doc:
 	@bash ./tools/converters/batch_convert_html.sh
 
+docs-schema:
+	@$(PYTHON) ./tools/docs/gen_schema_reference.py
+
+docs-schema-check:
+	@$(PYTHON) ./tools/docs/gen_schema_reference.py --check
+
 example-validate:
 	@$(PYTHON) ./tools/validators/umodel_validator.py --batch examples
 
@@ -206,7 +217,7 @@ test: guard test-service verify
 check-manifest:
 	@$(PYTHON) ./tools/verify/check_manifest.py
 
-ci: guard schemas-embed-check build-service test-service test-capability test-quickstart-health verify check-manifest example-validate
+ci: guard schemas-embed-check build-service test-service test-capability test-quickstart-health verify check-manifest example-validate docs-schema-check
 	@echo "Local CI passed."
 
 check-env:

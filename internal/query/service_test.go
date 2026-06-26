@@ -3,6 +3,7 @@ package query
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"testing"
 
@@ -1057,4 +1058,108 @@ func metricQueryPlanElements() []model.UModelElement {
 			},
 		},
 	}
+}
+
+func TestExecuteTopoWhereRelationType(t *testing.T) {
+	ctx := context.Background()
+	store := graphstore.NewMemoryStore()
+
+	// Write many "attend" relations so they outnumber "commit" and sort first.
+	relations := make([]model.RelationPayload, 0, 130)
+	for i := 0; i < 110; i++ {
+		relations = append(relations, model.RelationPayload{
+			"__src_domain__":          "work",
+			"__src_entity_type__":     "work.person",
+			"__src_entity_id__":       fmt.Sprintf("a%032d", i),
+			"__dest_domain__":         "work",
+			"__dest_entity_type__":    "work.meeting",
+			"__dest_entity_id__":      fmt.Sprintf("m%032d", i),
+			"__relation_type__":       "attend",
+			"__method__":              "Update",
+			"__first_observed_time__": int64(100),
+			"__last_observed_time__":  int64(200),
+			"role":                    "attendee",
+		})
+	}
+	for i := 0; i < 10; i++ {
+		relations = append(relations, model.RelationPayload{
+			"__src_domain__":          "work",
+			"__src_entity_type__":     "work.person",
+			"__src_entity_id__":       fmt.Sprintf("p%032d", i),
+			"__dest_domain__":         "work",
+			"__dest_entity_type__":    "work.repository",
+			"__dest_entity_id__":      fmt.Sprintf("r%032d", i),
+			"__relation_type__":       "commit",
+			"__method__":              "Update",
+			"__first_observed_time__": int64(100),
+			"__last_observed_time__":  int64(200),
+			"role":                    "author",
+		})
+	}
+	_, err := store.WriteRelations(ctx, model.RelationWriteBatch{
+		Workspace: "demo",
+		Relations: relations,
+	})
+	if err != nil {
+		t.Fatalf("write relations: %v", err)
+	}
+
+	svc := NewService(store)
+
+	t.Run("pushdown known field", func(t *testing.T) {
+		// __relation_type__ is a known topo field — pushed into plan.Filters
+		// so the provider only counts matching rows toward the limit.
+		result, err := svc.Execute(ctx, "demo", model.QueryRequest{
+			Query: ".topo | where __relation_type__ == 'commit' | limit 5",
+		})
+		if err != nil {
+			t.Fatalf("execute: %v", err)
+		}
+		if len(result.Rows) != 5 {
+			t.Fatalf("expected 5 commit rows, got %d", len(result.Rows))
+		}
+		for _, row := range result.Rows {
+			if row["__relation_type__"] != "commit" {
+				t.Fatalf("expected commit, got %v", row["__relation_type__"])
+			}
+		}
+	})
+
+	t.Run("unlimited fetch for unknown field", func(t *testing.T) {
+		// "role" is not a known topo field — fetch limit is removed so the
+		// pipeline where clause sees all rows.
+		result, err := svc.Execute(ctx, "demo", model.QueryRequest{
+			Query: ".topo | where role == 'author' | limit 5",
+		})
+		if err != nil {
+			t.Fatalf("execute: %v", err)
+		}
+		if len(result.Rows) != 5 {
+			t.Fatalf("expected 5 author rows, got %d", len(result.Rows))
+		}
+	})
+
+	t.Run("sort sees full dataset", func(t *testing.T) {
+		result, err := svc.Execute(ctx, "demo", model.QueryRequest{
+			Query: ".topo | sort __last_observed_time__ desc | limit 3",
+		})
+		if err != nil {
+			t.Fatalf("execute: %v", err)
+		}
+		if len(result.Rows) != 3 {
+			t.Fatalf("expected 3 rows, got %d", len(result.Rows))
+		}
+	})
+
+	t.Run("all 10 commit rows reachable", func(t *testing.T) {
+		result, err := svc.Execute(ctx, "demo", model.QueryRequest{
+			Query: ".topo | where __relation_type__ == 'commit' | limit 100",
+		})
+		if err != nil {
+			t.Fatalf("execute: %v", err)
+		}
+		if len(result.Rows) != 10 {
+			t.Fatalf("expected all 10 commit rows, got %d", len(result.Rows))
+		}
+	})
 }

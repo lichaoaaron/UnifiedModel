@@ -55,12 +55,12 @@ var queryExamplesCmd = &cobra.Command{
 	Short: "Show offline bootstrap SPL examples",
 	Run: func(cmd *cobra.Command, args []string) {
 		examples := []map[string]string{
-			{"description": "List all UModel element kinds", "query": ".umodel with(kind='entity_set') | limit 20"},
+			{"description": "List all UModel element kinds", "query": ".umodel with(kind='entity_set') | limit 1000"},
 			{"description": "List available entity-call methods", "query": ".entity_set with(domain='devops', name='devops.service') | entity-call __list_method__()"},
 			{"description": "List data sets for an entity set", "query": ".entity_set with(domain='devops', name='devops.service') | entity-call list_data_set(['metric_set', 'log_set', 'event_set'], true)"},
 			{"description": "Get logs for a specific entity", "query": ".entity_set with(domain='devops', name='devops.service', ids=['10000000000000000000000000000101']) | entity-call get_logs('devops', 'devops.log.service', query='level = \"ERROR\"')"},
-			{"description": "Search entities by keyword", "query": ".entity with(domain='devops', name='devops.service', query='checkout') | limit 20"},
-			{"description": "Get direct topology relations", "query": ".topo | graph-call getDirectRelations([(:'devops@devops.service' {__entity_id__: '10000000000000000000000000000101'})]) | limit 20"},
+			{"description": "Search entities by keyword", "query": ".entity with(domain='devops', name='devops.service', query='checkout') | limit 1000"},
+			{"description": "Get direct topology relations", "query": ".topo | graph-call getDirectRelations([(:'devops@devops.service' {__entity_id__: '10000000000000000000000000000101'})]) | limit 1000"},
 		}
 		response.ExitWithSuccess(examples)
 	},

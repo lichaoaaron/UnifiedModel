@@ -13,6 +13,46 @@ English version: [CHANGELOG.md](CHANGELOG.md)
 - `Removed`：已移除的行为。
 - `Security`：安全修复。
 
+## 0.4.0 - 2026-06-16
+
+### Added
+
+- **Quickstart demo 栈**（#54、#55）。`examples/quickstart-multidomain/deploy/` 一条命令拉起 UModel + 已灌数的 Prometheus 和 Elasticsearch（`start.sh`；用 `stop.sh` 停止并清理），使 pack 的 `get_metrics` / `get_logs` plan 能对真实后端端到端执行。
+
+### Changed
+
+- **Plan `next_action` 改为 `execute_query`**（原 `forward_to_executor`）。unified-model 返回 plan，由调用方（agent 或任意客户端）对存储执行内层查询；plan 的 `description` 文案同步调整。
+- **`umodel-query` skill 按 plan→execute 重写**，配渐进式披露 `references/`（#51）；多 domain quickstart 走查重写（#52）。
+- quickstart 样例包重构为 `umodel/`（schema）与 `deploy/`（demo 栈）；pack 的 storage endpoint 指向 `localhost`，demo 的 plan 按返回内容直接执行。
+- 首页 README 移除 CMS 2.0 引用。
+
+### Fixed
+
+- 内存 GraphStore provider 把查询结果上限卡在 100；提高到 10000，较大的读取不再被截断（#56）。
+- 服务镜像构建复制 `go.sum`，让 `go build` 能解析依赖（#53）。
+
+### Removed
+
+- Plan Schema v1 规范页及其文档引用。
+
+## 0.3.0 - 2026-06-15
+
+### Added
+
+- **Agent Skills** —— `umodel-query` 与 `umodel-rca`（#37）：CLI 优先、读对象图并把 `get_metrics` / `get_logs` 变成可执行 plan 的 skill。可通过 Claude Code plugin marketplace（#43）及 Qoder / Codex 各平台（#46）安装。
+- **文档站** —— VitePress 双语文档 + GitHub Pages 部署（#47）；生成的 L0 Core Schema reference（#48）；Agent 集成指南（#33）；首页一键安装 Agent Skills（#45）。
+- **示例** —— service-localization 多 domain agent demo（#36）；incident-investigation 增加遥测层（#32）并使其可被发现（#31）。
+
+### Changed
+
+- `umctl` CLI 优化与实体拓扑改进（#35）。
+
+### Fixed
+
+- 把 UModel API 导入限制在 import root 内（#44）。
+- 加固路径处理、限制查询预分配 —— 8 个 CodeQL 告警（#42）。
+- 恢复文档主题插值与透明 logo（#49）。
+
 ## 0.2.0 - 2026-06-10
 
 ### Added

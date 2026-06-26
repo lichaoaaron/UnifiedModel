@@ -11,6 +11,46 @@ The project follows a simple changelog structure until stable releases are publi
 - `Removed` for removed behavior.
 - `Security` for vulnerability fixes.
 
+## 0.4.0 - 2026-06-16
+
+### Added
+
+- **Quickstart demo stack** (#54, #55). `examples/quickstart-multidomain/deploy/` brings up UModel with a seeded Prometheus and Elasticsearch via one command (`start.sh`; tear down and clean up with `stop.sh`), so the pack's `get_metrics` / `get_logs` plans run end to end against real backends.
+
+### Changed
+
+- **Plan `next_action` is now `execute_query`** (was `forward_to_executor`). unified-model returns a plan and the caller — an agent or any client — executes the inner query against storage; the plan `description` text is reworded to match.
+- **`umodel-query` skill rebuilt around plan→execute** with progressive-disclosure `references/` (#51); the multi-domain quickstart walkthrough was rewritten (#52).
+- Quickstart sample pack reorganized into `umodel/` (schema) and `deploy/` (demo stack); the pack's storage endpoints point at `localhost` so the demo's plans run as returned.
+- Removed CMS 2.0 references from the front-page READMEs.
+
+### Fixed
+
+- In-memory GraphStore provider capped query results at 100; raised to 10000 so larger reads are not truncated (#56).
+- Server image build copies `go.sum` so `go build` resolves dependencies (#53).
+
+### Removed
+
+- Plan Schema v1 spec page and its documentation references.
+
+## 0.3.0 - 2026-06-15
+
+### Added
+
+- **Agent Skills** — `umodel-query` and `umodel-rca` (#37): CLI-first skills that read the object graph and turn `get_metrics` / `get_logs` into executable plans. Installable via the Claude Code plugin marketplace (#43) and per-platform for Qoder / Codex (#46).
+- **Documentation site** — VitePress site with bilingual docs and GitHub Pages deploy (#47); generated L0 Core Schema reference (#48); Agent Integration guide (#33); one-command Agent Skills install on the front page (#45).
+- **Examples** — service-localization multi-domain agent demo (#36); telemetry layer added to the incident-investigation demo (#32); incident-investigation made discoverable (#31).
+
+### Changed
+
+- `umctl` CLI refinements and entity-topology improvements (#35).
+
+### Fixed
+
+- Confine UModel API imports to an import root (#44).
+- Harden path handling and bound query preallocation — 8 CodeQL alerts (#42).
+- Restore docs theme interpolation and transparent logo (#49).
+
 ## 0.2.0 - 2026-06-10
 
 ### Added

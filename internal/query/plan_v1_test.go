@@ -13,7 +13,7 @@ import (
 // TestPlanV1EnvelopeForGetMetrics verifies that the get_metrics plan carries
 // the v1 envelope fields (mode, version, params_echo) — these are the
 // additive fields the shared plan ↔ data contract relies on. See
-// docs/en/spec/plan-schema-v1.md.
+// docs/en/guides/agent-integration.md.
 func TestPlanV1EnvelopeForGetMetrics(t *testing.T) {
 	ctx := context.Background()
 	store := graphstore.NewMemoryStore()
@@ -148,13 +148,13 @@ func TestPlanV1AgentFriendlyFieldsForGetMetrics(t *testing.T) {
 	if desc == "" {
 		t.Fatalf("plan[description] missing or empty: %#v", plan["description"])
 	}
-	for _, want := range []string{"request_count", "devops.metric.service", "umodel-assistant"} {
+	for _, want := range []string{"request_count", "devops.metric.service", "execute it to fetch"} {
 		if !strings.Contains(desc, want) {
 			t.Fatalf("description should mention %q, got %q", want, desc)
 		}
 	}
-	if plan["next_action"] != "forward_to_executor" {
-		t.Fatalf("plan[next_action] = %#v, want forward_to_executor", plan["next_action"])
+	if plan["next_action"] != "execute_query" {
+		t.Fatalf("plan[next_action] = %#v, want execute_query", plan["next_action"])
 	}
 	if plan["source_query"] != spl {
 		t.Fatalf("plan[source_query] = %#v, want %q", plan["source_query"], spl)
@@ -184,13 +184,13 @@ func TestPlanV1AgentFriendlyFieldsForGetLogs(t *testing.T) {
 	if desc == "" {
 		t.Fatalf("plan[description] missing or empty: %#v", plan["description"])
 	}
-	for _, want := range []string{"devops.log.service", `level = "ERROR"`, "umodel-assistant"} {
+	for _, want := range []string{"devops.log.service", `level = "ERROR"`, "execute it to fetch"} {
 		if !strings.Contains(desc, want) {
 			t.Fatalf("description should mention %q, got %q", want, desc)
 		}
 	}
-	if plan["next_action"] != "forward_to_executor" {
-		t.Fatalf("plan[next_action] = %#v, want forward_to_executor", plan["next_action"])
+	if plan["next_action"] != "execute_query" {
+		t.Fatalf("plan[next_action] = %#v, want execute_query", plan["next_action"])
 	}
 	if plan["source_query"] != spl {
 		t.Fatalf("plan[source_query] = %#v, want %q", plan["source_query"], spl)

@@ -15,20 +15,29 @@ runtime）、约 65 个实体、约 83 条关系、1 个 Runbook，以及指标/
 
 ## 1. 安装技能
 
-技能就是 [`skills/`](README.zh-CN.md) 下的 `SKILL.md` 文件。安装方式取决于你的 Agent：
+技能就是 [`skills/`](README.zh-CN.md) 下的 `SKILL.md` 目录。三个 Agent 都原生加载，按你的客户端选：
 
 - **Claude Code** —— 一条命令把两个技能作为插件装上：
   ```
   /plugin marketplace add alibaba/UnifiedModel
   /plugin install umodel@unifiedmodel
   ```
-  `umodel` 插件含两个技能，按提问自动激活。（或拷贝到扫描目录：`mkdir -p
-  .claude/skills && cp -R skills/umodel-query skills/umodel-rca .claude/skills/`。）
-- **Qoder / Codex / 没有 `SKILL.md` 加载器的 Agent** —— 技能就是一段指令，把内容作为
-  Agent 上下文带上即可：把 [`skills/umodel-query/SKILL.md`](umodel-query/SKILL.md)
-  和 [`skills/umodel-rca/SKILL.md`](umodel-rca/SKILL.md) 引用或粘贴进项目指令
-  （如 `AGENTS.md`），或直接附到对话里。
+  `umodel` 插件含两个技能，按提问自动激活。（或拷贝到 `.claude/skills/`。）
+- **Qoder** —— 把两个技能拷进工作区 skills 目录：
+  ```bash
+  mkdir -p .qoder/skills && cp -R skills/umodel-query skills/umodel-rca .qoder/skills/
+  ```
+  按提问自动激活，或用 `/umodel-query` 手动触发。（Qoder 另有 Skills Marketplace
+  和内置 `create-skill` 助手。）
+- **Codex** —— 拷进中立的 `.agents/skills/` 目录（用 `~/.agents/skills/` 做用户级全局）：
+  ```bash
+  mkdir -p .agents/skills && cp -R skills/umodel-query skills/umodel-rca .agents/skills/
+  ```
+  按 description 自动激活，或用 `$umodel-query` 提及（打 `$`，或跑 `/skills`，浏览）。
+  新技能没出现就重启 Codex。
 
+> `.agents/skills/` 是跨 Agent 的开放标准路径——Qoder 也读它，放一份即可同时服务 Qoder 和 Codex。
+>
 > 技能的 `description` 决定支持技能的 Agent 何时激活它。
 
 ## 2. 初始化 demo 数据
@@ -111,6 +120,7 @@ args = ["run", "./cmd/umodel-mcp", "--quickstart",
 - "列一下这个 workspace 里的服务和它们的状态。"
 - "payment-gateway 依赖了什么？把拓扑给我看看。"
 - "payment-gateway 挂了哪些指标集和日志集？"
+- "读一下 payment-gateway 最近一小时的 p99 延迟。"（取回 plan，在你的 Prometheus 上执行）
 
 **根因分析 —— 激活 `umodel-rca`：**
 
@@ -119,6 +129,11 @@ args = ["run", "./cmd/umodel-mcp", "--quickstart",
 Agent 随后自主工作：定位 degraded 服务 → 拉它的指标/日志 → 顺拓扑找到上游调用方 →
 发现重试配置变更 → 排除红鲱鱼部署 → 找到促销流量 → 得出根因（重试 ×2.5 × 促销 ×3.5
 = **8.75×** 过载）并建议回滚。
+
+> **指标/日志需要后端。** `.entity` / `.topo` / `.umodel` 读取开箱即用；要拿指标/日志
+> 的**数值**，`get_metrics` / `get_logs` 返回一段可执行 **plan**（PromQL / Elasticsearch
+> DSL），由 Agent 在**你的 Prometheus / Elasticsearch** 上执行——把它指向你灌数据的后端。
+> 详见 [umodel-query](umodel-query/SKILL.md) 的 *Read metrics & logs*。
 
 ## 排错
 

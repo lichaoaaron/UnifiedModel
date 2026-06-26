@@ -36,31 +36,49 @@ type App struct {
 	AgentGateway *agentgateway.Service
 }
 
-func NewApp(dataRoot string) *App {
-	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{DataRoot: dataRoot})
+// AppOption configures optional App behavior at construction time.
+type AppOption func(*appOptions)
+
+type appOptions struct {
+	importRoot string
+}
+
+// WithImportRoot confines API-originated UModel imports to paths inside root.
+// The empty default confines to the server's current working directory; pass
+// "/" to allow imports from anywhere. Bundled sample loads are never confined.
+func WithImportRoot(root string) AppOption {
+	return func(o *appOptions) { o.importRoot = root }
+}
+
+func NewApp(dataRoot string, opts ...AppOption) *App {
+	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{DataRoot: dataRoot}, opts...)
 	if err != nil {
 		panic(err)
 	}
 	return app
 }
 
-func NewMemoryApp(dataRoot string) *App {
-	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{Type: graphstore.ProviderTypeMemory, DataRoot: dataRoot})
+func NewMemoryApp(dataRoot string, opts ...AppOption) *App {
+	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{Type: graphstore.ProviderTypeMemory, DataRoot: dataRoot}, opts...)
 	if err != nil {
 		panic(err)
 	}
 	return app
 }
 
-func NewFileMemoryApp(dataRoot string) *App {
-	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{Type: graphstore.ProviderTypeFileMemory, DataRoot: dataRoot})
+func NewFileMemoryApp(dataRoot string, opts ...AppOption) *App {
+	app, err := NewAppWithGraphStore(dataRoot, graphstore.ProviderConfig{Type: graphstore.ProviderTypeFileMemory, DataRoot: dataRoot}, opts...)
 	if err != nil {
 		panic(err)
 	}
 	return app
 }
 
-func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig) (*App, error) {
+func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig, opts ...AppOption) (*App, error) {
+	var options appOptions
+	for _, opt := range opts {
+		opt(&options)
+	}
 	if config.DataRoot == "" {
 		config.DataRoot = dataRoot
 	}
@@ -86,7 +104,7 @@ func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig) (*A
 		return nil, fmt.Errorf("create search provider: %w", err)
 	}
 	searchSvc := search.NewService(searchProvider, nil, search.ProviderTypeMemory)
-	umodelSvc := umodel.NewService(graph, umodel.WithSearchIndexer(searchSvc))
+	umodelSvc := umodel.NewService(graph, umodel.WithSearchIndexer(searchSvc), umodel.WithImportRoot(options.importRoot))
 	entitySvc := entitystore.NewService(graph, umodelSvc, entitystore.WithSearchIndexer(searchSvc))
 	sampleSvc := sampledata.NewService(umodelSvc, entitySvc)
 	querySvc := query.NewServiceWithSearch(graph, searchSvc)
@@ -155,7 +173,14 @@ func spaFileHandler(uiDir string) http.HandlerFunc {
 		if cleanPath == "." || cleanPath == "" {
 			cleanPath = "index.html"
 		}
-		file := filepath.Join(uiDir, filepath.FromSlash(cleanPath))
+		rel := filepath.FromSlash(cleanPath)
+		// Confine the request to uiDir: reject anything that escapes it
+		// (absolute paths, "..", etc.) before it reaches the filesystem.
+		if !filepath.IsLocal(rel) {
+			http.NotFound(w, r)
+			return
+		}
+		file := filepath.Join(uiDir, rel)
 		if info, err := os.Stat(file); err == nil && !info.IsDir() {
 			http.ServeFile(w, r, file)
 			return
@@ -265,7 +290,7 @@ var serviceVersion = "dev"
 
 // handleCapabilities reports what query modes this server supports.
 // unified-model is plan-only by design; umodel-assistant supports plan and data.
-// See docs/en/spec/plan-schema-v1.md for the shared mode protocol.
+// See docs/en/guides/agent-integration.md for the shared mode protocol.
 func (a *App) handleCapabilities(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, apperrors.New(apperrors.CodeInvalidArgument, "method not allowed"))
@@ -603,8 +628,13 @@ func workspaceAction(path, prefix string) (string, string, bool) {
 	return parts[0], parts[1], true
 }
 
+// maxRequestBodyBytes caps a decoded JSON request body so a single request
+// cannot exhaust server memory.
+const maxRequestBodyBytes = 32 << 20 // 32 MiB
+
 func decodeJSON(w http.ResponseWriter, r *http.Request, target any) bool {
 	defer r.Body.Close()
+	r.Body = http.MaxBytesReader(w, r.Body, maxRequestBodyBytes)
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 	if err := decoder.Decode(target); err != nil {

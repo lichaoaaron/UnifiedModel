@@ -42,6 +42,7 @@ English: [UModel Documentation](../en/README.md)
 
 - [多域 Quickstart 示例包](../../examples/quickstart-multidomain/README.zh-CN.md) - 一个 workspace 里连接五个 domain；`make quickstart` 默认样例。
 - [故障排查 Demo](../../examples/incident-investigation/README.zh-CN.md) - 场景驱动、AI Agent 辅助的根因分析：跨业务、平台、运行时三个 domain 排查支付网关 SLO 违约，演示 runbook 引导的诊断路径。
+- [服务定位 Demo](../../examples/service-localization/README.zh-CN.md) - AI Agent 辅助的瓶颈定位：沿产品 → 服务 → 数据 → 基础设施四层请求栈逐跳取数定位。
 
 ## 架构
 
@@ -62,12 +63,6 @@ English: [UModel Documentation](../en/README.md)
 - [公共 Go Contracts](../../pkg/contract/contracts.go)
 - [公共领域模型](../../pkg/model/types.go)
 - [稳定错误码](../../pkg/errors/errors.go)
-
-## 规范
-
-跨实现的契约文档，同时约束 `unified-model`（开源）与 `umodel-assistant`（商业版）。任一方破坏视为 P0 回归。
-
-- [Plan Schema v1](spec/plan-schema-v1.md) - mode 协议、plan JSON 信封以及 `get_metrics` / `get_logs` 的对齐方法签名。
 
 ## 生成的 Schema 文档
 

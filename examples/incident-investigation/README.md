@@ -6,7 +6,7 @@ A scenario-driven example showing how UModel's object graph + Runbook enables AI
 payment-gateway (degraded, platinum SLO)
   <- calls <- checkout-service
                <- affects <- cfg-checkout-retry (max_retries 2->5, 24h ago)
-                              <- triggers <- 618 Flash Sale (3.5x traffic)
+                              <- triggers <- Flash Sale (3.5x traffic)
 
 Ruled out: payment-gw v3.2.1 (12h ago, trivial logging change)
 Root cause: 4000 x 3.5 x 2.5 = 35,000 QPS -> 8.75x overload
@@ -21,7 +21,7 @@ Root cause: 4000 x 3.5 x 2.5 = 35,000 QPS -> 8.75x overload
 
 | Time | Event |
 |------|-------|
-| T-48h | Promotion "618 Flash Sale" created, status=scheduled |
+| T-48h | Promotion "Flash Sale" created, status=scheduled |
 | T-24h | Config change `cfg-checkout-retry` applied: max_retries 2->5, timeout 500->2000ms |
 | T-12h | Deployment `payment-gw v3.2.1` rolled out (trivial: logging format change) |
 | T-4h | Promotion goes active, traffic ramp begins (3.5x multiplier) |
@@ -56,7 +56,7 @@ make quickstart QUICKSTART_SAMPLE=examples/incident-investigation
 
 API: `http://localhost:8080` | Web UI: `http://localhost:5173`
 
-Loads 3 domains (Platform / Runtime / Business), 11 entity sets, 65 entities, 83 relations, 1 runbook.
+Loads 3 domains (Platform / Runtime / Business), 11 entity sets, 95 entities, 126 relations, 1 runbook. Every service carries a live telemetry snapshot (QPS, error rate, P99/P50 latency, CPU/memory, error budget) plus recent error logs, and the payment path fans out through `payment-router` to the Alipay / WeChat Pay / UnionPay channels, `risk-control`, and `ledger-service` — so the retry-storm blast radius is visible in the graph.
 
 Alternative (API only, no Web UI):
 
@@ -121,7 +121,7 @@ umctl query run demo \
 
 The metric plan renders the PromQL `histogram_quantile(0.99, …{service_id="63718b78…"}…)` with the service ID substituted from the entity — the object graph turns "the degraded service" into the exact telemetry query without the agent hand-writing PromQL.
 
-For agent clients, add `?format=agent` to the request (or `mode='agent'`) to get the compact v1.1 envelope — the plan as a top-level object with `data_source` folded to `{ref, type}`. See [Plan Schema v1](../../docs/en/spec/plan-schema-v1.md).
+For agent clients, add `?format=agent` to the request (or `mode='agent'`) to get the compact v1.1 envelope — the plan as a top-level object with `data_source` folded to `{ref, type}`.
 
 ### Step 2: Check upstream callers via topology
 
@@ -162,7 +162,7 @@ umctl query run demo \
   | project display_name, traffic_multiplier, expected_peak_qps, actual_peak_qps"
 ```
 
-Expected: `618 Flash Sale | 3.5 | 12000 | 38000` — actual traffic far exceeds plan.
+Expected: `Flash Sale | 3.5 | 12000 | 38000` — actual traffic far exceeds plan.
 
 ### Step 6: Assess business impact (cross-domain)
 
@@ -201,7 +201,7 @@ The agent follows the runbook protocol:
    - LLM judges change_summary as trivial
    - Conclusion: **Deployment Ruled Out** (severity=info)
 5. **Observation #3** (business_traffic_pressure)
-   - Cross-domain query finds `618 Flash Sale` (actual 38000 > expected 12000)
+   - Cross-domain query finds `Flash Sale` (actual 38000 > expected 12000)
    - Conclusion: **Promotion Traffic Exceeds Capacity** (severity=error)
 6. **Correlation** — calculates amplification: 3.5 x (5/2) = 8.75x
 7. **Knowledge** — loads `retry_storm_pattern`, confirms pattern match
@@ -220,7 +220,7 @@ Based on Runbook platform.service.ops:
 | recent_deployment_correlation | Deployment Ruled Out | info |
 | business_traffic_pressure | Promotion Traffic Exceeds Capacity | error |
 
-Root cause: checkout-service config change (retry 2->5) x 618 promotion (3.5x) = 8.75x overload
+Root cause: checkout-service config change (retry 2->5) x flash-sale promotion (3.5x) = 8.75x overload
 
 Recommended action:
   Tool: rollback_config_change
@@ -293,8 +293,8 @@ See the [MCP Reference](../../docs/en/reference/mcp.md) for transports (stdio, S
 | Storage | `platform/storage/` | 2 | Prometheus (metrics) and Elasticsearch (logs) endpoints |
 | Data links | `platform/link/data_link/` | 2 | Connect platform.service to its metric/log sets |
 | Storage links | `platform/link/storage_link/` | 2 | Connect metric/log sets to their storage |
-| Sample entities | `sample-data/entities.json` | 65 | Runtime entity payloads |
-| Sample relations | `sample-data/relations.json` | 83 | Runtime topology payloads |
+| Sample entities | `sample-data/entities.json` | 95 | All entity instances (platform/runtime/business) |
+| Sample relations | `sample-data/relations.json` | 126 | All topology relations (platform/runtime/business) |
 | Manifest | `sample-data/manifest.json` | — | Sample metadata, seed entities, scenario description |
 
 ## Extending This Demo

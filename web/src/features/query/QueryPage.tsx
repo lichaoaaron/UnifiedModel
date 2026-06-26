@@ -65,27 +65,27 @@ const largeTextCodeblockLength = 1000
 const wrappedTextLineClamp = 4
 
 const examples = [
-  { labelKey: 'query.examples.umodel', query: ".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 20" },
+  { labelKey: 'query.examples.umodel', query: ".umodel with(kind='entity_set') | project domain,name,kind | sort domain,name | limit 1000" },
   {
     labelKey: 'query.examples.entity',
     query:
       ".entity with(domain='devops', name='devops.service', query='checkout', mode='vector', topk=20) | project __category__,__domain__,__entity_type__,__entity_id__,__method__,__first_observed_time__,__last_observed_time__,__keep_alive_seconds__,display_name,status,owner",
   },
-  { labelKey: 'query.examples.topo', query: '.topo | limit 20' },
+  { labelKey: 'query.examples.topo', query: '.topo | limit 1000' },
   {
     labelKey: 'query.examples.direct',
     query:
-      ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 20",
+      ".topo | graph-call getDirectRelations([(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | project src,relation,dest | limit 1000",
   },
   {
     labelKey: 'query.examples.neighbors',
     query:
-      ".topo | graph-call getNeighborNodes('full', 2, [(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 20",
+      ".topo | graph-call getNeighborNodes('full', 2, [(:\"devops@devops.service\" {__entity_id__: '10000000000000000000000000000101'})]) | limit 1000",
   },
   {
     labelKey: 'query.examples.cypher',
     query:
-      ".topo | graph-call cypher(`MATCH (src:``devops@devops.service`` {__entity_id__: '10000000000000000000000000000101'})-[r]->(dest) RETURN properties(src) AS src, properties(r) AS relation, properties(dest) AS dest LIMIT 20`) | limit 20",
+      ".topo | graph-call cypher(`MATCH (src:``devops@devops.service`` {__entity_id__: '10000000000000000000000000000101'})-[r]->(dest) RETURN properties(src) AS src, properties(r) AS relation, properties(dest) AS dest LIMIT 1000`) | limit 1000",
   },
   {
     labelKey: 'query.examples.entitySetMethods',

@@ -17,8 +17,8 @@ locally, in memory, with **no API key and no network**.
 
 ## 1. Install the skills
 
-The skills are plain `SKILL.md` files under [`skills/`](README.md). How you install
-depends on your agent:
+The skills are plain `SKILL.md` folders under [`skills/`](README.md). All three
+agents load them natively — pick your client:
 
 - **Claude Code** — install both skills as a plugin in one command:
   ```
@@ -26,14 +26,24 @@ depends on your agent:
   /plugin install umodel@unifiedmodel
   ```
   The `umodel` plugin bundles both skills; they auto-activate by prompt. (Or copy
-  them into a scanned directory: `mkdir -p .claude/skills && cp -R
-  skills/umodel-query skills/umodel-rca .claude/skills/`.)
-- **Qoder / Codex / agents without a `SKILL.md` loader** — the skills are just
-  instructions, so include their content as agent context: reference or paste
-  [`skills/umodel-query/SKILL.md`](umodel-query/SKILL.md) and
-  [`skills/umodel-rca/SKILL.md`](umodel-rca/SKILL.md) into your project
-  instructions (e.g. `AGENTS.md`) or attach them to the conversation.
+  them into `.claude/skills/`.)
+- **Qoder** — copy both skills into the workspace skills directory:
+  ```bash
+  mkdir -p .qoder/skills && cp -R skills/umodel-query skills/umodel-rca .qoder/skills/
+  ```
+  They auto-activate by prompt, or trigger one manually with `/umodel-query`.
+  (Qoder also has a Skills Marketplace and a built-in `create-skill` helper.)
+- **Codex** — copy both into the vendor-neutral `.agents/skills/` directory (use
+  `~/.agents/skills/` to make them user-global):
+  ```bash
+  mkdir -p .agents/skills && cp -R skills/umodel-query skills/umodel-rca .agents/skills/
+  ```
+  They auto-activate by description, or mention one with `$umodel-query` (type `$`,
+  or run `/skills`, to browse). Restart Codex if a new skill doesn't appear.
 
+> `.agents/skills/` is the cross-agent open-standard path — Qoder reads it too, so a
+> single copy there can serve both Qoder and Codex.
+>
 > A skill's `description` is what triggers activation in agents that support skills.
 
 ## 2. Initialize the demo data
@@ -120,6 +130,7 @@ With the data loaded and the agent connected, just ask in natural language.
 - "List the services in this workspace and their status."
 - "What does payment-gateway depend on? Show me the topology."
 - "Which metric and log sets are attached to payment-gateway?"
+- "Read payment-gateway's p99 latency over the last hour." (fetches the plan, runs it against your Prometheus)
 
 **Root-cause analysis — activates `umodel-rca`:**
 
@@ -130,6 +141,12 @@ metrics/logs → traverse to the upstream caller → find the retry config chang
 rule out the red-herring deployment → find the promotion traffic → conclude the
 root cause (retry ×2.5 × promotion ×3.5 = **8.75×** overload) and recommend a
 rollback.
+
+> **Metrics & logs need a backend.** `.entity` / `.topo` / `.umodel` reads work out
+> of the box; for metric/log **values**, `get_metrics` / `get_logs` return an
+> executable plan (PromQL / Elasticsearch DSL) that the agent runs against **your
+> Prometheus / Elasticsearch** — point it at where you loaded the data. See
+> *Read metrics & logs* in [umodel-query](umodel-query/SKILL.md).
 
 ## Troubleshooting
 

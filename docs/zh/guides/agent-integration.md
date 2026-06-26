@@ -137,7 +137,7 @@ curl -s -X POST 'http://localhost:8080/api/v1/query/demo/execute?format=agent' \
   -d '{"query":".entity_set with(domain=\"platform\", name=\"platform.service\", ids=[\"63718b78868895d2590551b27ec6f51c\"]) | entity-call get_metrics(\"platform\",\"platform.service.metrics\",\"latency_p99_ms\", step=\"30s\")"}'
 ```
 
-调试 Agent 需要完整 storage config 与 link spec 时，加 `&include=spec`。完整契约：[Plan Schema v1](../spec/plan-schema-v1.md)。
+调试 Agent 需要完整 storage config 与 link spec 时，加 `&include=spec`。
 
 ## 5. 端到端：Agent 排查一次故障
 
@@ -162,5 +162,4 @@ Agent 执行对象图循环：
 - [MCP 参考](../reference/mcp.md)——传输、工具、资源、prompts、冒烟测试
 - [Query Service 指南](query-service.md)——完整 SPL 查询面
 - [Query 与 Agent 架构](../architecture/query-and-agent.md)——AgentGateway / Query Service 边界
-- [Plan Schema v1](../spec/plan-schema-v1.md)——计划契约与 `?format=agent` 信封
 - [故障排查 Demo](../../../examples/incident-investigation/README.zh-CN.md)——贯穿样例

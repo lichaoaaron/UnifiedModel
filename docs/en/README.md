@@ -42,6 +42,7 @@ Documentation root: [docs/README.md](../README.md)
 
 - [Multi-Domain Quickstart Example Pack](../../examples/quickstart-multidomain/README.md) - five domains connected in one workspace; the default `make quickstart` sample.
 - [Incident Investigation Demo](../../examples/incident-investigation/README.md) - scenario-driven, AI-agent-assisted root-cause analysis of a payment-gateway SLO breach across business, platform, and runtime domains, with a runbook-guided diagnosis path.
+- [Service Localization Demo](../../examples/service-localization/README.md) - AI-agent-assisted bottleneck localization down a four-layer request stack (product → service → data → infra), centered on fetching telemetry at each hop.
 
 ## Architecture
 
@@ -62,12 +63,6 @@ Documentation root: [docs/README.md](../README.md)
 - [Public Go Contracts](../../pkg/contract/contracts.go)
 - [Public Domain Models](../../pkg/model/types.go)
 - [Stable Error Codes](../../pkg/errors/errors.go)
-
-## Specifications
-
-Cross-implementation contracts that bind both `unified-model` (open source) and `umodel-assistant` (commercial). Breaking either is a P0 regression.
-
-- [Plan Schema v1](spec/plan-schema-v1.md) - mode protocol, plan JSON envelope, and aligned method signatures for `get_metrics` / `get_logs`.
 
 ## Generated Schema HTML
 

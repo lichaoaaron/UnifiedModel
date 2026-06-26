@@ -137,7 +137,7 @@ curl -s -X POST 'http://localhost:8080/api/v1/query/demo/execute?format=agent' \
   -d '{"query":".entity_set with(domain=\"platform\", name=\"platform.service\", ids=[\"63718b78868895d2590551b27ec6f51c\"]) | entity-call get_metrics(\"platform\",\"platform.service.metrics\",\"latency_p99_ms\", step=\"30s\")"}'
 ```
 
-Add `&include=spec` when a debugging agent needs the full storage config and link specs back. Full contract: [Plan Schema v1](../spec/plan-schema-v1.md).
+Add `&include=spec` when a debugging agent needs the full storage config and link specs back.
 
 ## 5. End to end: an agent investigating an incident
 
@@ -162,5 +162,4 @@ The full walkthrough, runbook contents, and agent output example are in the [Inc
 - [MCP Reference](../reference/mcp.md) — transports, tools, resources, prompts, smoke test
 - [Query Service Guide](query-service.md) — the SPL surface in full
 - [Query And Agent Architecture](../architecture/query-and-agent.md) — AgentGateway / Query Service boundary
-- [Plan Schema v1](../spec/plan-schema-v1.md) — plan contract and the `?format=agent` envelope
 - [Incident Investigation Demo](../../../examples/incident-investigation/README.md) — the worked example
