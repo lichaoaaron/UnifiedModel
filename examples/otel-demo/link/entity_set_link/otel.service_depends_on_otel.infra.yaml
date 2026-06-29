@@ -1,0 +1,23 @@
+kind: entity_set_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service_depends_on_otel.infra"
+  domain: otel
+  display_name:
+    en_us: "Service Depends on Infrastructure"
+    zh_cn: "服务依赖基础设施"
+  description:
+    en_us: "A business service depends on an infrastructure component such as a message queue, collector, tracing backend, or feature flag system."
+    zh_cn: "业务服务依赖基础设施组件，如消息队列、采集器、链路后端或特性开关系统。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: entity_set
+    name: otel.infra
+  entity_link_type: depends_on

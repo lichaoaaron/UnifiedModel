@@ -5,9 +5,9 @@
 ![Node 22+](https://img.shields.io/badge/Node.js-22%2B-339933)
 ![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
-English version: [README.md](README.md)
+English version: [README_EN.md](README_EN.md)
 
-MModel（Unified Model）是面向企业 AI、数据治理和智能运维的厂商中立语义运行时。它把分散的 schema、实体、业务对象、遥测链接和拓扑关系组织成 workspace-scoped 的对象图上下文，让人、系统和 AI Agent 通过一个本地服务理解并使用这些语义。
+MModel（Mobile Model）是面向企业 AI、数据治理和智能运维的厂商中立语义运行时。它把分散的 schema、实体、业务对象、遥测链接和拓扑关系组织成 workspace-scoped 的对象图上下文，让人、系统和 AI Agent 通过一个本地服务理解并使用这些语义。
 
 MModel 支持：
 
@@ -73,6 +73,63 @@ make quickstart
 make stop-all
 ```
 
+## OpenTelemetry Demo
+
+MModel 在 `examples/otel-demo/` 下提供了 [OpenTelemetry Demo（天文商店）](https://github.com/open-telemetry/opentelemetry-demo) 示例包。它将 OTel Demo 的 16 个微服务建模为实体，关联其遥测数据集（指标、日志、链路），映射服务间调用拓扑，并将数据集连接到 OpenSearch 存储。这是 MModel 在可观测和运维数据场景下的完整端到端演示。
+
+示例包包含：
+
+- **模型定义**：`otel.service` 的 EntitySet、`metric_set` / `log_set` / `trace_set` 数据集，以及 OpenSearch 存储定义。
+- **运行时实体**：16 个 OTel Demo 微服务实体记录，包含编程语言、SDK 版本和关键性元数据。
+- **运行时关系**：16 条服务间 `calls` 拓扑关系记录。
+- **数据与存储关联**：`data_link` 连接服务与其遥测输出，`storage_link` 连接数据集到 OpenSearch 存储。
+
+### 自动拓扑发现（`mmodel-topo-ingestor`）
+
+除了静态模型，MModel 还提供实时拓扑发现组件，直接从存储在 OpenSearch 中的 OpenTelemetry trace 数据中发现服务间调用关系。它查询配置索引中的 server span，通过分析父子 span 关系识别调用对，并将发现的拓扑写入 MModel 的 EntityStore，附有完整的 F/L/K/D 生命周期时间戳。
+
+```bash
+# 单次扫描
+go run ./cmd/mmodel-topo-ingestor --once
+
+# 持续扫描（默认每 60s）
+go run ./cmd/mmodel-topo-ingestor --interval 60s
+```
+
+可用参数：
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `--addr` | `http://localhost:8080` | MModel 服务地址 |
+| `--workspace` | `otel-demo` | 目标 workspace ID |
+| `--os-endpoint` | `http://localhost:13121` | OpenSearch 端点 |
+| `--os-user` | `admin` | OpenSearch 用户名 |
+| `--os-pass` | `MorenMima@123456` | OpenSearch 密码 |
+| `--interval` | `60s` | 持续模式下扫描间隔 |
+| `--once` | `false` | 运行一次后退出 |
+
+### 一键重建 Workspace
+
+```bash
+bash ./scripts/rebuild-otel.sh
+```
+
+此便捷脚本创建 workspace、导入模型包、写入实体和关系，并运行快速验证查询。
+
+### 查询示例
+
+```bash
+# 列出所有服务及语言信息
+go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
+  ".entity with(domain='otel') | project __entity_id__,display_name,language | sort display_name"
+
+# 探索服务调用拓扑
+go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
+  ".topo | limit 20"
+```
+
+更多细节：[OpenTelemetry Demo 示例包](examples/otel-demo/README.zh-CN.md)
+
 ## 架构
 
 ![MModel 架构](images/architecture.png)
@@ -102,7 +159,7 @@ MModel 围绕 workspace-scoped object graph 运行本地服务：
 | 指南 | [模型编写](docs/zh/guides/model-authoring.md)、[实体与关系写入](docs/zh/guides/entity-relation-writes.md)、[Query Service](docs/zh/guides/query-service.md)、[Web UI](docs/zh/guides/web-ui.md)、[SDK 与客户端](docs/zh/guides/sdk-clients.md) |
 | 架构 | [架构总览](docs/zh/architecture/overview.md)、[运行时流程](docs/zh/architecture/runtime-flow.md)、[Query 与 Agent 架构](docs/zh/architecture/query-and-agent.md) |
 | 参考 | [CLI](docs/zh/reference/cli.md)、[MCP](docs/zh/reference/mcp.md)、[REST OpenAPI](api/openapi/openapi.yaml)、[MCP Tool 和 Resource Schema](api/mcp/tools.schema.json) |
-| 示例 | [多域 Quickstart 示例包](examples/quickstart-multidomain/README.zh-CN.md) |
+| 示例 | [多域 Quickstart 示例包](examples/quickstart-multidomain/README.zh-CN.md)、[OpenTelemetry Demo](examples/otel-demo/README.zh-CN.md) |
 | 部署 | [Docker 与 Compose](deployments/README.zh-CN.md) |
 
 英文文档：[docs/en/README.md](docs/en/README.md)。
