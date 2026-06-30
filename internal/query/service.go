@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
 	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
 	"github.com/alibaba/UnifiedModel/pkg/model"
 )
@@ -74,19 +75,19 @@ type Service struct {
 	executor *Executor
 }
 
-func NewService(graph graphStore) *Service {
-	return NewServiceWithSearch(graph, nil)
+func NewService(graph graphStore, providers ...telemetry.Provider) *Service {
+	return NewServiceWithSearch(graph, nil, providers...)
 }
 
 // NewServiceWithSearch builds a Service that can route .runbook_set and any
 // query carrying mode=keyword|vector|hyper to the supplied SearchService.
 // Pass nil for legacy graph-only behavior.
-func NewServiceWithSearch(graph graphStore, search searchService) *Service {
+func NewServiceWithSearch(graph graphStore, search searchService, providers ...telemetry.Provider) *Service {
 	return &Service{
 		graph:    graph,
 		search:   search,
 		planner:  Planner{},
-		executor: NewExecutor(graph),
+		executor: NewExecutor(graph, providers...),
 	}
 }
 
