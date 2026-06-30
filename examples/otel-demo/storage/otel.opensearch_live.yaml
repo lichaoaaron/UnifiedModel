@@ -27,7 +27,7 @@ spec:
     log_index: "otel-logs-*"
     metric_index: "otel-metrics-*"
     trace_index: "otel-v1-apm-span-*"
-    time_field_log: "observedTimestamp"
+    time_field_log: "time"
     time_field_metric: "time"
     time_field_trace: "startTime"
     service_name_field_log: "serviceName"
