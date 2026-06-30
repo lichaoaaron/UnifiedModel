@@ -18,6 +18,9 @@ import (
 	"github.com/alibaba/UnifiedModel/internal/query"
 	"github.com/alibaba/UnifiedModel/internal/sampledata"
 	"github.com/alibaba/UnifiedModel/internal/search"
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
+	"github.com/alibaba/UnifiedModel/internal/telemetry/localfile"
+	"github.com/alibaba/UnifiedModel/internal/telemetry/opensearch"
 	"github.com/alibaba/UnifiedModel/internal/umodel"
 	"github.com/alibaba/UnifiedModel/internal/workspace"
 	"github.com/alibaba/UnifiedModel/pkg/contract"
@@ -107,7 +110,13 @@ func NewAppWithGraphStore(dataRoot string, config graphstore.ProviderConfig, opt
 	umodelSvc := umodel.NewService(graph, umodel.WithSearchIndexer(searchSvc), umodel.WithImportRoot(options.importRoot))
 	entitySvc := entitystore.NewService(graph, umodelSvc, entitystore.WithSearchIndexer(searchSvc))
 	sampleSvc := sampledata.NewService(umodelSvc, entitySvc)
-	querySvc := query.NewServiceWithSearch(graph, searchSvc)
+	// Build telemetry providers for evidence() queries
+	var telemetryProviders []telemetry.Provider
+	localfileProvider := localfile.New(filepath.Join(dataRoot, "..", "data"))
+	telemetryProviders = append(telemetryProviders, localfileProvider)
+	// OpenSearch provider (optional, uses env vars for config)
+	telemetryProviders = append(telemetryProviders, opensearch.New())
+	querySvc := query.NewServiceWithSearch(graph, searchSvc, telemetryProviders...)
 	agentSvc := agentgateway.NewService(querySvc, agentgateway.WithWriteServices(umodelSvc, entitySvc))
 
 	return &App{
