@@ -1,0 +1,24 @@
+kind: metric_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.service_metrics"
+  domain: platform
+  display_name:
+    en_us: "Platform Service Metrics"
+    zh_cn: "平台服务指标"
+  description:
+    en_us: "OpenTelemetry metrics emitted by a platform service."
+    zh_cn: "平台服务通过 OpenTelemetry 上报的指标数据。"
+spec:
+  labels:
+    dynamic: true
+  metrics:
+    - name: service_metrics
+      display_name:
+        en_us: "Service Metrics"
+        zh_cn: "服务指标"
+      description:
+        en_us: "All metrics emitted by the service."
+        zh_cn: "服务上报的全部指标。"

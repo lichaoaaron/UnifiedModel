@@ -1,0 +1,25 @@
+kind: storage_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service_traces_stored_in_otel.opensearch_live"
+  domain: otel
+  display_name:
+    en_us: "Service Traces in OpenSearch"
+    zh_cn: "服务链路存储在 OpenSearch"
+  description:
+    en_us: "Links OTel Demo service traces to OpenSearch live storage."
+    zh_cn: "将 OTel Demo 服务链路关联到 OpenSearch 在线存储。"
+spec:
+  src:
+    domain: otel
+    kind: trace_set
+    name: otel.service_traces
+  dest:
+    domain: otel
+    kind: external_storage
+    name: otel.opensearch_live
+  fields_mapping:
+    serviceName: serviceName
+    startTime: startTime

@@ -1,0 +1,29 @@
+kind: external_storage
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.local_snapshot"
+  domain: platform
+  display_name:
+    en_us: "Local Telemetry Snapshot"
+    zh_cn: "本地遥测快照"
+  description:
+    en_us: >
+      Local file-based OpenSearch export snapshot.
+      Contains ~2 minutes of full-volume observability data from the 4A platform.
+      Metric, Log, and Trace files are stored in data/metric, data/log, and data/trace.
+    zh_cn: >
+      基于本地文件的 OpenSearch 导出快照。
+      包含约 2 分钟来自 4A 平台的全量观测数据。
+      指标、日志、链路数据分别存储在 data/metric、data/log、data/trace 目录。
+spec:
+  type: local_file
+  name: platform.local_snapshot
+  properties:
+    metric_dir: "metric"
+    log_dir: "log"
+    trace_dir: "trace"
+    time_field_metric: "time"
+    time_field_log: "time"
+    time_field_trace: "startTime"

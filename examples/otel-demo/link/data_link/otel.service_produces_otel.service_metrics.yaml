@@ -1,0 +1,25 @@
+kind: data_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service_produces_otel.service_metrics"
+  domain: otel
+  display_name:
+    en_us: "Service Produces Metrics"
+    zh_cn: "服务产生指标"
+  description:
+    en_us: "Links an OTel Demo service entity to its metric set via serviceName."
+    zh_cn: "通过 serviceName 将 OTel Demo 服务实体关联到其指标集。"
+spec:
+  src:
+    domain: otel
+    kind: entity_set
+    name: otel.service
+  dest:
+    domain: otel
+    kind: metric_set
+    name: otel.service_metrics
+  data_link_type: produce
+  fields_mapping:
+    display_name: serviceName

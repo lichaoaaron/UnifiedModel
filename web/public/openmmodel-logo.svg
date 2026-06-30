@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" role="img" aria-label="MModel logo">
+  <defs>
+    <linearGradient id="openmmodel-mark-gradient" x1="34" y1="28" x2="186" y2="194" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#88c4ff" />
+      <stop offset="0.46" stop-color="#4f8cff" />
+      <stop offset="1" stop-color="#3157f4" />
+    </linearGradient>
+    <filter id="openmmodel-soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#1f4ed8" flood-opacity="0.14" />
+    </filter>
+  </defs>
+  <rect width="760" height="220" fill="none" />
+  <g filter="url(#openmmodel-soft-shadow)">
+    <path
+      d="M54 165V56c0-17 14-31 31-31 10 0 20 5 26 13l49 67 49-67c6-8 16-13 26-13 17 0 31 14 31 31v109c0 17-14 31-31 31s-31-14-31-31V119l-23 31c-5 7-13 11-21 11s-16-4-21-11l-23-31v46c0 17-14 31-31 31s-31-14-31-31Z"
+      fill="url(#openmmodel-mark-gradient)"
+    />
+    <path
+      d="M89 54v101m146-101v101"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="10"
+      stroke-linecap="round"
+      opacity="0.34"
+    />
+  </g>
+  <text
+    x="318"
+    y="142"
+    fill="#182334"
+    font-family="Aptos Display, Segoe UI, Helvetica, Arial, sans-serif"
+    font-size="82"
+    font-weight="760"
+    letter-spacing="-3"
+  >MModel</text>
+</svg>

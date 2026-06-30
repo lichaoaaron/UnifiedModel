@@ -1,0 +1,25 @@
+kind: storage_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.service_metrics_stored_in_platform.opensearch_live"
+  domain: platform
+  display_name:
+    en_us: "Service Metrics in OpenSearch"
+    zh_cn: "平台服务指标存储在 OpenSearch"
+  description:
+    en_us: "Links platform service metrics to OpenSearch live storage."
+    zh_cn: "将平台服务指标关联到 OpenSearch 在线存储。"
+spec:
+  src:
+    domain: platform
+    kind: metric_set
+    name: platform.service_metrics
+  dest:
+    domain: platform
+    kind: external_storage
+    name: platform.opensearch_live
+  fields_mapping:
+    serviceName: serviceName
+    time: time

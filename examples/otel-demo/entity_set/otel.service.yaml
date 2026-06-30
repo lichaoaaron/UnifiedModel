@@ -1,0 +1,87 @@
+kind: entity_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service"
+  domain: otel
+  display_name:
+    en_us: "OpenTelemetry Service"
+    zh_cn: "OpenTelemetry 服务"
+  description:
+    en_us: "A business microservice observed via OpenTelemetry in the OTel Demo (Astronomy Shop). Produces traces, metrics, and logs."
+    zh_cn: "在 OpenTelemetry Demo（天文商店）中通过 OpenTelemetry 观测的业务微服务。产出 traces、metrics 和 logs。"
+spec:
+  fields:
+    - name: id
+      type: string
+      display_name:
+        en_us: "ID"
+        zh_cn: "ID"
+      description:
+        en_us: "Stable entity identifier."
+        zh_cn: "稳定实体标识。"
+    - name: display_name
+      type: string
+      display_name:
+        en_us: "Service Name"
+        zh_cn: "服务名称"
+      description:
+        en_us: "Human-readable service name, matches serviceName in OpenTelemetry telemetry."
+        zh_cn: "可读服务名称，与 OpenTelemetry 遥测数据中的 serviceName 对应。"
+    - name: status
+      type: string
+      display_name:
+        en_us: "Status"
+        zh_cn: "状态"
+      description:
+        en_us: "Current lifecycle status."
+        zh_cn: "当前生命周期状态。"
+    - name: owner
+      type: string
+      display_name:
+        en_us: "Owner"
+        zh_cn: "负责人"
+      description:
+        en_us: "Owning team or person."
+        zh_cn: "负责人或团队。"
+    - name: language
+      type: string
+      display_name:
+        en_us: "Language"
+        zh_cn: "语言"
+      description:
+        en_us: "Primary implementation language and runtime."
+        zh_cn: "主要实现语言和运行时。"
+    - name: otel_sdk_version
+      type: string
+      display_name:
+        en_us: "OTel SDK Version"
+        zh_cn: "OTel SDK 版本"
+      description:
+        en_us: "OpenTelemetry SDK version observed in telemetry."
+        zh_cn: "遥测数据中观测到的 OpenTelemetry SDK 版本。"
+    - name: criticality
+      type: string
+      display_name:
+        en_us: "Criticality"
+        zh_cn: "关键性"
+      description:
+        en_us: "Service criticality level: high, medium, or low."
+        zh_cn: "服务关键性级别：high、medium 或 low。"
+    - name: namespace
+      type: string
+      display_name:
+        en_us: "Namespace"
+        zh_cn: "命名空间"
+      description:
+        en_us: "Deployment namespace."
+        zh_cn: "部署命名空间。"
+    - name: description
+      type: string
+      display_name:
+        en_us: "Description"
+        zh_cn: "描述"
+      description:
+        en_us: "Brief description of the service role."
+        zh_cn: "服务角色的简要描述。"

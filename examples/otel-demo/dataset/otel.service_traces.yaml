@@ -1,0 +1,18 @@
+kind: trace_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.service_traces"
+  domain: otel
+  display_name:
+    en_us: "OTel Service Traces"
+    zh_cn: "OTel 服务链路"
+  description:
+    en_us: "OpenTelemetry spans emitted by OTel Demo microservices."
+    zh_cn: "OTel Demo 微服务通过 OpenTelemetry 上报的链路数据。"
+spec:
+  trace_id_field: traceId
+  span_id_field: spanId
+  parent_span_id_field: parentSpanId
+  protocol: opentelemetry

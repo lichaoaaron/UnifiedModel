@@ -1,0 +1,47 @@
+kind: entity_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.service"
+  domain: platform
+  display_name:
+    en_us: "Platform Service"
+    zh_cn: "平台服务"
+  description:
+    en_us: "A runtime service observed via OpenTelemetry in the 4A platform."
+    zh_cn: "通过 OpenTelemetry 在 4A 平台观测的运行时服务。"
+spec:
+  fields:
+    - name: id
+      type: string
+      display_name:
+        en_us: "ID"
+        zh_cn: "ID"
+      description:
+        en_us: "Stable entity identifier."
+        zh_cn: "稳定实体标识。"
+    - name: display_name
+      type: string
+      display_name:
+        en_us: "Service Name"
+        zh_cn: "服务名称"
+      description:
+        en_us: "Human-readable service name, matches serviceName in telemetry."
+        zh_cn: "可读服务名称，与遥测数据中的 serviceName 对应。"
+    - name: status
+      type: string
+      display_name:
+        en_us: "Status"
+        zh_cn: "状态"
+      description:
+        en_us: "Current lifecycle status."
+        zh_cn: "当前生命周期状态。"
+    - name: owner
+      type: string
+      display_name:
+        en_us: "Owner"
+        zh_cn: "负责人"
+      description:
+        en_us: "Owning team or person."
+        zh_cn: "负责人或团队。"

@@ -1,0 +1,63 @@
+kind: entity_set
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "otel.infra"
+  domain: otel
+  display_name:
+    en_us: "Infrastructure Component"
+    zh_cn: "基础设施组件"
+  description:
+    en_us: "Infrastructure and platform components that support the OTel Demo microservices. Emit metrics but may not produce traces."
+    zh_cn: "支撑 OTel Demo 微服务的基础设施和平台组件。产出指标但不一定产出链路。"
+spec:
+  fields:
+    - name: id
+      type: string
+      display_name:
+        en_us: "ID"
+        zh_cn: "ID"
+      description:
+        en_us: "Stable entity identifier."
+        zh_cn: "稳定实体标识。"
+    - name: display_name
+      type: string
+      display_name:
+        en_us: "Component Name"
+        zh_cn: "组件名称"
+      description:
+        en_us: "Human-readable component name, matches serviceName in telemetry."
+        zh_cn: "可读组件名称，与遥测数据中的 serviceName 对应。"
+    - name: status
+      type: string
+      display_name:
+        en_us: "Status"
+        zh_cn: "状态"
+      description:
+        en_us: "Current lifecycle status."
+        zh_cn: "当前生命周期状态。"
+    - name: owner
+      type: string
+      display_name:
+        en_us: "Owner"
+        zh_cn: "负责人"
+      description:
+        en_us: "Owning team or person."
+        zh_cn: "负责人或团队。"
+    - name: infra_type
+      type: string
+      display_name:
+        en_us: "Infra Type"
+        zh_cn: "基础设施类型"
+      description:
+        en_us: "Category: collector, tracing_backend, message_queue, feature_flag, or business_service."
+        zh_cn: "类别：collector、tracing_backend、message_queue、feature_flag 或 business_service。"
+    - name: description
+      type: string
+      display_name:
+        en_us: "Description"
+        zh_cn: "描述"
+      description:
+        en_us: "Brief description of the component role."
+        zh_cn: "组件角色的简要描述。"

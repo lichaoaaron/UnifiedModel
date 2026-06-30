@@ -1,0 +1,25 @@
+kind: data_link
+schema:
+  url: "mmodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.service_produces_platform.service_traces"
+  domain: platform
+  display_name:
+    en_us: "Service Produces Traces"
+    zh_cn: "服务产生链路"
+  description:
+    en_us: "Links a platform service entity to its trace set via serviceName."
+    zh_cn: "通过 serviceName 将平台服务实体关联到其链路集。"
+spec:
+  src:
+    domain: platform
+    kind: entity_set
+    name: platform.service
+  dest:
+    domain: platform
+    kind: trace_set
+    name: platform.service_traces
+  data_link_type: produce
+  fields_mapping:
+    display_name: serviceName
