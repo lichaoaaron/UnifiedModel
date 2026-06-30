@@ -46,3 +46,5 @@ notes/
 
 # data directory (runtime state)
 data/
+docs/docs/
+docs/
