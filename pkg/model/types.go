@@ -150,9 +150,10 @@ type UModelSnapshotRequest struct {
 }
 
 type UModelSnapshot struct {
-	Workspace string          `json:"workspace"`
-	Version   string          `json:"version"`
-	Elements  []UModelElement `json:"elements"`
+	Workspace string           `json:"workspace"`
+	Version   string           `json:"version"`
+	Elements  []UModelElement  `json:"elements"`
+	Evidence  *EvidenceExplain `json:"evidence,omitempty"`
 }
 
 type ValidationResult struct {
@@ -583,7 +584,8 @@ type QueryExplain struct {
 	Depth            int             `json:"depth,omitempty"`
 	Limit            int             `json:"limit,omitempty"`
 	TimeoutMS        int             `json:"timeout_ms,omitempty"`
-	TimeRangeApplied bool            `json:"time_range_applied"`
+	TimeRangeApplied bool             `json:"time_range_applied"`
+	Evidence         *EvidenceExplain `json:"evidence,omitempty"`
 }
 
 type QueryPredicate struct {
@@ -639,6 +641,7 @@ type QueryPipelineOperator struct {
 	Sort       *QuerySort      `json:"sort,omitempty"`
 	GraphCall  *GraphCallPlan  `json:"graph_call,omitempty"`
 	EntityCall *EntityCallPlan `json:"entity_call,omitempty"`
+	Evidence   *EvidencePlan   `json:"evidence,omitempty"`
 	Limit      int             `json:"limit,omitempty"`
 }
 

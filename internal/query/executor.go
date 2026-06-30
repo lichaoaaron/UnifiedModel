@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/alibaba/UnifiedModel/internal/query/planrender"
+	"github.com/alibaba/UnifiedModel/internal/telemetry"
 	apperrors "github.com/alibaba/UnifiedModel/pkg/errors"
 	"github.com/alibaba/UnifiedModel/pkg/model"
 )
@@ -17,14 +18,26 @@ import (
 type Executor struct {
 	graph    graphStore
 	registry *planrender.Registry
+	evidence *evidenceExecutor
 }
 
-func NewExecutor(graph graphStore) *Executor {
-	return &Executor{graph: graph, registry: newDefaultRegistry()}
+func NewExecutor(graph graphStore, providers ...telemetry.Provider) *Executor {
+	return &Executor{
+		graph:    graph,
+		registry: newDefaultRegistry(),
+		evidence: newEvidenceExecutor(graph, providers),
+	}
 }
 
 func (e *Executor) Execute(ctx context.Context, workspace string, plan model.QueryPlan) (model.QueryResult, error) {
 	plan.Workspace = workspace
+
+	// Handle evidence queries (.entity | evidence(...))
+	if plan.Source == ".entity" {
+		if evOp, ok := findEvidenceOperator(plan.Pipeline); ok {
+			return e.executeEntityEvidence(ctx, workspace, plan, evOp)
+		}
+	}
 
 	var result model.QueryResult
 	var err error
@@ -2040,4 +2053,29 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+// executeEntityEvidence runs the entity portion of the plan, then executes evidence().
+func (e *Executor) executeEntityEvidence(ctx context.Context, workspace string, plan model.QueryPlan, evOp model.QueryPipelineOperator) (model.QueryResult, error) {
+	entityPlan := entityPlanForEvidence(plan)
+	entityResult, err := e.graph.QueryEntities(ctx, model.EntityQueryPlan(entityPlan))
+	if err != nil {
+		return model.QueryResult{}, fmt.Errorf("evidence entity query: %w", err)
+	}
+	entityRows := filterEntityRowsForEvidence(entityResult.Rows, plan)
+
+	result, evExplain, err := e.evidence.executeEvidence(ctx, workspace, entityRows, evOp, plan.Limit)
+	if err != nil {
+		return model.QueryResult{}, err
+	}
+
+	// Apply post-evidence operators (project, sort, limit)
+	rows, columns := applyPostEvidencePipeline(result.Rows, result.Columns, plan)
+	result.Rows = rows
+	result.Columns = columns
+
+	if result.Explain != nil {
+		result.Explain.Evidence = evExplain
+	}
+	return result, nil
 }

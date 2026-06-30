@@ -1,0 +1,37 @@
+[
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "time": "2026-06-03T01:00:10Z",
+    "severityText": "INFO",
+    "body": "iam-manage log entry 1"
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "time": "2026-06-03T01:00:20Z",
+    "severityText": "WARN",
+    "body": "iam-manage log entry 2"
+  },
+  {
+    "serviceName": "ais-consumer",
+    "resource.attributes.service@name": "ais-consumer",
+    "time": "2026-06-03T01:00:15Z",
+    "severityText": "INFO",
+    "body": "ais-consumer log entry 1"
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "time": "2026-06-03T01:01:00Z",
+    "severityText": "ERROR",
+    "body": "iam-manage log entry 3 (later)"
+  },
+  {
+    "serviceName": "ais-consumer",
+    "resource.attributes.service@name": "ais-consumer",
+    "time": "2026-06-03T01:01:05Z",
+    "severityText": "ERROR",
+    "body": "ais-consumer log entry 2"
+  }
+]

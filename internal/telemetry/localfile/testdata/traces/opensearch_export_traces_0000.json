@@ -1,0 +1,38 @@
+[
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "traceId": "aaa111",
+    "spanId": "s001",
+    "name": "POST:/iam/login",
+    "startTime": "2026-06-03T01:00:05Z",
+    "endTime": "2026-06-03T01:00:05.050Z"
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "traceId": "aaa222",
+    "spanId": "s002",
+    "name": "GET:/iam/users",
+    "startTime": "2026-06-03T01:00:45Z",
+    "endTime": "2026-06-03T01:00:45.030Z"
+  },
+  {
+    "serviceName": "ais-consumer",
+    "resource.attributes.service@name": "ais-consumer",
+    "traceId": "bbb111",
+    "spanId": "s003",
+    "name": "CONSUME:topic",
+    "startTime": "2026-06-03T01:00:10Z",
+    "endTime": "2026-06-03T01:00:10.010Z"
+  },
+  {
+    "serviceName": "iam-manage",
+    "resource.attributes.service@name": "iam-manage",
+    "traceId": "aaa333",
+    "spanId": "s004",
+    "name": "POST:/iam/logout",
+    "startTime": "2026-06-03T01:01:10Z",
+    "endTime": "2026-06-03T01:01:10.020Z"
+  }
+]
