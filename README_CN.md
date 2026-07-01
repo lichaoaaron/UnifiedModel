@@ -108,25 +108,40 @@ go run ./cmd/mmodel-topo-ingestor --interval 60s
 | `--interval` | `60s` | 持续模式下扫描间隔 |
 | `--once` | `false` | 运行一次后退出 |
 
-### 一键重建 Workspace
+### 快速启动（团队首次使用）
 
 ```bash
-bash ./scripts/rebuild-otel.sh
-```
+# 1. 启动服务
+make quickstart
 
-此便捷脚本创建 workspace、导入模型包、写入实体和关系，并运行快速验证查询。
+# 2. 一键创建 OTel Demo workspace（含模型、实体、关系）
+bash ./scripts/reset-otel.sh
+
+# 3. 打开 Web UI
+# http://localhost:5173 → 选择 otel-demo
+```
 
 ### 查询示例
 
 ```bash
-# 列出所有服务及语言信息
-go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
-  ".entity with(domain='otel') | project __entity_id__,display_name,language | sort display_name"
+# 列出所有服务
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel') | project __entity_id__,display_name | limit 10"
 
 # 探索服务调用拓扑
-go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
-  ".topo | limit 20"
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".topo | limit 10"
+
+# 以实体为中心回查 trace（需 OpenSearch 连接）
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000002')) | evidence(kind='trace_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
+
+# 回查 metric
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000002')) | evidence(kind='metric_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
+
+# 回查 log（需用 frontend-proxy 实体 ID）
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000001')) | evidence(kind='log_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
 ```
+
+> **注意**：evidence 查询需要 OpenSearch 连接。先通过 SSH 隧道连接 OpenSearch：  
+> `ssh -p 2222 -L localhost:13121:localhost:13121 sredev@10.2.115.188`
 
 更多细节：[OpenTelemetry Demo 示例包](examples/otel-demo/README.zh-CN.md)
 
@@ -138,7 +153,7 @@ MModel 围绕 workspace-scoped object graph 运行本地服务：
 
 - 模型包定义对象词汇：EntitySet、DataSet、Link、Storage 和关系语义。
 - EntityStore 写入运行时实体与拓扑关系，用运行时数据实例化模型。
-- Query Service 是 `.mmodel`、`.entity`、`.topo` 的统一读取入口。
+- Query Service 是 `.umodel`、`.entity`、`.topo` 的统一读取入口。
 - AgentGateway 和 MCP 为 Agent client 暴露 discovery、resources、query examples 和安全工具。
 - Web UI、CLI、REST 和 SDK client 共享同一套公开契约。
 

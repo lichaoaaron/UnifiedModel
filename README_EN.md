@@ -108,25 +108,40 @@ Available flags:
 | `--interval` | `60s` | Scan interval for continuous mode |
 | `--once` | `false` | Run once and exit |
 
-### One-Click Workspace Rebuild
+### Quick Start (First-Time Team Setup)
 
 ```bash
-bash ./scripts/rebuild-otel.sh
-```
+# 1. Start the server
+make quickstart
 
-This convenience script creates the workspace, imports the model pack, writes entities and relations, and runs a quick verification query.
+# 2. One-click create OTel Demo workspace (model + entities + relations)
+bash ./scripts/reset-otel.sh
+
+# 3. Open Web UI
+# http://localhost:5173 → select otel-demo
+```
 
 ### Query Examples
 
 ```bash
-# List all services with language info
-go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
-  ".entity with(domain='otel') | project __entity_id__,display_name,language | sort display_name"
+# List all services
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel') | project __entity_id__,display_name | limit 10"
 
 # Explore service call topology
-go run ./cmd/mmctl --addr http://localhost:8080 query run otel-demo \
-  ".topo | limit 20"
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".topo | limit 10"
+
+# Entity-centric trace lookup (requires OpenSearch)
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000002')) | evidence(kind='trace_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
+
+# Metric lookup
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000002')) | evidence(kind='metric_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
+
+# Log lookup (use frontend-proxy entity ID)
+go run ./cmd/umctl --addr http://localhost:8080 query run otel-demo ".entity with(domain='otel', name='otel.service', ids=('a0000000000000000000000000000001')) | evidence(kind='log_set', from='2026-06-29T00:00:00Z', to='2026-06-30T23:59:59Z') | limit 5"
 ```
+
+> **Note**: Evidence queries require OpenSearch access. Connect via SSH tunnel first:  
+> `ssh -p 2222 -L localhost:13121:localhost:13121 sredev@10.2.115.188`
 
 More details: [OpenTelemetry Demo Example Pack](examples/otel-demo/README.md)
 
@@ -138,7 +153,7 @@ MModel runs as a local service around one workspace-scoped object graph:
 
 - Model packs define the object vocabulary: EntitySets, datasets, links, storage, and relation semantics.
 - EntityStore writes runtime entities and topology relations that instantiate the model.
-- Query Service is the unified read surface for `.mmodel`, `.entity`, and `.topo`.
+- Query Service is the unified read surface for `.umodel`, `.entity`, and `.topo`.
 - AgentGateway and MCP expose discovery, resources, query examples, and safe tools for agent clients.
 - Web UI, CLI, REST, and SDK clients operate against the same public contracts.
 
