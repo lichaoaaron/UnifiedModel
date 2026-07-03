@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "shipping-service",
+    "resource.attributes.service@name": "shipping-service",
+    "traceId": "2d898fcfd44410802272a21b87b1d656",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: SocketTimeoutException: packet loss and tcp retransmit network delay on node-network link on node-network for /shipping/quote",
+    "log.attributes.stack_trace": "SocketTimeoutException: SocketTimeoutException: packet loss and tcp retransmit network delay on node-network link"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "edge-gateway",
+    "resource.attributes.service@name": "edge-gateway",
+    "traceId": "2d898fcfd44410802272a21b87b1d656",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /shipping/quote",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "2d898fcfd44410802272a21b87b1d656",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

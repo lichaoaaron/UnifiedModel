@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "cart-service",
+    "resource.attributes.service@name": "cart-service",
+    "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: RedisConnectionFailureException: unable to connect to redis node down redis-cart on redis-cart for /cart/detail",
+    "log.attributes.stack_trace": "RedisConnectionFailureException: RedisConnectionFailureException: unable to connect to redis node down redis-cart"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /cart/detail",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

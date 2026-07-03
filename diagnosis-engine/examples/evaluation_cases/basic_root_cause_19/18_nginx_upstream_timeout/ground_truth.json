@@ -1,0 +1,41 @@
+{
+  "case_id": "18_nginx_upstream_timeout",
+  "name": "nginx upstream timeout",
+  "category": "nginx",
+  "topology_shape": "ingress",
+  "source_fault_injection": "fault=nginx_upstream_timeout",
+  "alert_event": {
+    "api": "/checkout/preview",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 504 / Nginx ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "checkout-service",
+      "service": "checkout-service",
+      "type": "nginx_upstream_timeout",
+      "exception_type": "NginxUpstreamTimeout",
+      "message": "upstream timed out while nginx waited for checkout-service response"
+    },
+    "affected_services": [
+      "nginx-ingress",
+      "api-gateway",
+      "checkout-service",
+      "pricing-service"
+    ],
+    "affected_interfaces": [
+      "/checkout/preview"
+    ],
+    "business_impact": "/checkout/preview production business path is affected by nginx_upstream_timeout",
+    "primary_evidence": {
+      "trace": "Runtime trace follows nginx-ingress -> api-gateway -> checkout-service -> pricing-service and localizes the main fault at checkout-service.",
+      "log": "Root service logs contain NginxUpstreamTimeout and nginx_upstream_timeout keywords.",
+      "metric": "Metric nginx.http.status.504.rate breaches threshold on checkout-service."
+    },
+    "non_root_noise": [
+      "pricing-service completed normally; timeout is observed at checkout upstream boundary",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

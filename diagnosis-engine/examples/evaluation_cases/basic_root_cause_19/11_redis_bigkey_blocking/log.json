@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "media-service",
+    "resource.attributes.service@name": "media-service",
+    "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: ReadTimedOut while reading redis big key blocking media session payload on redis-media for /media/session/load",
+    "log.attributes.stack_trace": "ReadTimedOut: ReadTimedOut while reading redis big key blocking media session payload"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "media-gateway",
+    "resource.attributes.service@name": "media-gateway",
+    "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /media/session/load",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

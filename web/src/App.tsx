@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Navigate, Route, Routes, useNavigate, useParams } from 'react-router'
-import { GitBranch, Layers, Network, PanelLeft, Settings2, TerminalSquare, UploadCloud } from 'lucide-react'
+import { GitBranch, Layers, Network, PanelLeft, Settings2, Stethoscope, TerminalSquare, UploadCloud } from 'lucide-react'
 import { UModelApi } from './api/client'
 import type { HealthResponse, WorkspaceMetadata } from './api/types'
 import { Button, Badge, StatusDot, Field, TextInput } from './design/components'
@@ -32,6 +32,7 @@ export function App() {
       { value: 'imports' as const, label: t('nav.imports'), icon: <UploadCloud size={16} /> },
       { value: 'settings' as const, label: t('nav.settings'), icon: <Settings2 size={16} /> },
       { value: 'apiDebug' as const, label: t('nav.apiMap'), icon: <Layers size={16} /> },
+      { value: 'diagnosis' as const, label: t('nav.diagnosis'), icon: <Stethoscope size={16} /> },
     ],
     [t],
   )

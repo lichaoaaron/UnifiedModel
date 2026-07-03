@@ -1,0 +1,40 @@
+{
+  "case_id": "09_redis_slow_lua",
+  "name": "redis slow lua",
+  "category": "redis",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=redis_slow_lua",
+  "alert_event": {
+    "api": "/inventory/reserve",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "Redis ?????? / ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "redis-inventory",
+      "service": "inventory-service",
+      "type": "redis_slow_lua",
+      "exception_type": "RedisCommandTimeoutException",
+      "message": "RedisCommandTimeoutException: slow lua script exceeded command latency budget"
+    },
+    "affected_services": [
+      "api-gateway",
+      "inventory-bff",
+      "inventory-service"
+    ],
+    "affected_interfaces": [
+      "/inventory/reserve"
+    ],
+    "business_impact": "/inventory/reserve production business path is affected by redis_slow_lua",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> inventory-bff -> inventory-service -> redis-inventory and localizes the main fault at inventory-service.",
+      "log": "Root service logs contain RedisCommandTimeoutException and redis_slow_lua keywords.",
+      "metric": "Metric redis.command.latency.p99 breaches threshold on inventory-service."
+    },
+    "non_root_noise": [
+      "inventory-bff timeout is propagated from redis lua latency",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

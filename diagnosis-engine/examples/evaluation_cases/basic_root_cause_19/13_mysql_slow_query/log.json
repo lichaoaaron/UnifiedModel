@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "order-service",
+    "resource.attributes.service@name": "order-service",
+    "traceId": "b598384006e2829dfaea5db9d621e824",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: QueryTimeoutException: mysql slow query SELECT SLEEP(10) exceeded timeout on mysql-order for /search/orders",
+    "log.attributes.stack_trace": "QueryTimeoutException: QueryTimeoutException: mysql slow query SELECT SLEEP(10) exceeded timeout"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "b598384006e2829dfaea5db9d621e824",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /search/orders",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "b598384006e2829dfaea5db9d621e824",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

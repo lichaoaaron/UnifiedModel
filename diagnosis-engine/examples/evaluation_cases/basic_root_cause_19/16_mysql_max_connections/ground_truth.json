@@ -1,0 +1,40 @@
+{
+  "case_id": "16_mysql_max_connections",
+  "name": "mysql max connections reached",
+  "category": "mysql",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=mysql_max_connections",
+  "alert_event": {
+    "api": "/billing/create",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 500 / DB ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "mysql-billing",
+      "service": "billing-service",
+      "type": "mysql_max_connections",
+      "exception_type": "TooManyConnectionsException",
+      "message": "too many connections: mysql max connections reached for billing pool"
+    },
+    "affected_services": [
+      "api-gateway",
+      "billing-bff",
+      "billing-service"
+    ],
+    "affected_interfaces": [
+      "/billing/create"
+    ],
+    "business_impact": "/billing/create production business path is affected by mysql_max_connections",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> billing-bff -> billing-service -> mysql-billing and localizes the main fault at billing-service.",
+      "log": "Root service logs contain TooManyConnectionsException and mysql_max_connections keywords.",
+      "metric": "Metric mysql.connections.current breaches threshold on billing-service."
+    },
+    "non_root_noise": [
+      "billing-bff propagated connection failure after mysql refused new sessions",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

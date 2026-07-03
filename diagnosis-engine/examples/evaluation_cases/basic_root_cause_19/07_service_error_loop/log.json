@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "coupon-service",
+    "resource.attributes.service@name": "coupon-service",
+    "traceId": "c3cc8ada7aa5182b2f65e28b38e444b3",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: error loop: frequent runtime exception while applying coupon rule on coupon-service for /coupon/apply",
+    "log.attributes.stack_trace": "RuntimeException: error loop: frequent runtime exception while applying coupon rule"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "c3cc8ada7aa5182b2f65e28b38e444b3",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /coupon/apply",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "c3cc8ada7aa5182b2f65e28b38e444b3",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

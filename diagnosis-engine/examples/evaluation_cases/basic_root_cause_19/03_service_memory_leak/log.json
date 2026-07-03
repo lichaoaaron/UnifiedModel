@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "profile-service",
+    "resource.attributes.service@name": "profile-service",
+    "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: java.lang.OutOfMemoryError: Java heap space after retaining byte arrays in static list memory leak on profile-service for /profile/export",
+    "log.attributes.stack_trace": "java.lang.OutOfMemoryError: java.lang.OutOfMemoryError: Java heap space after retaining byte arrays in static list memory leak"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "mobile-gateway",
+    "resource.attributes.service@name": "mobile-gateway",
+    "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /profile/export",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

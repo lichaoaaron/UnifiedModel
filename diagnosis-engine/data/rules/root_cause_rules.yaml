@@ -1,0 +1,194 @@
+# 根因定位规则（运行时配置）
+# 由 backend/app/rules/root_cause_rules.py 中的 YAML 驱动引擎读取执行
+# 规则匹配逻辑：按 priority 升序遍历，第一条 enabled=true 且条件命中的规则生效
+#
+# 规则结构说明：
+#   downstream_exception_patterns: 下游 span 异常类名关键词列表（空列表=任意异常均匹配）
+#   propagation_patterns: 上游须满足的传播性异常关键词列表（空列表=不检查上游）
+#   conclusion.root_cause_type: 命中时输出的根因类型
+#   conclusion.confidence: high | medium | low
+#
+# 禁止在此文件中写入任何具体服务名、接口名、参数值
+
+rules:
+
+  # ============================================================
+  # 规则 1：上游传入非法参数，下游解析失败
+  # 覆盖场景：上游通过 URL / RPC 参数传入字符串等非法值，
+  #           下游在数值转换或绑定阶段抛出解析/校验异常。
+  # ============================================================
+  - id: rule_upstream_bad_parameter
+    name: 上游非法参数输入
+    priority: 1
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - NumberFormatException
+        - IllegalArgumentException
+        - InvalidFormatException
+        - BindException
+        - MethodArgumentTypeMismatchException
+        - MethodArgumentNotValidException
+        - ConstraintViolationException
+        - ValueError
+        - TypeError
+      propagation_patterns:
+        - FeignException
+        - RetryableException
+        - HttpClientErrorException
+        - RestClientException
+        - WebClientResponseException
+        - NestedServletException
+      bad_parameter_sources_must_agree: true
+    conclusion:
+      root_cause_type: 非法请求参数
+      confidence: high
+      root_cause_location: upstream
+      root_cause_api_source: entry_api
+
+  # ============================================================
+  # 规则 2：下游业务异常 + 上游传播性异常 → 根因在下游
+  # 覆盖场景：参数校验异常、空指针、类型转换错误等业务逻辑异常
+  #            经 Feign/HTTP 客户端包装后向上传播
+  # ============================================================
+  - id: rule_downstream_specific_exception
+    name: 下游业务异常（上游仅传播）
+    priority: 2
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - NumberFormatException
+        - IllegalArgumentException
+        - IllegalStateException
+        - NullPointerException
+        - IndexOutOfBoundsException
+        - ClassCastException
+        - ArithmeticException
+        - ValidationException
+        - ConstraintViolationException
+        - DataIntegrityViolationException
+        - InvalidFormatException
+        - BindException
+        - MethodArgumentNotValidException
+        # Python
+        - ValueError
+        - TypeError
+        - KeyError
+        - AttributeError
+        # Go
+        - "runtime error"
+        # JS/Node
+        - RangeError
+      propagation_patterns:
+        - FeignException
+        - RetryableException
+        - HttpClientErrorException
+        - RestClientException
+        - WebClientResponseException
+        - CallNotPermittedException
+        - NestedServletException
+    conclusion:
+      root_cause_type: 业务异常
+      confidence: high
+
+  # ============================================================
+  # 规则 3：超时异常
+  # ============================================================
+  - id: rule_timeout
+    name: 超时异常
+    priority: 3
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - TimeoutException
+        - SocketTimeoutException
+        - ReadTimeoutException
+        - ConnectTimeoutException
+        - DeadlineExceeded
+        - "context deadline exceeded"
+        - "connection timed out"
+      propagation_patterns: []
+    conclusion:
+      root_cause_type: 超时异常
+      confidence: high
+
+  # ============================================================
+  # 规则 4：数据库/存储异常
+  # ============================================================
+  - id: rule_database_error
+    name: 数据库异常
+    priority: 4
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - SQLException
+        - DataAccessException
+        - JdbcSQLException
+        - MySQLException
+        - PostgreSQLException
+        - MongoException
+        - RedisException
+        - HibernateException
+        - PersistenceException
+        - CannotAcquireLockException
+        - DeadlockLoserDataAccessException
+      propagation_patterns: []
+    conclusion:
+      root_cause_type: 数据库异常
+      confidence: high
+
+  # ============================================================
+  # 规则 5：资源耗尽（OOM / 线程池满 / 熔断）
+  # ============================================================
+  - id: rule_resource_exhaustion
+    name: 资源耗尽
+    priority: 5
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - OutOfMemoryError
+        - StackOverflowError
+        - RejectedExecutionException
+        - ThreadPoolRejectedException
+        - CircuitBreakerOpenException
+        - MemoryError
+      propagation_patterns: []
+    conclusion:
+      root_cause_type: 资源耗尽
+      confidence: high
+
+  # ============================================================
+  # 规则 5：网络/连接异常
+  # ============================================================
+  - id: rule_network_error
+    name: 网络连接异常
+    priority: 5
+    enabled: true
+    conditions:
+      downstream_exception_patterns:
+        - ConnectionRefusedException
+        - ConnectException
+        - NoRouteToHostException
+        - UnknownHostException
+        - NetworkException
+        - IOException
+        - "connection refused"
+        - "connection reset"
+      propagation_patterns: []
+    conclusion:
+      root_cause_type: 网络连接异常
+      confidence: medium
+
+  # ============================================================
+  # 规则 99：兜底 — 单服务异常（任意异常均匹配，优先级最低）
+  # ============================================================
+  - id: rule_single_service_exception
+    name: 单服务异常（兜底）
+    priority: 99
+    enabled: true
+    conditions:
+      downstream_exception_patterns: []
+      propagation_patterns: []
+    conclusion:
+      root_cause_type: 服务异常
+      confidence: medium

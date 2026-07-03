@@ -1,0 +1,40 @@
+{
+  "case_id": "03_service_memory_leak",
+  "name": "service memory leak",
+  "category": "service",
+  "topology_shape": "three-hop",
+  "source_fault_injection": "fault=memory_leak",
+  "alert_event": {
+    "api": "/profile/export",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 500 / OOM"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "profile-service",
+      "service": "profile-service",
+      "type": "memory_leak",
+      "exception_type": "java.lang.OutOfMemoryError",
+      "message": "java.lang.OutOfMemoryError: Java heap space after retaining byte arrays in static list memory leak"
+    },
+    "affected_services": [
+      "mobile-gateway",
+      "profile-bff",
+      "profile-service"
+    ],
+    "affected_interfaces": [
+      "/profile/export"
+    ],
+    "business_impact": "/profile/export production business path is affected by memory_leak",
+    "primary_evidence": {
+      "trace": "Runtime trace follows mobile-gateway -> profile-bff -> profile-service and localizes the main fault at profile-service.",
+      "log": "Root service logs contain java.lang.OutOfMemoryError and memory_leak keywords.",
+      "metric": "Metric jvm.memory.heap.used.percent breaches threshold on profile-service."
+    },
+    "non_root_noise": [
+      "profile-cache write latency is below threshold and follows the memory pressure",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

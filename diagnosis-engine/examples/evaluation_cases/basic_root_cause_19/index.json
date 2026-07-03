@@ -1,0 +1,325 @@
+[
+  {
+    "case_id": "01_service_slow_api",
+    "name": "service slow interface",
+    "category": "service",
+    "topology_shape": "single",
+    "root_cause_component": "checkout-service",
+    "root_cause_service": "checkout-service",
+    "root_cause_type": "slow_interface",
+    "alert_api": "/checkout/submit",
+    "alert_symptom": "??? / latency anomaly",
+    "files": [
+      "01_service_slow_api/trace.json",
+      "01_service_slow_api/log.json",
+      "01_service_slow_api/metric.json",
+      "01_service_slow_api/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "02_service_high_cpu",
+    "name": "service high cpu",
+    "category": "service",
+    "topology_shape": "single",
+    "root_cause_component": "recommend-service",
+    "root_cause_service": "recommend-service",
+    "root_cause_type": "high_cpu",
+    "alert_api": "/recommend/feed",
+    "alert_symptom": "HTTP 504 / ????",
+    "files": [
+      "02_service_high_cpu/trace.json",
+      "02_service_high_cpu/log.json",
+      "02_service_high_cpu/metric.json",
+      "02_service_high_cpu/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "03_service_memory_leak",
+    "name": "service memory leak",
+    "category": "service",
+    "topology_shape": "three-hop",
+    "root_cause_component": "profile-service",
+    "root_cause_service": "profile-service",
+    "root_cause_type": "memory_leak",
+    "alert_api": "/profile/export",
+    "alert_symptom": "HTTP 500 / OOM",
+    "files": [
+      "03_service_memory_leak/trace.json",
+      "03_service_memory_leak/log.json",
+      "03_service_memory_leak/metric.json",
+      "03_service_memory_leak/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "04_service_full_gc",
+    "name": "frequent full gc",
+    "category": "service",
+    "topology_shape": "four-hop",
+    "root_cause_component": "report-service",
+    "root_cause_service": "report-service",
+    "root_cause_type": "frequent_full_gc",
+    "alert_api": "/report/render",
+    "alert_symptom": "??? / P99 ????",
+    "files": [
+      "04_service_full_gc/trace.json",
+      "04_service_full_gc/log.json",
+      "04_service_full_gc/metric.json",
+      "04_service_full_gc/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "05_service_thread_pool_exhaustion",
+    "name": "thread pool exhausted",
+    "category": "service",
+    "topology_shape": "three-hop",
+    "root_cause_component": "notification-service",
+    "root_cause_service": "notification-service",
+    "root_cause_type": "thread_pool_exhaustion",
+    "alert_api": "/notify/send",
+    "alert_symptom": "HTTP 503 / ??????",
+    "files": [
+      "05_service_thread_pool_exhaustion/trace.json",
+      "05_service_thread_pool_exhaustion/log.json",
+      "05_service_thread_pool_exhaustion/metric.json",
+      "05_service_thread_pool_exhaustion/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "06_service_connection_pool_exhaustion",
+    "name": "connection pool exhausted",
+    "category": "service",
+    "topology_shape": "partial",
+    "root_cause_component": "payment-service",
+    "root_cause_service": "payment-service",
+    "root_cause_type": "connection_pool_exhaustion",
+    "alert_api": "/payment/confirm",
+    "alert_symptom": "HTTP 503 / ?????",
+    "files": [
+      "06_service_connection_pool_exhaustion/trace.json",
+      "06_service_connection_pool_exhaustion/log.json",
+      "06_service_connection_pool_exhaustion/metric.json",
+      "06_service_connection_pool_exhaustion/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "07_service_error_loop",
+    "name": "frequent runtime errors",
+    "category": "service",
+    "topology_shape": "single",
+    "root_cause_component": "coupon-service",
+    "root_cause_service": "coupon-service",
+    "root_cause_type": "error_loop",
+    "alert_api": "/coupon/apply",
+    "alert_symptom": "HTTP 500 / ????",
+    "files": [
+      "07_service_error_loop/trace.json",
+      "07_service_error_loop/log.json",
+      "07_service_error_loop/metric.json",
+      "07_service_error_loop/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "08_redis_node_down",
+    "name": "redis node down",
+    "category": "redis",
+    "topology_shape": "dependency",
+    "root_cause_component": "redis-cart",
+    "root_cause_service": "cart-service",
+    "root_cause_type": "redis_node_down",
+    "alert_api": "/cart/detail",
+    "alert_symptom": "HTTP 500 / Redis ????",
+    "files": [
+      "08_redis_node_down/trace.json",
+      "08_redis_node_down/log.json",
+      "08_redis_node_down/metric.json",
+      "08_redis_node_down/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "09_redis_slow_lua",
+    "name": "redis slow lua",
+    "category": "redis",
+    "topology_shape": "dependency",
+    "root_cause_component": "redis-inventory",
+    "root_cause_service": "inventory-service",
+    "root_cause_type": "redis_slow_lua",
+    "alert_api": "/inventory/reserve",
+    "alert_symptom": "Redis ?????? / ????",
+    "files": [
+      "09_redis_slow_lua/trace.json",
+      "09_redis_slow_lua/log.json",
+      "09_redis_slow_lua/metric.json",
+      "09_redis_slow_lua/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "10_redis_keys_command",
+    "name": "redis expensive KEYS command",
+    "category": "redis",
+    "topology_shape": "dependency",
+    "root_cause_component": "redis-session",
+    "root_cause_service": "admin-service",
+    "root_cause_type": "redis_keys_command",
+    "alert_api": "/admin/cache/scan",
+    "alert_symptom": "??? / Redis CPU ??",
+    "files": [
+      "10_redis_keys_command/trace.json",
+      "10_redis_keys_command/log.json",
+      "10_redis_keys_command/metric.json",
+      "10_redis_keys_command/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "11_redis_bigkey_blocking",
+    "name": "redis big key blocking",
+    "category": "redis",
+    "topology_shape": "dependency",
+    "root_cause_component": "redis-media",
+    "root_cause_service": "media-service",
+    "root_cause_type": "redis_bigkey_blocking",
+    "alert_api": "/media/session/load",
+    "alert_symptom": "??? / BigKey ??",
+    "files": [
+      "11_redis_bigkey_blocking/trace.json",
+      "11_redis_bigkey_blocking/log.json",
+      "11_redis_bigkey_blocking/metric.json",
+      "11_redis_bigkey_blocking/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "12_redis_lock_stuck",
+    "name": "redis distributed lock stuck",
+    "category": "redis",
+    "topology_shape": "dependency",
+    "root_cause_component": "redis-lock",
+    "root_cause_service": "order-service",
+    "root_cause_type": "redis_lock_stuck",
+    "alert_api": "/order/submit",
+    "alert_symptom": "?????? / ??????",
+    "files": [
+      "12_redis_lock_stuck/trace.json",
+      "12_redis_lock_stuck/log.json",
+      "12_redis_lock_stuck/metric.json",
+      "12_redis_lock_stuck/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "13_mysql_slow_query",
+    "name": "mysql slow query",
+    "category": "mysql",
+    "topology_shape": "dependency",
+    "root_cause_component": "mysql-order",
+    "root_cause_service": "order-service",
+    "root_cause_type": "mysql_slow_query",
+    "alert_api": "/search/orders",
+    "alert_symptom": "??? / DB ????",
+    "files": [
+      "13_mysql_slow_query/trace.json",
+      "13_mysql_slow_query/log.json",
+      "13_mysql_slow_query/metric.json",
+      "13_mysql_slow_query/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "14_mysql_row_lock",
+    "name": "mysql row lock wait",
+    "category": "mysql",
+    "topology_shape": "dependency",
+    "root_cause_component": "mysql-account",
+    "root_cause_service": "account-service",
+    "root_cause_type": "mysql_row_lock",
+    "alert_api": "/account/update",
+    "alert_symptom": "DB ???? / ???",
+    "files": [
+      "14_mysql_row_lock/trace.json",
+      "14_mysql_row_lock/log.json",
+      "14_mysql_row_lock/metric.json",
+      "14_mysql_row_lock/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "15_mysql_table_lock",
+    "name": "mysql table metadata lock",
+    "category": "mysql",
+    "topology_shape": "dependency",
+    "root_cause_component": "mysql-user",
+    "root_cause_service": "user-service",
+    "root_cause_type": "mysql_table_lock",
+    "alert_api": "/user/profile",
+    "alert_symptom": "??? / metadata lock ??",
+    "files": [
+      "15_mysql_table_lock/trace.json",
+      "15_mysql_table_lock/log.json",
+      "15_mysql_table_lock/metric.json",
+      "15_mysql_table_lock/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "16_mysql_max_connections",
+    "name": "mysql max connections reached",
+    "category": "mysql",
+    "topology_shape": "dependency",
+    "root_cause_component": "mysql-billing",
+    "root_cause_service": "billing-service",
+    "root_cause_type": "mysql_max_connections",
+    "alert_api": "/billing/create",
+    "alert_symptom": "HTTP 500 / DB ????",
+    "files": [
+      "16_mysql_max_connections/trace.json",
+      "16_mysql_max_connections/log.json",
+      "16_mysql_max_connections/metric.json",
+      "16_mysql_max_connections/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "17_nginx_connection_exhaustion",
+    "name": "nginx worker connections exhausted",
+    "category": "nginx",
+    "topology_shape": "ingress",
+    "root_cause_component": "nginx-ingress",
+    "root_cause_service": "nginx-ingress",
+    "root_cause_type": "nginx_connection_exhaustion",
+    "alert_api": "/portal/home",
+    "alert_symptom": "HTTP 503 / Nginx ????",
+    "files": [
+      "17_nginx_connection_exhaustion/trace.json",
+      "17_nginx_connection_exhaustion/log.json",
+      "17_nginx_connection_exhaustion/metric.json",
+      "17_nginx_connection_exhaustion/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "18_nginx_upstream_timeout",
+    "name": "nginx upstream timeout",
+    "category": "nginx",
+    "topology_shape": "ingress",
+    "root_cause_component": "checkout-service",
+    "root_cause_service": "checkout-service",
+    "root_cause_type": "nginx_upstream_timeout",
+    "alert_api": "/checkout/preview",
+    "alert_symptom": "HTTP 504 / Nginx ????",
+    "files": [
+      "18_nginx_upstream_timeout/trace.json",
+      "18_nginx_upstream_timeout/log.json",
+      "18_nginx_upstream_timeout/metric.json",
+      "18_nginx_upstream_timeout/ground_truth.json"
+    ]
+  },
+  {
+    "case_id": "19_network_packet_loss_latency",
+    "name": "network packet loss and latency",
+    "category": "network",
+    "topology_shape": "network",
+    "root_cause_component": "node-network",
+    "root_cause_service": "shipping-service",
+    "root_cause_type": "network_packet_loss_latency",
+    "alert_api": "/shipping/quote",
+    "alert_symptom": "???? / HTTP 504",
+    "files": [
+      "19_network_packet_loss_latency/trace.json",
+      "19_network_packet_loss_latency/log.json",
+      "19_network_packet_loss_latency/metric.json",
+      "19_network_packet_loss_latency/ground_truth.json"
+    ]
+  }
+]

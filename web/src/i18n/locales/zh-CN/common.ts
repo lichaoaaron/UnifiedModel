@@ -16,9 +16,11 @@ export const zhCNCommon = {
   'nav.collapseSidebar': '收起侧边栏',
   'nav.entityTopo': 'EntityTopo 探索',
   'nav.expandSidebar': '展开侧边栏',
-  'nav.umodel': 'UModel 探索',
+  'nav.umodel': 'MModel 探索',
   'nav.imports': '导入与写入',
   'nav.query': '查询',
   'nav.settings': '设置',
+  'nav.diagnosis': '智能诊断',
   'nav.workspaces': '工作区',
+  'diagnosis.placeholder': '描述故障现象（API 路径、时间、症状）...',
 } satisfies Record<keyof typeof enUSCommon, string>

@@ -39,6 +39,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
+      '/api/diagnose': 'http://localhost:8000',
+      '/diagnosis': 'http://localhost:8000',
       '/api': apiTarget,
       '/healthz': apiTarget,
     },

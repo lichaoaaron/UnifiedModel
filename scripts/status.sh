@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 API_ADDR="${API_ADDR:-${UMODEL_API_ADDR:-:8080}}"
 API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
 WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
+DIAG_PORT="${DIAG_PORT:-8000}"
 DATA_ROOT="${DATA_ROOT:-${UMODEL_DATA:-data}}"
 GRAPHSTORE="${GRAPHSTORE:-${UMODEL_GRAPHSTORE:-file.memory}}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
@@ -95,6 +96,15 @@ show_web_health() {
   fi
 }
 
+show_diagnosis_health() {
+  local diagnosis_url="http://localhost:${DIAG_PORT}"
+  if curl -fsS "${diagnosis_url}/api/health" >/dev/null 2>&1; then
+    echo "  Diagnosis health: reachable at ${diagnosis_url}"
+  else
+    echo "  Diagnosis health: unavailable at ${diagnosis_url}/api/health"
+  fi
+}
+
 API_PORT="${API_PORT:-$(port_from_endpoint "${API_ADDR}")}"
 if [[ -z "${API_PORT}" ]]; then
   API_PORT="$(port_from_endpoint "${API_URL}")"
@@ -111,6 +121,7 @@ Processes
 EOF
 show_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid" "${LOG_DIR}/dev-api.log"
 show_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid" "${LOG_DIR}/dev-web.log"
+show_pid_file "dev diagnosis" "${PID_DIR}/openumodel-dev-diagnosis.pid" "${LOG_DIR}/dev-diagnosis.log"
 show_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid" "${LOG_DIR}/deploy.log"
 
 cat <<EOF
@@ -118,8 +129,10 @@ cat <<EOF
 Ports
   API ${API_PORT:-unknown}: $(port_listeners "${API_PORT:-}")
   Web ${WEB_PORT}: $(port_listeners "${WEB_PORT}")
+  Diagnosis ${DIAG_PORT}: $(port_listeners "${DIAG_PORT}")
 
 Health
 EOF
 show_api_health
 show_web_health
+show_diagnosis_health

@@ -1,0 +1,40 @@
+{
+  "case_id": "11_redis_bigkey_blocking",
+  "name": "redis big key blocking",
+  "category": "redis",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=redis_bigkey_blocking",
+  "alert_event": {
+    "api": "/media/session/load",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / BigKey ??"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "redis-media",
+      "service": "media-service",
+      "type": "redis_bigkey_blocking",
+      "exception_type": "ReadTimedOut",
+      "message": "ReadTimedOut while reading redis big key blocking media session payload"
+    },
+    "affected_services": [
+      "media-gateway",
+      "media-bff",
+      "media-service"
+    ],
+    "affected_interfaces": [
+      "/media/session/load"
+    ],
+    "business_impact": "/media/session/load production business path is affected by redis_bigkey_blocking",
+    "primary_evidence": {
+      "trace": "Runtime trace follows media-gateway -> media-bff -> media-service -> redis-media and localizes the main fault at media-service.",
+      "log": "Root service logs contain ReadTimedOut and redis_bigkey_blocking keywords.",
+      "metric": "Metric redis.network.egress.bytes_per_second breaches threshold on media-service."
+    },
+    "non_root_noise": [
+      "cdn-service latency is normal and outside redis bigkey path",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

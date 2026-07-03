@@ -1,4 +1,4 @@
-export type WorkspaceView = 'umodel' | 'entityTopo' | 'query' | 'imports' | 'settings' | 'apiDebug'
+export type WorkspaceView = 'umodel' | 'entityTopo' | 'query' | 'imports' | 'settings' | 'apiDebug' | 'diagnosis'
 
 export const defaultWorkspaceView: WorkspaceView = 'umodel'
 
@@ -9,6 +9,7 @@ export const workspaceViewSegments = {
   imports: 'imports',
   settings: 'settings',
   apiDebug: 'api-debug',
+  diagnosis: 'diagnosis',
 } as const satisfies Record<WorkspaceView, string>
 
 export function workspacePath(workspaceId: string, view: WorkspaceView = defaultWorkspaceView) {

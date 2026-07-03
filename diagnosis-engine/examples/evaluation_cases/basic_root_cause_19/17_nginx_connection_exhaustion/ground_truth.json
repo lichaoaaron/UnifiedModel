@@ -1,0 +1,40 @@
+{
+  "case_id": "17_nginx_connection_exhaustion",
+  "name": "nginx worker connections exhausted",
+  "category": "nginx",
+  "topology_shape": "ingress",
+  "source_fault_injection": "fault=nginx_connection_exhaustion",
+  "alert_event": {
+    "api": "/portal/home",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 503 / Nginx ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "nginx-ingress",
+      "service": "nginx-ingress",
+      "type": "nginx_connection_exhaustion",
+      "exception_type": "NginxWorkerConnectionExhausted",
+      "message": "nginx worker connections exhausted: worker connections are not enough"
+    },
+    "affected_services": [
+      "nginx-ingress",
+      "api-gateway",
+      "portal-service"
+    ],
+    "affected_interfaces": [
+      "/portal/home"
+    ],
+    "business_impact": "/portal/home production business path is affected by nginx_connection_exhaustion",
+    "primary_evidence": {
+      "trace": "Runtime trace follows nginx-ingress -> api-gateway -> portal-service and localizes the main fault at nginx-ingress.",
+      "log": "Root service logs contain NginxWorkerConnectionExhausted and nginx_connection_exhaustion keywords.",
+      "metric": "Metric nginx.connections.active breaches threshold on nginx-ingress."
+    },
+    "non_root_noise": [
+      "portal-service has no application exception and receives little traffic after ingress saturation",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

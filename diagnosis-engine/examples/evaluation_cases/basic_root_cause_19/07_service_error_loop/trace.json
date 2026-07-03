@@ -1,0 +1,94 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "c3cc8ada7aa5182b2f65e28b38e444b3/dfb8f1409f3a54d3",
+    "_score": 1,
+    "_source": {
+      "traceId": "c3cc8ada7aa5182b2f65e28b38e444b3",
+      "spanId": "dfb8f1409f3a54d3",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/coupon/apply",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.268Z",
+      "durationInNanos": 1260000000,
+      "traceGroup": "GET:/coupon/apply",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.268Z",
+        "durationInNanos": 1260000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.56.220.55",
+      "resource.attributes.http@url": "http://api-gateway/coupon/apply?requestId=14869f405396",
+      "resource.attributes.sw8@trace_id": "c3cc8ada7aa5182b2f65e28b38e444b3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/coupon/apply?requestId=14869f405396",
+      "span.attributes.http@status_code": "500",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/coupon/apply",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "c3cc8ada7aa5182b2f65e28b38e444b3/b5a01ddc701e6be3",
+    "_score": 1,
+    "_source": {
+      "traceId": "c3cc8ada7aa5182b2f65e28b38e444b3",
+      "spanId": "b5a01ddc701e6be3",
+      "parentSpanId": "dfb8f1409f3a54d3",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "coupon-service",
+      "name": "GET:/coupon-service/coupon/apply",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:18.616Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/coupon/apply",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.616Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "RuntimeException",
+            "event": "error",
+            "message": "error loop: frequent runtime exception while applying coupon rule",
+            "stack": "RuntimeException: error loop: frequent runtime exception while applying coupon rule\n\tat com.aliyun.coupon.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "coupon-service",
+      "resource.attributes.service@instance@id": "coupon-service@coupon-service-10.126.178.163",
+      "resource.attributes.http@url": "http://coupon-service/coupon-service/coupon/apply?requestId=c8f9827f9a80",
+      "resource.attributes.sw8@trace_id": "c3cc8ada7aa5182b2f65e28b38e444b3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://coupon-service/coupon-service/coupon/apply?requestId=c8f9827f9a80",
+      "span.attributes.http@status_code": "500",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/coupon-service/coupon/apply",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  }
+]

@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "06ee87738ecc83cb1de79a2839c0c765/4d94875168aed3a0",
+    "_score": 1,
+    "_source": {
+      "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+      "spanId": "4d94875168aed3a0",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "media-gateway",
+      "name": "GET:/media/session/load",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/media/session/load",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "media-gateway",
+      "resource.attributes.service@instance@id": "media-gateway@media-gateway-10.58.133.12",
+      "resource.attributes.http@url": "http://media-gateway/media/session/load?requestId=79a07780046b",
+      "resource.attributes.sw8@trace_id": "06ee87738ecc83cb1de79a2839c0c765",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://media-gateway/media/session/load?requestId=79a07780046b",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/media/session/load",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "06ee87738ecc83cb1de79a2839c0c765/b11b0247c23ee2c7",
+    "_score": 1,
+    "_source": {
+      "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+      "spanId": "b11b0247c23ee2c7",
+      "parentSpanId": "4d94875168aed3a0",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "media-bff",
+      "name": "GET:/media-bff/media/session/load",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/media/session/load",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "media-bff",
+      "resource.attributes.service@instance@id": "media-bff@media-bff-10.188.153.25",
+      "resource.attributes.http@url": "http://media-bff/media-bff/media/session/load?requestId=d8584f807e32",
+      "resource.attributes.sw8@trace_id": "06ee87738ecc83cb1de79a2839c0c765",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://media-bff/media-bff/media/session/load?requestId=d8584f807e32",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/media-bff/media/session/load",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "06ee87738ecc83cb1de79a2839c0c765/77e1e2760adb22dc",
+    "_score": 1,
+    "_source": {
+      "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+      "spanId": "77e1e2760adb22dc",
+      "parentSpanId": "b11b0247c23ee2c7",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "media-service",
+      "name": "GET:/media-service/media/session/load",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/media/session/load",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "ReadTimedOut",
+            "event": "error",
+            "message": "ReadTimedOut while reading redis big key blocking media session payload",
+            "stack": "ReadTimedOut: ReadTimedOut while reading redis big key blocking media session payload\n\tat com.aliyun.media.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "media-service",
+      "resource.attributes.service@instance@id": "media-service@media-service-10.36.64.64",
+      "resource.attributes.http@url": "http://media-service/media-service/media/session/load?requestId=a3d0478544e5",
+      "resource.attributes.sw8@trace_id": "06ee87738ecc83cb1de79a2839c0c765",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://media-service/media-service/media/session/load?requestId=a3d0478544e5",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/media-service/media/session/load",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "06ee87738ecc83cb1de79a2839c0c765/ecb4bd9cd45ed561",
+    "_score": 1,
+    "_source": {
+      "traceId": "06ee87738ecc83cb1de79a2839c0c765",
+      "spanId": "ecb4bd9cd45ed561",
+      "parentSpanId": "77e1e2760adb22dc",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "redis-media",
+      "name": "GET:/redis-media/media/session/load",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/media/session/load",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "redis-media",
+      "resource.attributes.service@instance@id": "redis-media@redis-media-10.159.63.170",
+      "resource.attributes.http@url": "http://redis-media/redis-media/media/session/load?requestId=ef28687d017b",
+      "resource.attributes.sw8@trace_id": "06ee87738ecc83cb1de79a2839c0c765",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://redis-media/redis-media/media/session/load?requestId=ef28687d017b",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/redis-media/media/session/load",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

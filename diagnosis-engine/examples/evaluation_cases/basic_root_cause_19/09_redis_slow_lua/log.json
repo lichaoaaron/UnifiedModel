@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "inventory-service",
+    "resource.attributes.service@name": "inventory-service",
+    "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: RedisCommandTimeoutException: slow lua script exceeded command latency budget on redis-inventory for /inventory/reserve",
+    "log.attributes.stack_trace": "RedisCommandTimeoutException: RedisCommandTimeoutException: slow lua script exceeded command latency budget"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /inventory/reserve",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

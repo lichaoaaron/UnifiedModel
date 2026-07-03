@@ -14,6 +14,8 @@ fi
 QUICKSTART="${QUICKSTART:-0}"
 QUICKSTART_WORKSPACE="${QUICKSTART_WORKSPACE:-demo}"
 QUICKSTART_SAMPLE="${QUICKSTART_SAMPLE:-multi-domain-quickstart}"
+DIAGNOSIS_ENABLED="${DIAGNOSIS_ENABLED:-1}"
+DIAG_PORT="${DIAG_PORT:-8000}"
 PNPM="${PNPM:-pnpm}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
 LOG_DIR="${LOG_DIR:-${PID_DIR}/logs}"
@@ -29,8 +31,10 @@ esac
 
 API_PID_FILE="${PID_DIR}/openumodel-dev-api.pid"
 WEB_PID_FILE="${PID_DIR}/openumodel-dev-web.pid"
+DIAG_PID_FILE="${PID_DIR}/openumodel-dev-diagnosis.pid"
 API_LOG="${LOG_DIR}/dev-api.log"
 WEB_LOG="${LOG_DIR}/dev-web.log"
+DIAG_LOG="${LOG_DIR}/dev-diagnosis.log"
 API_BIN="${PID_DIR}/bin/umodel-server"
 WEB_PM=()
 PNPM_VERSION="${PNPM_VERSION:-}"
@@ -153,12 +157,16 @@ cleanup_after_failure() {
   if [[ -n "${WEB_PID:-}" ]]; then
     kill "${WEB_PID}" >/dev/null 2>&1 || true
   fi
+  if [[ -n "${DIAG_PID:-}" ]]; then
+    kill "${DIAG_PID}" >/dev/null 2>&1 || true
+  fi
   if [[ -n "${API_PID:-}" ]]; then
     kill "${API_PID}" >/dev/null 2>&1 || true
   fi
   stop_port_listener "API" "${API_PORT:-}"
+  stop_port_listener "Diagnosis" "${DIAG_PORT:-}"
   stop_port_listener "Web" "${WEB_PORT:-}"
-  rm -f "${WEB_PID_FILE}" "${API_PID_FILE}"
+  rm -f "${WEB_PID_FILE}" "${API_PID_FILE}" "${DIAG_PID_FILE}"
 }
 
 assert_pid_file_stale_or_absent() {
@@ -234,9 +242,15 @@ fi
 resolve_web_tooling
 ensure_port_free "API" "${API_PORT}"
 ensure_port_free "Web" "${WEB_PORT}"
+if is_enabled "${DIAGNOSIS_ENABLED}"; then
+  ensure_port_free "Diagnosis" "${DIAG_PORT}"
+fi
 mkdir -p "${PID_DIR}" "${LOG_DIR}"
 assert_pid_file_stale_or_absent "UModel API" "${API_PID_FILE}"
 assert_pid_file_stale_or_absent "UModel Web" "${WEB_PID_FILE}"
+if is_enabled "${DIAGNOSIS_ENABLED}"; then
+  assert_pid_file_stale_or_absent "Diagnosis Engine" "${DIAG_PID_FILE}"
+fi
 
 echo "Installing UModel Web dependencies..."
 if ! (
@@ -279,6 +293,46 @@ if ! wait_for_api; then
   exit 1
 fi
 
+# ── Diagnosis Engine (Python, port 8000) ──────────────────────────────────
+if is_enabled "${DIAGNOSIS_ENABLED}"; then
+  DIAG_DIR="${ROOT_DIR}/diagnosis-engine"
+  echo "Starting MModel Diagnosis Engine at http://localhost:${DIAG_PORT}"
+
+  (
+    cd "${DIAG_DIR}"
+    # Use uvicorn if available, otherwise try python -m uvicorn
+    if command -v uvicorn >/dev/null 2>&1; then
+      exec nohup uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
+    elif command -v python >/dev/null 2>&1; then
+      exec nohup python -m uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
+    elif command -v python3 >/dev/null 2>&1; then
+      exec nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
+    else
+      echo "Python not found — diagnosis engine will not start." >&2
+      exit 1
+    fi
+  ) &
+  DIAG_PID="$!"
+  echo "${DIAG_PID}" > "${DIAG_PID_FILE}"
+
+  # Wait for diagnosis engine health
+  DIAG_URL="http://localhost:${DIAG_PORT}"
+  for ((i = 1; i <= 30; i += 1)); do
+    if ! kill -0 "${DIAG_PID}" >/dev/null 2>&1; then
+      wait "${DIAG_PID}" || true
+      echo "Diagnosis Engine exited before becoming healthy." >&2
+      tail -n 20 "${DIAG_LOG}" >&2 || true
+      cleanup_after_failure
+      exit 1
+    fi
+    if curl -fsS "${DIAG_URL}/api/health" >/dev/null 2>&1; then
+      echo "Diagnosis Engine is healthy."
+      break
+    fi
+    sleep 1
+  done
+fi
+
 echo "Starting UModel Web at http://localhost:${WEB_PORT}"
 (
   start_web_server
@@ -294,8 +348,10 @@ fi
 cat <<EOF
 UModel dev is running in the background.
   API: ${API_URL}
+  Diagnosis: http://localhost:${DIAG_PORT}
   Web: http://localhost:${WEB_PORT}
   API log: ${API_LOG}
+  Diagnosis log: ${DIAG_LOG}
   Web log: ${WEB_LOG}
 Use make status to monitor it and make stop-all to stop it.
 EOF

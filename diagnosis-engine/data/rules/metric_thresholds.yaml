@@ -1,0 +1,290 @@
+# Metric 阈值配置
+# 由 MetricCheckSkill 读取，用于判断资源指标是否异常
+# 单位与 metric.json 中的 unit 字段保持一致
+# 如需针对特定服务或容器覆盖默认阈值，在 overrides 中添加
+
+defaults:
+  # container.cpu.usage.kernelmode（单位：ns，累计值）
+  # 无法直接对累计值设阈值；当前 metric.json 仅有单点采样，无法计算增量
+  # 因此标记为 insufficient_data 而非 normal
+  container.cpu.usage.kernelmode:
+    unit: ns
+    type: cumulative_counter
+    note: "累计计数器，单点采样无法判断速率，标记为数据不足"
+    insufficient_reason: "需要至少两个时间点的采样才能计算使用率"
+
+  # 以下为常见指标的阈值示例（接入真实数据后启用）
+  container.cpu.usage.percent:
+    unit: "%"
+    type: gauge
+    warn_threshold: 80
+    alert_threshold: 95
+    comparison: ">="
+    unit_display: "%"
+
+  container.memory.usage.bytes:
+    unit: "bytes"
+    type: gauge
+    warn_threshold: 1073741824    # 1 GB
+    alert_threshold: 2147483648   # 2 GB
+    comparison: ">="
+    unit_display: "bytes"
+
+  http.server.request.duration.p99:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 1000
+    alert_threshold: 3000
+    comparison: ">="
+    unit_display: "ms"
+
+  http.server.duration.p95:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 800
+    alert_threshold: 1000
+    comparison: ">="
+    unit_display: "ms"
+
+  http.server.duration.p99:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 1000
+    alert_threshold: 3000
+    comparison: ">="
+    unit_display: "ms"
+
+  http.server.error.rate:
+    unit: "%"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 5
+    comparison: ">="
+    unit_display: "%"
+
+  http.server.errors.5xx.rate:
+    unit: "%"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 5
+    comparison: ">="
+    unit_display: "%"
+
+  http.client.errors.rate:
+    unit: "%"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 5
+    comparison: ">="
+    unit_display: "%"
+
+  jvm.memory.heap.used.percent:
+    unit: "%"
+    type: gauge
+    warn_threshold: 85
+    alert_threshold: 95
+    comparison: ">="
+    unit_display: "%"
+
+  jvm.gc.full_gc.duration.p99:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 500
+    alert_threshold: 1000
+    comparison: ">="
+    unit_display: "ms"
+
+  executor.queue.size:
+    unit: "count"
+    type: gauge
+    warn_threshold: 200
+    alert_threshold: 500
+    comparison: ">="
+
+  db.pool.active.connections:
+    unit: "count"
+    type: gauge
+    warn_threshold: 40
+    alert_threshold: 45
+    comparison: ">="
+
+  redis.client.connection.errors:
+    unit: "count"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 10
+    comparison: ">="
+
+  redis.command.latency.p99:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 500
+    alert_threshold: 1000
+    comparison: ">="
+    unit_display: "ms"
+
+  redis.cpu.usage.percent:
+    unit: "%"
+    type: gauge
+    warn_threshold: 80
+    alert_threshold: 90
+    comparison: ">="
+    unit_display: "%"
+
+  redis.lock.wait.timeout.count:
+    unit: "count"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 10
+    comparison: ">="
+
+  # ── 4A Redis metrics (from otel-metrics OpenSearch data) ──────────────
+  redis_commands_failed_calls_total:
+    unit: "count"
+    type: gauge
+    warn_threshold: 5
+    alert_threshold: 20
+    comparison: ">="
+
+  redis_commands_rejected_calls_total:
+    unit: "count"
+    type: gauge
+    warn_threshold: 5
+    alert_threshold: 20
+    comparison: ">="
+
+  redis_commands_duration_seconds_total:
+    unit: "seconds"
+    type: gauge
+    warn_threshold: 0.5
+    alert_threshold: 2.0
+    comparison: ">="
+
+  redis_connection_pool_wait_ms:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 100
+    alert_threshold: 500
+    comparison: ">="
+
+  # ── 4A Database lock-wait metrics ────────────────────────────────────
+  cmdb_stat_lock_wait_statis_avg_wait_time:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 500
+    alert_threshold: 2000
+    comparison: ">="
+
+  cmdb_stat_lock_wait_statis_failed_wait:
+    unit: "count"
+    type: gauge
+    warn_threshold: 5
+    alert_threshold: 20
+    comparison: ">="
+
+  cmdb_stat_lock_wait_statis_max_wait_time:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 2000
+    alert_threshold: 10000
+    comparison: ">="
+
+  connection_pool_wait_ms:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 200
+    alert_threshold: 1000
+    comparison: ">="
+
+  redis.network.egress.bytes_per_second:
+    unit: "bytes/s"
+    type: gauge
+    warn_threshold: 20000000
+    alert_threshold: 50000000
+    comparison: ">="
+
+  mysql.query.duration.p99:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 1000
+    alert_threshold: 3000
+    comparison: ">="
+    unit_display: "ms"
+
+  mysql.innodb.row_lock_waits:
+    unit: "count"
+    type: gauge
+    warn_threshold: 50
+    alert_threshold: 100
+    comparison: ">="
+
+  mysql.threads.waiting_for_table_lock:
+    unit: "count"
+    type: gauge
+    warn_threshold: 5
+    alert_threshold: 10
+    comparison: ">="
+
+  mysql.connections.current:
+    unit: "count"
+    type: gauge
+    warn_threshold: 300
+    alert_threshold: 400
+    comparison: ">="
+
+  nginx.connections.active:
+    unit: "count"
+    type: gauge
+    warn_threshold: 3000
+    alert_threshold: 3500
+    comparison: ">="
+
+  nginx.http.status.504.rate:
+    unit: "%"
+    type: gauge
+    warn_threshold: 1
+    alert_threshold: 5
+    comparison: ">="
+    unit_display: "%"
+
+  node.network.tcp.retransmits:
+    unit: "count"
+    type: gauge
+    warn_threshold: 100
+    alert_threshold: 100
+    comparison: ">="
+
+  # ── Generic service-level signals ────────────────────────────────────
+  service_request_latency_ms:
+    unit: "ms"
+    type: gauge
+    warn_threshold: 500
+    alert_threshold: 1000
+    comparison: ">="
+
+  service_error_rate:
+    unit: "ratio"
+    type: gauge
+    warn_threshold: 0.01
+    alert_threshold: 0.05
+    comparison: ">="
+
+  service_timeout_count:
+    unit: "count"
+    type: gauge
+    warn_threshold: 10
+    alert_threshold: 50
+    comparison: ">="
+
+  thread_pool_blocked_threads:
+    unit: "count"
+    type: gauge
+    warn_threshold: 5
+    alert_threshold: 10
+    comparison: ">="
+
+# 按服务名覆盖（可选）
+# overrides:
+#   my-service:
+#     container.cpu.usage.percent:
+#       alert_threshold: 90

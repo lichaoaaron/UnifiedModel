@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "recommend-service",
+    "resource.attributes.service@name": "recommend-service",
+    "traceId": "a563c5465661099236964d2749b52cfd",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: high cpu CPU intensive ranking loop saturated worker threads on recommend-service for /recommend/feed",
+    "log.attributes.stack_trace": "HighCpuSaturation: high cpu CPU intensive ranking loop saturated worker threads"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "edge-gateway",
+    "resource.attributes.service@name": "edge-gateway",
+    "traceId": "a563c5465661099236964d2749b52cfd",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /recommend/feed",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "a563c5465661099236964d2749b52cfd",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

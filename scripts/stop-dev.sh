@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 API_ADDR="${API_ADDR:-${UMODEL_API_ADDR:-:8080}}"
 API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
 WEB_PORT="${WEB_PORT:-${UMODEL_WEB_PORT:-5173}}"
+DIAG_PORT="${DIAG_PORT:-8000}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
 FORCE="${FORCE:-0}"
 DRY_RUN="${DRY_RUN:-0}"
@@ -66,6 +67,10 @@ matches_expected_process() {
     deploy)
       [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
       [[ "${cmd}" == *"umodel-server"* && "${cmd}" == *"--ui-dir"* ]] && is_in_repo "${cwd}"
+      ;;
+    diagnosis)
+      [[ -z "${cmd}" ]] && is_in_repo "${cwd}" && return 0
+      [[ "${cmd}" == *"uvicorn"* || "${cmd}" == *"app.main:app"* || "${cmd}" == *"python -m uvicorn"* ]] && is_in_repo "${cwd}"
       ;;
     *)
       return 1
@@ -174,8 +179,10 @@ case "${STOP_MODE}" in
   dev)
     stop_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid"
     stop_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid"
+    stop_pid_file "dev diagnosis" "${PID_DIR}/openumodel-dev-diagnosis.pid"
     stop_port dev-api "${API_PORT}"
     stop_port web "${WEB_PORT}"
+    stop_port diagnosis "${DIAG_PORT}"
     ;;
   deploy)
     stop_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid"
@@ -184,9 +191,11 @@ case "${STOP_MODE}" in
   all)
     stop_pid_file "dev api" "${PID_DIR}/openumodel-dev-api.pid"
     stop_pid_file "dev web" "${PID_DIR}/openumodel-dev-web.pid"
+    stop_pid_file "dev diagnosis" "${PID_DIR}/openumodel-dev-diagnosis.pid"
     stop_pid_file "deploy" "${PID_DIR}/openumodel-deploy.pid"
     stop_port api "${API_PORT}"
     stop_port web "${WEB_PORT}"
+    stop_port diagnosis "${DIAG_PORT}"
     ;;
   *)
     echo "Unknown STOP_MODE=${STOP_MODE}; expected dev, deploy, or all." >&2
@@ -197,7 +206,10 @@ esac
 if [[ "${DRY_RUN}" != "1" ]]; then
   case "${STOP_MODE}" in
     dev)
-      rm -f "${PID_DIR}/openumodel-dev-api.pid" "${PID_DIR}/openumodel-dev-web.pid"
+      rm -f \
+        "${PID_DIR}/openumodel-dev-api.pid" \
+        "${PID_DIR}/openumodel-dev-web.pid" \
+        "${PID_DIR}/openumodel-dev-diagnosis.pid"
       ;;
     deploy)
       rm -f "${PID_DIR}/openumodel-deploy.pid"
@@ -206,6 +218,7 @@ if [[ "${DRY_RUN}" != "1" ]]; then
       rm -f \
         "${PID_DIR}/openumodel-dev-api.pid" \
         "${PID_DIR}/openumodel-dev-web.pid" \
+        "${PID_DIR}/openumodel-dev-diagnosis.pid" \
         "${PID_DIR}/openumodel-deploy.pid"
       ;;
   esac

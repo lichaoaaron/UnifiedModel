@@ -1,5 +1,5 @@
 .PHONY: help check-env install-env setup setup-ui expand doc docs-schema docs-schema-check example-validate check-manifest
-.PHONY: build build-service build-cli install-cli build-ui build-sdk-go dev quickstart dev-api dev-web deploy serve-ui status stop-all stop-dev stop-deploy test test-service test-ui test-ui-e2e test-capability test-quickstart-health test-ladybug vulncheck verify verify-go verify-python verify-java guard ci clean
+.PHONY: build build-service build-cli install-cli build-ui build-sdk-go dev quickstart quickstart-diagnosis dev-api dev-web deploy serve-ui status stop-all stop-dev stop-deploy test test-service test-ui test-ui-e2e test-capability test-quickstart-health test-ladybug vulncheck verify verify-go verify-python verify-java guard ci clean
 
 VENV_PYTHON := .venv/bin/python
 CONDA_PYTHON := $(if $(CONDA_PREFIX),$(CONDA_PREFIX)/bin/python)
@@ -17,6 +17,7 @@ UMCTL_LDFLAGS ?= -X github.com/alibaba/UnifiedModel/cmd/umctl/cmd.version=$(VERS
 API_ADDR ?= :8080
 API_URL ?= http://localhost:8080
 WEB_PORT ?= 5173
+DIAG_PORT ?= 8000
 DATA_ROOT ?= data
 GRAPHSTORE ?= file.memory
 GO_TAGS ?= $(if $(filter local.ladybug,$(GRAPHSTORE)),ladybug,)
@@ -42,6 +43,7 @@ help:
 	@echo "  test-ui                Type-check and build the web UI"
 	@echo "  dev                    Start API and web dev server in the background"
 	@echo "  quickstart             Start API and web dev server with bundled demo data preloaded"
+	@echo "  quickstart-diagnosis   Start dev services and preload diagnosis demo workspaces"
 	@echo "  deploy                 Build UI and start the production-style server in the background"
 	@echo "  status                 Show local dev/deploy process, port, and health status"
 	@echo "  stop-all               Stop local API, web dev, and deploy servers"
@@ -73,6 +75,7 @@ help:
 	@echo "Dev options:"
 	@echo "  make dev defaults to GRAPHSTORE=file.memory DATA_ROOT=data with controlled Cypher enabled"
 	@echo "  make quickstart loads QUICKSTART_WORKSPACE=demo and QUICKSTART_SAMPLE=multi-domain-quickstart into GRAPHSTORE=memory"
+	@echo "  make quickstart-diagnosis also loads mmodel-faults and otel-demo for Diagnosis"
 	@echo "  GRAPHSTORE=file.memory DATA_ROOT=data make dev"
 	@echo "  GRAPHSTORE=memory GO_TAGS= DATA_ROOT=data make dev"
 	@echo "  GO_TAGS=ladybug GRAPHSTORE=local.ladybug DATA_ROOT=data make dev"
@@ -101,11 +104,16 @@ build-sdk-go:
 	cd ./sdk/go && go build ./...
 
 dev:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PNPM="$(PNPM)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PNPM="$(PNPM)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/dev.sh
 
 quickstart: GRAPHSTORE = memory
 quickstart: QUICKSTART = 1
 quickstart: dev
+
+quickstart-diagnosis: GRAPHSTORE = memory
+quickstart-diagnosis: QUICKSTART = 1
+quickstart-diagnosis: dev
+	@API_URL="$(API_URL)" bash ./scripts/quickstart-diagnosis.sh
 
 deploy: GRAPHSTORE = file.memory
 deploy: build-ui
@@ -118,16 +126,16 @@ dev-web:
 	@API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PNPM="$(PNPM)" bash ./scripts/env.sh web-dev
 
 stop-all:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="all" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="all" bash ./scripts/stop-dev.sh
 
 stop-dev:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="dev" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="dev" bash ./scripts/stop-dev.sh
 
 stop-deploy:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="deploy" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="deploy" bash ./scripts/stop-dev.sh
 
 status:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/status.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/status.sh
 
 serve-ui: build-ui
 	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" --ui-dir web/dist $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")

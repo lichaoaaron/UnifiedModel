@@ -1,0 +1,134 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "66f9b8253a47cd1264d3b11d7ccd2fd2/4d7563a1d5682ccb",
+    "_score": 1,
+    "_source": {
+      "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "spanId": "4d7563a1d5682ccb",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "mobile-gateway",
+      "name": "GET:/profile/export",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.548Z",
+      "durationInNanos": 1540000000,
+      "traceGroup": "GET:/profile/export",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.548Z",
+        "durationInNanos": 1540000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "mobile-gateway",
+      "resource.attributes.service@instance@id": "mobile-gateway@mobile-gateway-10.36.118.226",
+      "resource.attributes.http@url": "http://mobile-gateway/profile/export?requestId=f1f9ecc56fa5",
+      "resource.attributes.sw8@trace_id": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://mobile-gateway/profile/export?requestId=f1f9ecc56fa5",
+      "span.attributes.http@status_code": "500",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/profile/export",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "66f9b8253a47cd1264d3b11d7ccd2fd2/c916a97f0f8f21e4",
+    "_score": 1,
+    "_source": {
+      "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "spanId": "c916a97f0f8f21e4",
+      "parentSpanId": "4d7563a1d5682ccb",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "profile-bff",
+      "name": "GET:/profile-bff/profile/export",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/profile/export",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "profile-bff",
+      "resource.attributes.service@instance@id": "profile-bff@profile-bff-10.130.60.83",
+      "resource.attributes.http@url": "http://profile-bff/profile-bff/profile/export?requestId=4159b0a7847d",
+      "resource.attributes.sw8@trace_id": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://profile-bff/profile-bff/profile/export?requestId=4159b0a7847d",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/profile-bff/profile/export",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "66f9b8253a47cd1264d3b11d7ccd2fd2/806e0a7ba6dbb415",
+    "_score": 1,
+    "_source": {
+      "traceId": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "spanId": "806e0a7ba6dbb415",
+      "parentSpanId": "c916a97f0f8f21e4",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "profile-service",
+      "name": "GET:/profile-service/profile/export",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:18.624Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/profile/export",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.624Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "java.lang.OutOfMemoryError",
+            "event": "error",
+            "message": "java.lang.OutOfMemoryError: Java heap space after retaining byte arrays in static list memory leak",
+            "stack": "java.lang.OutOfMemoryError: java.lang.OutOfMemoryError: Java heap space after retaining byte arrays in static list memory leak\n\tat com.aliyun.profile.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "profile-service",
+      "resource.attributes.service@instance@id": "profile-service@profile-service-10.89.20.183",
+      "resource.attributes.http@url": "http://profile-service/profile-service/profile/export?requestId=04a86b90afbd",
+      "resource.attributes.sw8@trace_id": "66f9b8253a47cd1264d3b11d7ccd2fd2",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://profile-service/profile-service/profile/export?requestId=04a86b90afbd",
+      "span.attributes.http@status_code": "500",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/profile-service/profile/export",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  }
+]

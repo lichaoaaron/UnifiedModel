@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "admin-service",
+    "resource.attributes.service@name": "admin-service",
+    "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: Redis KEYS command caused redis cpu usage spike during cache scan on redis-session for /admin/cache/scan",
+    "log.attributes.stack_trace": "RedisSlowCommandException: Redis KEYS command caused redis cpu usage spike during cache scan"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "admin-gateway",
+    "resource.attributes.service@name": "admin-gateway",
+    "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /admin/cache/scan",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

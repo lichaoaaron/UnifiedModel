@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "checkout-service",
+    "resource.attributes.service@name": "checkout-service",
+    "traceId": "571f919dda0314a27f987a71cb9cfe71",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: SlowRequest latency anomaly: slow interface exceeded latency budget on checkout-service for /checkout/submit",
+    "log.attributes.stack_trace": "SlowRequest: SlowRequest latency anomaly: slow interface exceeded latency budget"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "571f919dda0314a27f987a71cb9cfe71",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /checkout/submit",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "571f919dda0314a27f987a71cb9cfe71",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

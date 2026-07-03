@@ -250,3 +250,110 @@ export interface AgentToolCallResult {
   output?: unknown
   error?: unknown
 }
+
+// ── Diagnosis API types (MModel Diagnosis :8000) ─────────────────────────
+
+export interface DiagnoseRequest {
+  entity_id?: string
+  time_range?: { from?: string; to?: string }
+  symptom?: string
+  api?: string
+  time?: string
+  session_id?: string
+  message?: string
+  mode?: 'diagnosis' | 'observability'
+  case_id?: string
+}
+
+export interface RootCause {
+  entity_id: string
+  entity_type?: string
+  score?: number
+  confidence?: string
+  evidence_summary?: string[]
+  reasoning_chain?: string[]
+}
+
+export interface ImpactResult {
+  diagnosis_id: string
+  root_cause_entity: string
+  affected_services: string[]
+  business_impact?: Record<string, unknown>
+  topology_highlight?: {
+    nodes: Array<{ id: string; label: string; node_type: string }>
+    edges: Array<{ source: string; target: string; label: string }>
+  }
+}
+
+export interface ReportResult {
+  diagnosis_id: string
+  report_markdown: string
+  summary?: {
+    root_cause_service?: string
+    root_cause_type?: string
+    confidence?: string
+  }
+  evidence_citations?: string[]
+}
+
+export interface CallNode {
+  id: string
+  label: string
+  is_root_cause?: boolean
+  is_entry?: boolean
+  node_type?: string
+  is_call_chain?: boolean
+  visual_role?: 'entry' | 'candidate_root' | 'confirmed_root' | 'propagated' | 'observed' | 'normal'
+}
+
+export interface CallEdge {
+  source: string
+  target: string
+  label?: string
+  is_call_chain?: boolean
+}
+
+export interface CallGraph {
+  nodes: CallNode[]
+  edges: CallEdge[]
+  trace_summary?: string
+  log_summary?: string
+  metric_summary?: string
+}
+
+export interface DiagnosisSummary {
+  root_cause_service?: string
+  root_cause_api?: string
+  root_cause_type?: string
+  exception_type?: string
+  confidence?: string
+  is_confirmed?: boolean
+  impact_api?: string
+  business_impact?: Record<string, unknown>
+}
+
+export interface SkillResult {
+  skill_name: string
+  tool_name?: string
+  status: 'success' | 'error' | 'running'
+  summary: string
+  duration_ms?: number
+  evidence?: string[]
+  execution_log?: string[]
+  explanation?: string
+  output?: Record<string, unknown>
+}
+
+export interface DiagnosisResponse {
+  diagnosis_id?: string
+  case_id?: string
+  session_id?: string
+  mode?: string
+  summary?: DiagnosisSummary
+  call_graph?: CallGraph
+  skills?: SkillResult[]
+  evidence_chain?: string[]
+  final_report?: string
+  root_causes?: RootCause[]
+  messages?: unknown[]
+}

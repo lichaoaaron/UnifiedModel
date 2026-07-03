@@ -1,0 +1,134 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "05b5131a6b6207aca15528ad562868cb/7f1e0fa38bc3b3ee",
+    "_score": 1,
+    "_source": {
+      "traceId": "05b5131a6b6207aca15528ad562868cb",
+      "spanId": "7f1e0fa38bc3b3ee",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/payment/confirm",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.548Z",
+      "durationInNanos": 1540000000,
+      "traceGroup": "GET:/payment/confirm",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.548Z",
+        "durationInNanos": 1540000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.37.31.55",
+      "resource.attributes.http@url": "http://api-gateway/payment/confirm?requestId=bd7e4068d223",
+      "resource.attributes.sw8@trace_id": "05b5131a6b6207aca15528ad562868cb",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/payment/confirm?requestId=bd7e4068d223",
+      "span.attributes.http@status_code": "503",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/payment/confirm",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "05b5131a6b6207aca15528ad562868cb/7fcc8f5fa49edc97",
+    "_score": 1,
+    "_source": {
+      "traceId": "05b5131a6b6207aca15528ad562868cb",
+      "spanId": "7fcc8f5fa49edc97",
+      "parentSpanId": "7f1e0fa38bc3b3ee",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "payment-service",
+      "name": "GET:/payment-service/payment/confirm",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:18.616Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/payment/confirm",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.616Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "PoolExhaustedException",
+            "event": "error",
+            "message": "connection pool exhausted: db.pool.active.connections reached limit",
+            "stack": "PoolExhaustedException: connection pool exhausted: db.pool.active.connections reached limit\n\tat com.aliyun.payment.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "payment-service",
+      "resource.attributes.service@instance@id": "payment-service@payment-service-10.69.193.81",
+      "resource.attributes.http@url": "http://payment-service/payment-service/payment/confirm?requestId=5350f05e210b",
+      "resource.attributes.sw8@trace_id": "05b5131a6b6207aca15528ad562868cb",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://payment-service/payment-service/payment/confirm?requestId=5350f05e210b",
+      "span.attributes.http@status_code": "503",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/payment-service/payment/confirm",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "05b5131a6b6207aca15528ad562868cb/4506d8d5d644b750",
+    "_score": 1,
+    "_source": {
+      "traceId": "05b5131a6b6207aca15528ad562868cb",
+      "spanId": "4506d8d5d644b750",
+      "parentSpanId": "7fcc8f5fa49edc97",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "ledger-service",
+      "name": "GET:/ledger-service/payment/confirm",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:14.179Z",
+      "durationInNanos": 155000000,
+      "traceGroup": "GET:/payment/confirm",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.179Z",
+        "durationInNanos": 155000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "ledger-service",
+      "resource.attributes.service@instance@id": "ledger-service@ledger-service-10.91.155.131",
+      "resource.attributes.http@url": "http://ledger-service/ledger-service/payment/confirm?requestId=90bb13fbb13f",
+      "resource.attributes.sw8@trace_id": "05b5131a6b6207aca15528ad562868cb",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://ledger-service/ledger-service/payment/confirm?requestId=90bb13fbb13f",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/ledger-service/payment/confirm",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  }
+]

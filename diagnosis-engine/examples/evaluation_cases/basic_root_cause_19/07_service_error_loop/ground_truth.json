@@ -1,0 +1,39 @@
+{
+  "case_id": "07_service_error_loop",
+  "name": "frequent runtime errors",
+  "category": "service",
+  "topology_shape": "single",
+  "source_fault_injection": "fault=error_loop",
+  "alert_event": {
+    "api": "/coupon/apply",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 500 / ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "coupon-service",
+      "service": "coupon-service",
+      "type": "error_loop",
+      "exception_type": "RuntimeException",
+      "message": "error loop: frequent runtime exception while applying coupon rule"
+    },
+    "affected_services": [
+      "api-gateway",
+      "coupon-service"
+    ],
+    "affected_interfaces": [
+      "/coupon/apply"
+    ],
+    "business_impact": "/coupon/apply production business path is affected by error_loop",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> coupon-service and localizes the main fault at coupon-service.",
+      "log": "Root service logs contain RuntimeException and error_loop keywords.",
+      "metric": "Metric http.server.errors.5xx.rate breaches threshold on coupon-service."
+    },
+    "non_root_noise": [
+      "rule-cache refresh warning is INFO-level recovery and not the repeated 5xx source",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

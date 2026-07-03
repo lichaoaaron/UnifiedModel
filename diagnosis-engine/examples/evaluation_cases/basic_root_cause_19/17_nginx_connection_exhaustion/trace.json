@@ -1,0 +1,134 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "8b463d3c46e66970433c334906fe5f9f/aa99683255bd23b5",
+    "_score": 1,
+    "_source": {
+      "traceId": "8b463d3c46e66970433c334906fe5f9f",
+      "spanId": "aa99683255bd23b5",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "nginx-ingress",
+      "name": "GET:/portal/home",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:18.608Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/portal/home",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.608Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.008Z",
+          "attributes": {
+            "error@kind": "NginxWorkerConnectionExhausted",
+            "event": "error",
+            "message": "nginx worker connections exhausted: worker connections are not enough",
+            "stack": "NginxWorkerConnectionExhausted: nginx worker connections exhausted: worker connections are not enough\n\tat com.aliyun.nginx.ingress.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "nginx-ingress",
+      "resource.attributes.service@instance@id": "nginx-ingress@nginx-ingress-10.44.183.33",
+      "resource.attributes.http@url": "http://nginx-ingress/portal/home?requestId=25a362d98e79",
+      "resource.attributes.sw8@trace_id": "8b463d3c46e66970433c334906fe5f9f",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://nginx-ingress/portal/home?requestId=25a362d98e79",
+      "span.attributes.http@status_code": "503",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/portal/home",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "8b463d3c46e66970433c334906fe5f9f/d72831528fba3d57",
+    "_score": 1,
+    "_source": {
+      "traceId": "8b463d3c46e66970433c334906fe5f9f",
+      "spanId": "d72831528fba3d57",
+      "parentSpanId": "aa99683255bd23b5",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/api-gateway/portal/home",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/portal/home",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.87.8.159",
+      "resource.attributes.http@url": "http://api-gateway/api-gateway/portal/home?requestId=b475d146e813",
+      "resource.attributes.sw8@trace_id": "8b463d3c46e66970433c334906fe5f9f",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/api-gateway/portal/home?requestId=b475d146e813",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/api-gateway/portal/home",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "8b463d3c46e66970433c334906fe5f9f/9ec9a534b487f23f",
+    "_score": 1,
+    "_source": {
+      "traceId": "8b463d3c46e66970433c334906fe5f9f",
+      "spanId": "9ec9a534b487f23f",
+      "parentSpanId": "d72831528fba3d57",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "portal-service",
+      "name": "GET:/portal-service/portal/home",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:14.179Z",
+      "durationInNanos": 155000000,
+      "traceGroup": "GET:/portal/home",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.179Z",
+        "durationInNanos": 155000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "portal-service",
+      "resource.attributes.service@instance@id": "portal-service@portal-service-10.47.176.122",
+      "resource.attributes.http@url": "http://portal-service/portal-service/portal/home?requestId=b61c8a55b924",
+      "resource.attributes.sw8@trace_id": "8b463d3c46e66970433c334906fe5f9f",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://portal-service/portal-service/portal/home?requestId=b61c8a55b924",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/portal-service/portal/home",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  }
+]

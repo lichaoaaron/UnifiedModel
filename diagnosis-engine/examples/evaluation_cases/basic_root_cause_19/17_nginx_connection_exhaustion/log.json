@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "nginx-ingress",
+    "resource.attributes.service@name": "nginx-ingress",
+    "traceId": "8b463d3c46e66970433c334906fe5f9f",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: nginx worker connections exhausted: worker connections are not enough on nginx-ingress for /portal/home",
+    "log.attributes.stack_trace": "NginxWorkerConnectionExhausted: nginx worker connections exhausted: worker connections are not enough"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "nginx-ingress",
+    "resource.attributes.service@name": "nginx-ingress",
+    "traceId": "8b463d3c46e66970433c334906fe5f9f",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /portal/home",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "8b463d3c46e66970433c334906fe5f9f",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

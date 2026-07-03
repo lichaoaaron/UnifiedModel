@@ -1,0 +1,40 @@
+{
+  "case_id": "06_service_connection_pool_exhaustion",
+  "name": "connection pool exhausted",
+  "category": "service",
+  "topology_shape": "partial",
+  "source_fault_injection": "fault=connection_pool_exhaustion",
+  "alert_event": {
+    "api": "/payment/confirm",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 503 / ?????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "payment-service",
+      "service": "payment-service",
+      "type": "connection_pool_exhaustion",
+      "exception_type": "PoolExhaustedException",
+      "message": "connection pool exhausted: db.pool.active.connections reached limit"
+    },
+    "affected_services": [
+      "api-gateway",
+      "payment-service",
+      "ledger-service"
+    ],
+    "affected_interfaces": [
+      "/payment/confirm"
+    ],
+    "business_impact": "/payment/confirm production business path is affected by connection_pool_exhaustion",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> payment-service -> ledger-service and localizes the main fault at payment-service.",
+      "log": "Root service logs contain PoolExhaustedException and connection_pool_exhaustion keywords.",
+      "metric": "Metric db.pool.active.connections breaches threshold on payment-service."
+    },
+    "non_root_noise": [
+      "ledger-service span is missing in one trace sample but payment pool metrics identify the root",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

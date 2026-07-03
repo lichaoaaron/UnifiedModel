@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "notification-service",
+    "resource.attributes.service@name": "notification-service",
+    "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: RejectedExecutionException: thread pool queue size exceeded and tasks rejected on notification-service for /notify/send",
+    "log.attributes.stack_trace": "RejectedExecutionException: RejectedExecutionException: thread pool queue size exceeded and tasks rejected"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /notify/send",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

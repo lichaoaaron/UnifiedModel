@@ -52,6 +52,20 @@ make check-env
 make quickstart
 ```
 
+诊断演示环境使用新增入口：
+
+```bash
+make quickstart-diagnosis
+```
+
+`make quickstart-diagnosis` 保持 `make quickstart` 的默认 `demo` workspace 行为不变，并额外导入两个诊断演示 workspace：
+
+- `mmodel-faults`：MModel 故障样例，用于智能诊断页的故障定位演示。
+- `otel-demo`：OpenTelemetry Demo 拓扑和观测样例，用于服务拓扑与观测数据演示。
+
+打开 `http://localhost:5173` 后，可以在 workspace 列表中选择 `demo`、`mmodel-faults` 或 `otel-demo`。智能诊断页入口在 workspace 内的“智能诊断 / Diagnosis”导航中。
+
+
 `make quickstart` 会启动本地 API、启动 Web UI，并用 `GRAPHSTORE=memory` 预加载 `demo` workspace。进程停止后不保留本地 demo 数据。
 
 下一步：

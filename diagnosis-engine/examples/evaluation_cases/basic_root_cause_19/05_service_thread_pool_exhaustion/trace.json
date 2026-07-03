@@ -1,0 +1,134 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "e9a43d777d03b4f64806ef57141ee21d/09929ed77d294fbc",
+    "_score": 1,
+    "_source": {
+      "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+      "spanId": "09929ed77d294fbc",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/notify/send",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.548Z",
+      "durationInNanos": 1540000000,
+      "traceGroup": "GET:/notify/send",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.548Z",
+        "durationInNanos": 1540000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.122.58.208",
+      "resource.attributes.http@url": "http://api-gateway/notify/send?requestId=93f7422eb9bf",
+      "resource.attributes.sw8@trace_id": "e9a43d777d03b4f64806ef57141ee21d",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/notify/send?requestId=93f7422eb9bf",
+      "span.attributes.http@status_code": "503",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/notify/send",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "e9a43d777d03b4f64806ef57141ee21d/4ef4b05be3ea4f71",
+    "_score": 1,
+    "_source": {
+      "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+      "spanId": "4ef4b05be3ea4f71",
+      "parentSpanId": "09929ed77d294fbc",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "notify-bff",
+      "name": "GET:/notify-bff/notify/send",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/notify/send",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "notify-bff",
+      "resource.attributes.service@instance@id": "notify-bff@notify-bff-10.99.12.83",
+      "resource.attributes.http@url": "http://notify-bff/notify-bff/notify/send?requestId=55e04479f608",
+      "resource.attributes.sw8@trace_id": "e9a43d777d03b4f64806ef57141ee21d",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://notify-bff/notify-bff/notify/send?requestId=55e04479f608",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/notify-bff/notify/send",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "e9a43d777d03b4f64806ef57141ee21d/6e789599b0f55107",
+    "_score": 1,
+    "_source": {
+      "traceId": "e9a43d777d03b4f64806ef57141ee21d",
+      "spanId": "6e789599b0f55107",
+      "parentSpanId": "4ef4b05be3ea4f71",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "notification-service",
+      "name": "GET:/notification-service/notify/send",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:18.624Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/notify/send",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.624Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "RejectedExecutionException",
+            "event": "error",
+            "message": "RejectedExecutionException: thread pool queue size exceeded and tasks rejected",
+            "stack": "RejectedExecutionException: RejectedExecutionException: thread pool queue size exceeded and tasks rejected\n\tat com.aliyun.notification.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "notification-service",
+      "resource.attributes.service@instance@id": "notification-service@notification-service-10.96.41.89",
+      "resource.attributes.http@url": "http://notification-service/notification-service/notify/send?requestId=6c4af7b6df90",
+      "resource.attributes.sw8@trace_id": "e9a43d777d03b4f64806ef57141ee21d",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://notification-service/notification-service/notify/send?requestId=6c4af7b6df90",
+      "span.attributes.http@status_code": "503",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/notification-service/notify/send",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "user-service",
+    "resource.attributes.service@name": "user-service",
+    "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: metadata lock waiting for table mysql-user blocked profile query on mysql-user for /user/profile",
+    "log.attributes.stack_trace": "MetadataLockTimeoutException: metadata lock waiting for table mysql-user blocked profile query"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /user/profile",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

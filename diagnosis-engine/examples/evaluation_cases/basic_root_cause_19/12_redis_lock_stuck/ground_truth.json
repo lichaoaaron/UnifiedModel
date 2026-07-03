@@ -1,0 +1,39 @@
+{
+  "case_id": "12_redis_lock_stuck",
+  "name": "redis distributed lock stuck",
+  "category": "redis",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=redis_lock_stuck",
+  "alert_event": {
+    "api": "/order/submit",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "?????? / ??????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "redis-lock",
+      "service": "order-service",
+      "type": "redis_lock_stuck",
+      "exception_type": "RedisLockStuckException",
+      "message": "RedisLockStuckException: redis.lock.wait.timeout.count exceeded for distributed lock key"
+    },
+    "affected_services": [
+      "api-gateway",
+      "order-service"
+    ],
+    "affected_interfaces": [
+      "/order/submit"
+    ],
+    "business_impact": "/order/submit production business path is affected by redis_lock_stuck",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> order-service -> redis-lock and localizes the main fault at order-service.",
+      "log": "Root service logs contain RedisLockStuckException and redis_lock_stuck keywords.",
+      "metric": "Metric redis.lock.wait.timeout.count breaches threshold on order-service."
+    },
+    "non_root_noise": [
+      "payment precheck did not execute because order lock was not acquired",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

@@ -18,5 +18,7 @@ export const enUSCommon = {
   'nav.imports': 'Imports & Writes',
   'nav.query': 'Query',
   'nav.settings': 'Settings',
+  'nav.diagnosis': 'Diagnosis',
   'nav.workspaces': 'Workspaces',
+  'diagnosis.placeholder': 'Describe the fault (API path, time, symptoms)...',
 } as const

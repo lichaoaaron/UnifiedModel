@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "1f7df7fdaa84bf24399c083ec873a6f3/708d31ef0eda0077",
+    "_score": 1,
+    "_source": {
+      "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "spanId": "708d31ef0eda0077",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/cart/detail",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/cart/detail",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.125.26.225",
+      "resource.attributes.http@url": "http://api-gateway/cart/detail?requestId=45b4d7c6728f",
+      "resource.attributes.sw8@trace_id": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/cart/detail?requestId=45b4d7c6728f",
+      "span.attributes.http@status_code": "500",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/cart/detail",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "1f7df7fdaa84bf24399c083ec873a6f3/c6b3ef5e2eeda1ad",
+    "_score": 1,
+    "_source": {
+      "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "spanId": "c6b3ef5e2eeda1ad",
+      "parentSpanId": "708d31ef0eda0077",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "cart-bff",
+      "name": "GET:/cart-bff/cart/detail",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/cart/detail",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "cart-bff",
+      "resource.attributes.service@instance@id": "cart-bff@cart-bff-10.143.11.132",
+      "resource.attributes.http@url": "http://cart-bff/cart-bff/cart/detail?requestId=ab81124c882c",
+      "resource.attributes.sw8@trace_id": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://cart-bff/cart-bff/cart/detail?requestId=ab81124c882c",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/cart-bff/cart/detail",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "1f7df7fdaa84bf24399c083ec873a6f3/f13df12bc5ae2c52",
+    "_score": 1,
+    "_source": {
+      "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "spanId": "f13df12bc5ae2c52",
+      "parentSpanId": "c6b3ef5e2eeda1ad",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "cart-service",
+      "name": "GET:/cart-service/cart/detail",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:18.624Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/cart/detail",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.624Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "RedisConnectionFailureException",
+            "event": "error",
+            "message": "RedisConnectionFailureException: unable to connect to redis node down redis-cart",
+            "stack": "RedisConnectionFailureException: RedisConnectionFailureException: unable to connect to redis node down redis-cart\n\tat com.aliyun.cart.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "cart-service",
+      "resource.attributes.service@instance@id": "cart-service@cart-service-10.140.51.56",
+      "resource.attributes.http@url": "http://cart-service/cart-service/cart/detail?requestId=6842dc14c6c0",
+      "resource.attributes.sw8@trace_id": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://cart-service/cart-service/cart/detail?requestId=6842dc14c6c0",
+      "span.attributes.http@status_code": "500",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/cart-service/cart/detail",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "1f7df7fdaa84bf24399c083ec873a6f3/19918b114e4cee72",
+    "_score": 1,
+    "_source": {
+      "traceId": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "spanId": "19918b114e4cee72",
+      "parentSpanId": "f13df12bc5ae2c52",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "redis-cart",
+      "name": "GET:/redis-cart/cart/detail",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/cart/detail",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "redis-cart",
+      "resource.attributes.service@instance@id": "redis-cart@redis-cart-10.160.153.38",
+      "resource.attributes.http@url": "http://redis-cart/redis-cart/cart/detail?requestId=f77362f5ff8d",
+      "resource.attributes.sw8@trace_id": "1f7df7fdaa84bf24399c083ec873a6f3",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://redis-cart/redis-cart/cart/detail?requestId=f77362f5ff8d",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/redis-cart/cart/detail",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

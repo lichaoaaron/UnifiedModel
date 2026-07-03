@@ -1,0 +1,40 @@
+{
+  "case_id": "19_network_packet_loss_latency",
+  "name": "network packet loss and latency",
+  "category": "network",
+  "topology_shape": "network",
+  "source_fault_injection": "fault=network_packet_loss_latency",
+  "alert_event": {
+    "api": "/shipping/quote",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "???? / HTTP 504"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "node-network",
+      "service": "shipping-service",
+      "type": "network_packet_loss_latency",
+      "exception_type": "SocketTimeoutException",
+      "message": "SocketTimeoutException: packet loss and tcp retransmit network delay on node-network link"
+    },
+    "affected_services": [
+      "edge-gateway",
+      "shipping-service",
+      "carrier-adapter"
+    ],
+    "affected_interfaces": [
+      "/shipping/quote"
+    ],
+    "business_impact": "/shipping/quote production business path is affected by network_packet_loss_latency",
+    "primary_evidence": {
+      "trace": "Runtime trace follows edge-gateway -> shipping-service -> carrier-adapter -> node-network and localizes the main fault at shipping-service.",
+      "log": "Root service logs contain SocketTimeoutException and network_packet_loss_latency keywords.",
+      "metric": "Metric node.network.tcp.retransmits breaches threshold on shipping-service."
+    },
+    "non_root_noise": [
+      "carrier-adapter retries are downstream symptoms of packet loss",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

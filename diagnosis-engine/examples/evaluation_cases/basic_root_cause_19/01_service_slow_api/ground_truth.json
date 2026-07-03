@@ -1,0 +1,39 @@
+{
+  "case_id": "01_service_slow_api",
+  "name": "service slow interface",
+  "category": "service",
+  "topology_shape": "single",
+  "source_fault_injection": "fault=slow_interface",
+  "alert_event": {
+    "api": "/checkout/submit",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / latency anomaly"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "checkout-service",
+      "service": "checkout-service",
+      "type": "slow_interface",
+      "exception_type": "SlowRequest",
+      "message": "SlowRequest latency anomaly: slow interface exceeded latency budget"
+    },
+    "affected_services": [
+      "api-gateway",
+      "checkout-service"
+    ],
+    "affected_interfaces": [
+      "/checkout/submit"
+    ],
+    "business_impact": "/checkout/submit production business path is affected by slow_interface",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> checkout-service and localizes the main fault at checkout-service.",
+      "log": "Root service logs contain SlowRequest and slow_interface keywords.",
+      "metric": "Metric http.server.duration.p95 breaches threshold on checkout-service."
+    },
+    "non_root_noise": [
+      "successful recommendation preload is outside the checkout path",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "452a8ac3cf678675ace58190c7626cbe/bfc64fc796f05092",
+    "_score": 1,
+    "_source": {
+      "traceId": "452a8ac3cf678675ace58190c7626cbe",
+      "spanId": "bfc64fc796f05092",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/billing/create",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/billing/create",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.166.143.121",
+      "resource.attributes.http@url": "http://api-gateway/billing/create?requestId=43a832883468",
+      "resource.attributes.sw8@trace_id": "452a8ac3cf678675ace58190c7626cbe",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/billing/create?requestId=43a832883468",
+      "span.attributes.http@status_code": "500",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/billing/create",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "452a8ac3cf678675ace58190c7626cbe/8c836200604733aa",
+    "_score": 1,
+    "_source": {
+      "traceId": "452a8ac3cf678675ace58190c7626cbe",
+      "spanId": "8c836200604733aa",
+      "parentSpanId": "bfc64fc796f05092",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "billing-bff",
+      "name": "GET:/billing-bff/billing/create",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/billing/create",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "billing-bff",
+      "resource.attributes.service@instance@id": "billing-bff@billing-bff-10.99.6.208",
+      "resource.attributes.http@url": "http://billing-bff/billing-bff/billing/create?requestId=3f12a64998fa",
+      "resource.attributes.sw8@trace_id": "452a8ac3cf678675ace58190c7626cbe",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://billing-bff/billing-bff/billing/create?requestId=3f12a64998fa",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/billing-bff/billing/create",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "452a8ac3cf678675ace58190c7626cbe/5f122400f21f420b",
+    "_score": 1,
+    "_source": {
+      "traceId": "452a8ac3cf678675ace58190c7626cbe",
+      "spanId": "5f122400f21f420b",
+      "parentSpanId": "8c836200604733aa",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "billing-service",
+      "name": "GET:/billing-service/billing/create",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:18.624Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/billing/create",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.624Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "TooManyConnectionsException",
+            "event": "error",
+            "message": "too many connections: mysql max connections reached for billing pool",
+            "stack": "TooManyConnectionsException: too many connections: mysql max connections reached for billing pool\n\tat com.aliyun.billing.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "billing-service",
+      "resource.attributes.service@instance@id": "billing-service@billing-service-10.62.173.151",
+      "resource.attributes.http@url": "http://billing-service/billing-service/billing/create?requestId=4d1f4c90ba2a",
+      "resource.attributes.sw8@trace_id": "452a8ac3cf678675ace58190c7626cbe",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://billing-service/billing-service/billing/create?requestId=4d1f4c90ba2a",
+      "span.attributes.http@status_code": "500",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/billing-service/billing/create",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "452a8ac3cf678675ace58190c7626cbe/85c47f9706ef9d6f",
+    "_score": 1,
+    "_source": {
+      "traceId": "452a8ac3cf678675ace58190c7626cbe",
+      "spanId": "85c47f9706ef9d6f",
+      "parentSpanId": "5f122400f21f420b",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "mysql-billing",
+      "name": "GET:/mysql-billing/billing/create",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/billing/create",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "mysql-billing",
+      "resource.attributes.service@instance@id": "mysql-billing@mysql-billing-10.60.187.229",
+      "resource.attributes.http@url": "http://mysql-billing/mysql-billing/billing/create?requestId=558a64043943",
+      "resource.attributes.sw8@trace_id": "452a8ac3cf678675ace58190c7626cbe",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://mysql-billing/mysql-billing/billing/create?requestId=558a64043943",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/mysql-billing/billing/create",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "case_id": "08_redis_node_down",
+  "name": "redis node down",
+  "category": "redis",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=redis_node_down",
+  "alert_event": {
+    "api": "/cart/detail",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 500 / Redis ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "redis-cart",
+      "service": "cart-service",
+      "type": "redis_node_down",
+      "exception_type": "RedisConnectionFailureException",
+      "message": "RedisConnectionFailureException: unable to connect to redis node down redis-cart"
+    },
+    "affected_services": [
+      "api-gateway",
+      "cart-bff",
+      "cart-service"
+    ],
+    "affected_interfaces": [
+      "/cart/detail"
+    ],
+    "business_impact": "/cart/detail production business path is affected by redis_node_down",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> cart-bff -> cart-service -> redis-cart and localizes the main fault at cart-service.",
+      "log": "Root service logs contain RedisConnectionFailureException and redis_node_down keywords.",
+      "metric": "Metric redis.client.connection.errors breaches threshold on cart-service."
+    },
+    "non_root_noise": [
+      "cart-bff NestedServletException after cart-service failed to read redis",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

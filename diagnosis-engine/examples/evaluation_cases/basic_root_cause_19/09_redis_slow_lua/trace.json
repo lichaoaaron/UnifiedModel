@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "343a5d3e5552820c79ee53afeb36e7f0/918c466b2e21532c",
+    "_score": 1,
+    "_source": {
+      "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+      "spanId": "918c466b2e21532c",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/inventory/reserve",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/inventory/reserve",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.147.167.39",
+      "resource.attributes.http@url": "http://api-gateway/inventory/reserve?requestId=6096e97d434e",
+      "resource.attributes.sw8@trace_id": "343a5d3e5552820c79ee53afeb36e7f0",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/inventory/reserve?requestId=6096e97d434e",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/inventory/reserve",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "343a5d3e5552820c79ee53afeb36e7f0/053689e5601a82ed",
+    "_score": 1,
+    "_source": {
+      "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+      "spanId": "053689e5601a82ed",
+      "parentSpanId": "918c466b2e21532c",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "inventory-bff",
+      "name": "GET:/inventory-bff/inventory/reserve",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/inventory/reserve",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "inventory-bff",
+      "resource.attributes.service@instance@id": "inventory-bff@inventory-bff-10.60.48.127",
+      "resource.attributes.http@url": "http://inventory-bff/inventory-bff/inventory/reserve?requestId=c94d82fb80df",
+      "resource.attributes.sw8@trace_id": "343a5d3e5552820c79ee53afeb36e7f0",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://inventory-bff/inventory-bff/inventory/reserve?requestId=c94d82fb80df",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/inventory-bff/inventory/reserve",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "343a5d3e5552820c79ee53afeb36e7f0/397e38b7eb594cf1",
+    "_score": 1,
+    "_source": {
+      "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+      "spanId": "397e38b7eb594cf1",
+      "parentSpanId": "053689e5601a82ed",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "inventory-service",
+      "name": "GET:/inventory-service/inventory/reserve",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/inventory/reserve",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "RedisCommandTimeoutException",
+            "event": "error",
+            "message": "RedisCommandTimeoutException: slow lua script exceeded command latency budget",
+            "stack": "RedisCommandTimeoutException: RedisCommandTimeoutException: slow lua script exceeded command latency budget\n\tat com.aliyun.inventory.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "inventory-service",
+      "resource.attributes.service@instance@id": "inventory-service@inventory-service-10.160.96.65",
+      "resource.attributes.http@url": "http://inventory-service/inventory-service/inventory/reserve?requestId=7bdfa261683a",
+      "resource.attributes.sw8@trace_id": "343a5d3e5552820c79ee53afeb36e7f0",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://inventory-service/inventory-service/inventory/reserve?requestId=7bdfa261683a",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/inventory-service/inventory/reserve",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "343a5d3e5552820c79ee53afeb36e7f0/edeb40a92317453a",
+    "_score": 1,
+    "_source": {
+      "traceId": "343a5d3e5552820c79ee53afeb36e7f0",
+      "spanId": "edeb40a92317453a",
+      "parentSpanId": "397e38b7eb594cf1",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "redis-inventory",
+      "name": "GET:/redis-inventory/inventory/reserve",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/inventory/reserve",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "redis-inventory",
+      "resource.attributes.service@instance@id": "redis-inventory@redis-inventory-10.72.155.81",
+      "resource.attributes.http@url": "http://redis-inventory/redis-inventory/inventory/reserve?requestId=27c63b71e6b3",
+      "resource.attributes.sw8@trace_id": "343a5d3e5552820c79ee53afeb36e7f0",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://redis-inventory/redis-inventory/inventory/reserve?requestId=27c63b71e6b3",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/redis-inventory/inventory/reserve",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

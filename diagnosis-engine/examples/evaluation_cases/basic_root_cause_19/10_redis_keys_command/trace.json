@@ -1,0 +1,134 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "4cf25335bff93d75921dd8faa7f5bfe7/d547b368f0a57e23",
+    "_score": 1,
+    "_source": {
+      "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "spanId": "d547b368f0a57e23",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "admin-gateway",
+      "name": "GET:/admin/cache/scan",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.548Z",
+      "durationInNanos": 1540000000,
+      "traceGroup": "GET:/admin/cache/scan",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.548Z",
+        "durationInNanos": 1540000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "admin-gateway",
+      "resource.attributes.service@instance@id": "admin-gateway@admin-gateway-10.187.188.224",
+      "resource.attributes.http@url": "http://admin-gateway/admin/cache/scan?requestId=fa6612844e3a",
+      "resource.attributes.sw8@trace_id": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://admin-gateway/admin/cache/scan?requestId=fa6612844e3a",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/admin/cache/scan",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "4cf25335bff93d75921dd8faa7f5bfe7/b2a307bcfbbadba2",
+    "_score": 1,
+    "_source": {
+      "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "spanId": "b2a307bcfbbadba2",
+      "parentSpanId": "d547b368f0a57e23",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "admin-service",
+      "name": "GET:/admin-service/admin/cache/scan",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:16.416Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/admin/cache/scan",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.416Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "RedisSlowCommandException",
+            "event": "error",
+            "message": "Redis KEYS command caused redis cpu usage spike during cache scan",
+            "stack": "RedisSlowCommandException: Redis KEYS command caused redis cpu usage spike during cache scan\n\tat com.aliyun.admin.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "admin-service",
+      "resource.attributes.service@instance@id": "admin-service@admin-service-10.136.94.148",
+      "resource.attributes.http@url": "http://admin-service/admin-service/admin/cache/scan?requestId=319d9c80e37d",
+      "resource.attributes.sw8@trace_id": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://admin-service/admin-service/admin/cache/scan?requestId=319d9c80e37d",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/admin-service/admin/cache/scan",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "4cf25335bff93d75921dd8faa7f5bfe7/cbefe64fd20c869a",
+    "_score": 1,
+    "_source": {
+      "traceId": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "spanId": "cbefe64fd20c869a",
+      "parentSpanId": "b2a307bcfbbadba2",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "redis-session",
+      "name": "GET:/redis-session/admin/cache/scan",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:14.179Z",
+      "durationInNanos": 155000000,
+      "traceGroup": "GET:/admin/cache/scan",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.179Z",
+        "durationInNanos": 155000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "redis-session",
+      "resource.attributes.service@instance@id": "redis-session@redis-session-10.136.71.36",
+      "resource.attributes.http@url": "http://redis-session/redis-session/admin/cache/scan?requestId=3b1d72b8a8cb",
+      "resource.attributes.sw8@trace_id": "4cf25335bff93d75921dd8faa7f5bfe7",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://redis-session/redis-session/admin/cache/scan?requestId=3b1d72b8a8cb",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/redis-session/admin/cache/scan",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  }
+]

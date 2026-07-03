@@ -1,0 +1,40 @@
+{
+  "case_id": "14_mysql_row_lock",
+  "name": "mysql row lock wait",
+  "category": "mysql",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=mysql_row_lock",
+  "alert_event": {
+    "api": "/account/update",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "DB ???? / ???"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "mysql-account",
+      "service": "account-service",
+      "type": "mysql_row_lock",
+      "exception_type": "LockWaitTimeoutException",
+      "message": "lock wait timeout caused by mysql row lock contention"
+    },
+    "affected_services": [
+      "api-gateway",
+      "account-bff",
+      "account-service"
+    ],
+    "affected_interfaces": [
+      "/account/update"
+    ],
+    "business_impact": "/account/update production business path is affected by mysql_row_lock",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> account-bff -> account-service -> mysql-account and localizes the main fault at account-service.",
+      "log": "Root service logs contain LockWaitTimeoutException and mysql_row_lock keywords.",
+      "metric": "Metric mysql.innodb.row_lock_waits breaches threshold on account-service."
+    },
+    "non_root_noise": [
+      "account-bff retry is a downstream failure signal of row lock wait",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

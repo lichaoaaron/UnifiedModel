@@ -1,0 +1,117 @@
+# ============================================================
+# 演示业务本体（Demo Business Ontology）
+# 用途：为业务影响评估提供示例业务语义模型，仅用于 Demo / 测试展示。
+# 注意：本文件内容为演示用途，不代表任何真实生产业务数据。
+# 加载入口：ImpactAnalysisSkill 通过 OntologyConfigAdapter.load_demo_business_ontology() 读取。
+# ============================================================
+
+meta:
+  purpose: demo
+  description: 演示业务本体，仅用于业务影响分析链路展示，不得表述为真实生产数据
+  version: "1.0"
+
+# ============================================================
+# 业务能力（BusinessCapability）
+# ============================================================
+business_capabilities:
+  - id: cap_order_query
+    name: 订单查询
+    description: 用户查询订单详情的核心业务能力（演示）
+
+  - id: cap_order_list
+    name: 订单列表查询
+    description: 用户查询订单列表的业务能力（演示）
+
+# ============================================================
+# 业务流程（BusinessProcess）
+# ============================================================
+business_processes:
+  - id: proc_core_trade
+    name: 核心交易链路
+    description: 覆盖下单、查单、支付等核心交易流程（演示）
+
+# ============================================================
+# 前端页面（FrontendPage）
+# ============================================================
+frontend_pages:
+  - id: page_order_detail
+    name: 订单详情页
+    description: 展示单条订单详情的前端页面（演示）
+
+  - id: page_order_list
+    name: 订单列表页
+    description: 展示订单列表的前端页面（演示）
+
+# ============================================================
+# 用户群体（UserGroup）
+# ============================================================
+user_groups:
+  - id: ug_buyer
+    name: 买家用户
+    description: 使用订单查询功能的买家群体（演示）
+
+  - id: ug_cs_agent
+    name: 客服人员
+    description: 使用订单查询功能处理工单的客服群体（演示）
+
+# ============================================================
+# 业务语义关系
+# ============================================================
+business_relations:
+  # Interface → BusinessCapability：接口支撑业务能力
+  - id: brel_iface_cap_order_query
+    type: supports_capability
+    source_type: Interface
+    source: /product/getOrderById
+    target_type: BusinessCapability
+    target: cap_order_query
+    confidence: medium
+    evidence_source: demo_business_ontology
+
+  - id: brel_iface_cap_order_query2
+    type: supports_capability
+    source_type: Interface
+    source: /order/getOrder
+    target_type: BusinessCapability
+    target: cap_order_query
+    confidence: medium
+    evidence_source: demo_business_ontology
+
+  # BusinessCapability → BusinessProcess：业务能力属于业务流程
+  - id: brel_cap_proc_core_trade
+    type: belongs_to_process
+    source_type: BusinessCapability
+    source: cap_order_query
+    target_type: BusinessProcess
+    target: proc_core_trade
+    confidence: medium
+    evidence_source: demo_business_ontology
+
+  # FrontendPage → Interface：页面依赖接口
+  - id: brel_page_iface_detail
+    type: depends_on_interface
+    source_type: FrontendPage
+    source: page_order_detail
+    target_type: Interface
+    target: /product/getOrderById
+    confidence: medium
+    evidence_source: demo_business_ontology
+
+  # BusinessCapability → UserGroup：业务能力影响用户群体
+  - id: brel_cap_ug_buyer
+    type: affects_user_group
+    source_type: BusinessCapability
+    source: cap_order_query
+    target_type: UserGroup
+    target: ug_buyer
+    confidence: medium
+    evidence_source: demo_business_ontology
+
+  - id: brel_cap_ug_cs
+    type: affects_user_group
+    source_type: BusinessCapability
+    source: cap_order_query
+    target_type: UserGroup
+    target: ug_cs_agent
+    confidence: medium
+    evidence_source: demo_business_ontology

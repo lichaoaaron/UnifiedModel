@@ -1,0 +1,40 @@
+{
+  "case_id": "15_mysql_table_lock",
+  "name": "mysql table metadata lock",
+  "category": "mysql",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=mysql_table_lock",
+  "alert_event": {
+    "api": "/user/profile",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / metadata lock ??"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "mysql-user",
+      "service": "user-service",
+      "type": "mysql_table_lock",
+      "exception_type": "MetadataLockTimeoutException",
+      "message": "metadata lock waiting for table mysql-user blocked profile query"
+    },
+    "affected_services": [
+      "api-gateway",
+      "user-bff",
+      "user-service"
+    ],
+    "affected_interfaces": [
+      "/user/profile"
+    ],
+    "business_impact": "/user/profile production business path is affected by mysql_table_lock",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> user-bff -> user-service -> mysql-user and localizes the main fault at user-service.",
+      "log": "Root service logs contain MetadataLockTimeoutException and mysql_table_lock keywords.",
+      "metric": "Metric mysql.threads.waiting_for_table_lock breaches threshold on user-service."
+    },
+    "non_root_noise": [
+      "avatar-service call is skipped and not part of the blocking SQL",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

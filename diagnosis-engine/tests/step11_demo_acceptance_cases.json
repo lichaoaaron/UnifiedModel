@@ -1,0 +1,42 @@
+{
+  "version": "step11-demo-cases.v1",
+  "summary_output_dir": "output/acceptance/step11",
+  "cases": [
+    {
+      "id": "redis_root_cause",
+      "name": "Redis Root Cause",
+      "kind": "unifiedmodel_sample",
+      "data_source": "unifiedmodel",
+      "case_id": "fault-redis-saturation-001",
+      "api": "/synthetic/unifiedmodel/redis",
+      "time": "2026-06-03T01:05:45.556Z",
+      "symptom": "Redis saturation and rejected calls",
+      "expected_root_cause_type": "platform.redis",
+      "expected_root_cause_contains": "10.252.199.142:6389"
+    },
+    {
+      "id": "database_root_cause",
+      "name": "Database Root Cause",
+      "kind": "unifiedmodel_sample",
+      "data_source": "unifiedmodel",
+      "case_id": "fault-database-lock-wait-001",
+      "api": "/synthetic/unifiedmodel/database",
+      "time": "2026-06-03T01:05:19.343Z",
+      "symptom": "Database lock wait contention",
+      "expected_root_cause_type": "platform.database",
+      "expected_root_cause_contains": "currentSchema"
+    },
+    {
+      "id": "opensearch_trace_online",
+      "name": "OpenSearch Online Trace",
+      "kind": "opensearch_live",
+      "data_source": "opensearch",
+      "optional": true,
+      "required_env": ["OPENSEARCH_URL"],
+      "api": "/synthetic/opensearch/trace",
+      "time": "2026-06-16T10:00:00Z",
+      "symptom": "OpenSearch trace online validation",
+      "min_trace_items": 1
+    }
+  ]
+}

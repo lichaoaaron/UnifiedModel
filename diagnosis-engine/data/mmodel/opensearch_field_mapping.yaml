@@ -1,0 +1,26 @@
+log:
+  timestamp: ""
+  service: ""
+  instance: ""
+  trace_id: ""
+  level: ""
+  message: ""
+  api: ""
+
+trace:
+  trace_id: ""
+  span_id: ""
+  parent_span_id: ""
+  service: ""
+  api: ""
+  status_code: ""
+  duration_ms: ""
+  timestamp: ""
+
+metric:
+  timestamp: ""
+  service: ""
+  instance: ""
+  metric_name: ""
+  metric_value: ""
+  labels: ""

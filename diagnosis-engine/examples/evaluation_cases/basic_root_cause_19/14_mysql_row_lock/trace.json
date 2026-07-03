@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b5235913ba0150760b9c0e3362f5871e/0e736c3e760f6000",
+    "_score": 1,
+    "_source": {
+      "traceId": "b5235913ba0150760b9c0e3362f5871e",
+      "spanId": "0e736c3e760f6000",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/account/update",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/account/update",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.42.174.126",
+      "resource.attributes.http@url": "http://api-gateway/account/update?requestId=7059ac31fd7f",
+      "resource.attributes.sw8@trace_id": "b5235913ba0150760b9c0e3362f5871e",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/account/update?requestId=7059ac31fd7f",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/account/update",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b5235913ba0150760b9c0e3362f5871e/d25dcca9220fbaed",
+    "_score": 1,
+    "_source": {
+      "traceId": "b5235913ba0150760b9c0e3362f5871e",
+      "spanId": "d25dcca9220fbaed",
+      "parentSpanId": "0e736c3e760f6000",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "account-bff",
+      "name": "GET:/account-bff/account/update",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/account/update",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "account-bff",
+      "resource.attributes.service@instance@id": "account-bff@account-bff-10.100.135.115",
+      "resource.attributes.http@url": "http://account-bff/account-bff/account/update?requestId=7bf323cd8117",
+      "resource.attributes.sw8@trace_id": "b5235913ba0150760b9c0e3362f5871e",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://account-bff/account-bff/account/update?requestId=7bf323cd8117",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/account-bff/account/update",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b5235913ba0150760b9c0e3362f5871e/595eed4d428e5556",
+    "_score": 1,
+    "_source": {
+      "traceId": "b5235913ba0150760b9c0e3362f5871e",
+      "spanId": "595eed4d428e5556",
+      "parentSpanId": "d25dcca9220fbaed",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "account-service",
+      "name": "GET:/account-service/account/update",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/account/update",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "LockWaitTimeoutException",
+            "event": "error",
+            "message": "lock wait timeout caused by mysql row lock contention",
+            "stack": "LockWaitTimeoutException: lock wait timeout caused by mysql row lock contention\n\tat com.aliyun.account.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "account-service",
+      "resource.attributes.service@instance@id": "account-service@account-service-10.55.93.220",
+      "resource.attributes.http@url": "http://account-service/account-service/account/update?requestId=c3c33ea6b5c3",
+      "resource.attributes.sw8@trace_id": "b5235913ba0150760b9c0e3362f5871e",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://account-service/account-service/account/update?requestId=c3c33ea6b5c3",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/account-service/account/update",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b5235913ba0150760b9c0e3362f5871e/35c09b2f10109fe6",
+    "_score": 1,
+    "_source": {
+      "traceId": "b5235913ba0150760b9c0e3362f5871e",
+      "spanId": "35c09b2f10109fe6",
+      "parentSpanId": "595eed4d428e5556",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "mysql-account",
+      "name": "GET:/mysql-account/account/update",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/account/update",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "mysql-account",
+      "resource.attributes.service@instance@id": "mysql-account@mysql-account-10.99.199.73",
+      "resource.attributes.http@url": "http://mysql-account/mysql-account/account/update?requestId=d93ed516de5e",
+      "resource.attributes.sw8@trace_id": "b5235913ba0150760b9c0e3362f5871e",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://mysql-account/mysql-account/account/update?requestId=d93ed516de5e",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/mysql-account/account/update",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

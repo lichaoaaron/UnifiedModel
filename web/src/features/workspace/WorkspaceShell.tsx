@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
-import { ArrowLeft, PanelLeftClose, PanelLeftOpen, RefreshCcw } from 'lucide-react'
+import { ArrowLeft, PanelLeftClose, PanelLeftOpen, RefreshCcw, Stethoscope } from 'lucide-react'
 import type { HealthResponse, WorkspaceMetadata } from '../../api/types'
 import { UModelApi } from '../../api/client'
 import { Brand, HealthBadge } from '../../App'
@@ -14,6 +14,7 @@ const QueryPage = lazy(() => import('../query/QueryPage').then(({ QueryPage }) =
 const ImportsPage = lazy(() => import('../imports/ImportsPage').then(({ ImportsPage }) => ({ default: ImportsPage })))
 const SettingsPage = lazy(() => import('../settings/SettingsPage').then(({ SettingsPage }) => ({ default: SettingsPage })))
 const ApiMapPage = lazy(() => import('../settings/ApiMapPage').then(({ ApiMapPage }) => ({ default: ApiMapPage })))
+const DiagnosisPage = lazy(() => import('../diagnosis/DiagnosisPage').then(({ DiagnosisPage }) => ({ default: DiagnosisPage })))
 
 interface NavItem {
   value: WorkspaceView
@@ -90,6 +91,8 @@ export function WorkspaceShell({
         )
       case 'apiDebug':
         return <ApiMapPage api={api} workspaceId={workspaceId} />
+      case 'diagnosis':
+        return <DiagnosisPage api={api} workspaceId={workspaceId} />
       default:
         return null
     }
@@ -180,6 +183,8 @@ function viewLabelKey(view: WorkspaceView): MessageKey {
       return 'nav.settings'
     case 'apiDebug':
       return 'nav.apiMap'
+    case 'diagnosis':
+      return 'nav.diagnosis'
   }
 }
 

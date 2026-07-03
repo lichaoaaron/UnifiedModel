@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b598384006e2829dfaea5db9d621e824/938ed8d0c7c0bac5",
+    "_score": 1,
+    "_source": {
+      "traceId": "b598384006e2829dfaea5db9d621e824",
+      "spanId": "938ed8d0c7c0bac5",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/search/orders",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/search/orders",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.71.49.203",
+      "resource.attributes.http@url": "http://api-gateway/search/orders?requestId=b0c932d9c914",
+      "resource.attributes.sw8@trace_id": "b598384006e2829dfaea5db9d621e824",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/search/orders?requestId=b0c932d9c914",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/search/orders",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b598384006e2829dfaea5db9d621e824/0b58d86ad6e5d3b9",
+    "_score": 1,
+    "_source": {
+      "traceId": "b598384006e2829dfaea5db9d621e824",
+      "spanId": "0b58d86ad6e5d3b9",
+      "parentSpanId": "938ed8d0c7c0bac5",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "search-bff",
+      "name": "GET:/search-bff/search/orders",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/search/orders",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "search-bff",
+      "resource.attributes.service@instance@id": "search-bff@search-bff-10.107.160.84",
+      "resource.attributes.http@url": "http://search-bff/search-bff/search/orders?requestId=62e068db543a",
+      "resource.attributes.sw8@trace_id": "b598384006e2829dfaea5db9d621e824",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://search-bff/search-bff/search/orders?requestId=62e068db543a",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/search-bff/search/orders",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b598384006e2829dfaea5db9d621e824/8e493aa8bc61af56",
+    "_score": 1,
+    "_source": {
+      "traceId": "b598384006e2829dfaea5db9d621e824",
+      "spanId": "8e493aa8bc61af56",
+      "parentSpanId": "0b58d86ad6e5d3b9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "order-service",
+      "name": "GET:/order-service/search/orders",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/search/orders",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "QueryTimeoutException",
+            "event": "error",
+            "message": "QueryTimeoutException: mysql slow query SELECT SLEEP(10) exceeded timeout",
+            "stack": "QueryTimeoutException: QueryTimeoutException: mysql slow query SELECT SLEEP(10) exceeded timeout\n\tat com.aliyun.order.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "order-service",
+      "resource.attributes.service@instance@id": "order-service@order-service-10.105.126.163",
+      "resource.attributes.http@url": "http://order-service/order-service/search/orders?requestId=c69e31280f25",
+      "resource.attributes.sw8@trace_id": "b598384006e2829dfaea5db9d621e824",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://order-service/order-service/search/orders?requestId=c69e31280f25",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/order-service/search/orders",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "b598384006e2829dfaea5db9d621e824/96ea24d217e59264",
+    "_score": 1,
+    "_source": {
+      "traceId": "b598384006e2829dfaea5db9d621e824",
+      "spanId": "96ea24d217e59264",
+      "parentSpanId": "8e493aa8bc61af56",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "mysql-order",
+      "name": "GET:/mysql-order/search/orders",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/search/orders",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "mysql-order",
+      "resource.attributes.service@instance@id": "mysql-order@mysql-order-10.104.99.31",
+      "resource.attributes.http@url": "http://mysql-order/mysql-order/search/orders?requestId=4b8a7bfe5c03",
+      "resource.attributes.sw8@trace_id": "b598384006e2829dfaea5db9d621e824",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://mysql-order/mysql-order/search/orders?requestId=4b8a7bfe5c03",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/mysql-order/search/orders",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

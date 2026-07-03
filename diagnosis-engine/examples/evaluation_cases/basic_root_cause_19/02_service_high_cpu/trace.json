@@ -1,0 +1,94 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "a563c5465661099236964d2749b52cfd/9b2e55dca00968c0",
+    "_score": 1,
+    "_source": {
+      "traceId": "a563c5465661099236964d2749b52cfd",
+      "spanId": "9b2e55dca00968c0",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "edge-gateway",
+      "name": "GET:/recommend/feed",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.268Z",
+      "durationInNanos": 1260000000,
+      "traceGroup": "GET:/recommend/feed",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.268Z",
+        "durationInNanos": 1260000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "edge-gateway",
+      "resource.attributes.service@instance@id": "edge-gateway@edge-gateway-10.136.165.104",
+      "resource.attributes.http@url": "http://edge-gateway/recommend/feed?requestId=df8d33d173a8",
+      "resource.attributes.sw8@trace_id": "a563c5465661099236964d2749b52cfd",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://edge-gateway/recommend/feed?requestId=df8d33d173a8",
+      "span.attributes.http@status_code": "504",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/recommend/feed",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "a563c5465661099236964d2749b52cfd/32f37c2170568dab",
+    "_score": 1,
+    "_source": {
+      "traceId": "a563c5465661099236964d2749b52cfd",
+      "spanId": "32f37c2170568dab",
+      "parentSpanId": "9b2e55dca00968c0",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "recommend-service",
+      "name": "GET:/recommend-service/recommend/feed",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:18.616Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/recommend/feed",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.616Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "HighCpuSaturation",
+            "event": "error",
+            "message": "high cpu CPU intensive ranking loop saturated worker threads",
+            "stack": "HighCpuSaturation: high cpu CPU intensive ranking loop saturated worker threads\n\tat com.aliyun.recommend.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "recommend-service",
+      "resource.attributes.service@instance@id": "recommend-service@recommend-service-10.170.115.81",
+      "resource.attributes.http@url": "http://recommend-service/recommend-service/recommend/feed?requestId=44c4b1396497",
+      "resource.attributes.sw8@trace_id": "a563c5465661099236964d2749b52cfd",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://recommend-service/recommend-service/recommend/feed?requestId=44c4b1396497",
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/recommend-service/recommend/feed",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  }
+]

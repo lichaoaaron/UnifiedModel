@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "36c7685beee3e69baf3fe2467af7e630/629aa5f7344eac80",
+    "_score": 1,
+    "_source": {
+      "traceId": "36c7685beee3e69baf3fe2467af7e630",
+      "spanId": "629aa5f7344eac80",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/report/render",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/report/render",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.118.139.94",
+      "resource.attributes.http@url": "http://api-gateway/report/render?requestId=3e7c5083671e",
+      "resource.attributes.sw8@trace_id": "36c7685beee3e69baf3fe2467af7e630",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/report/render?requestId=3e7c5083671e",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/report/render",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "36c7685beee3e69baf3fe2467af7e630/4fadf18820c50198",
+    "_score": 1,
+    "_source": {
+      "traceId": "36c7685beee3e69baf3fe2467af7e630",
+      "spanId": "4fadf18820c50198",
+      "parentSpanId": "629aa5f7344eac80",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "report-bff",
+      "name": "GET:/report-bff/report/render",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/report/render",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "report-bff",
+      "resource.attributes.service@instance@id": "report-bff@report-bff-10.67.53.18",
+      "resource.attributes.http@url": "http://report-bff/report-bff/report/render?requestId=d917e6821e50",
+      "resource.attributes.sw8@trace_id": "36c7685beee3e69baf3fe2467af7e630",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://report-bff/report-bff/report/render?requestId=d917e6821e50",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/report-bff/report/render",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "36c7685beee3e69baf3fe2467af7e630/654c3b046d33ecd9",
+    "_score": 1,
+    "_source": {
+      "traceId": "36c7685beee3e69baf3fe2467af7e630",
+      "spanId": "654c3b046d33ecd9",
+      "parentSpanId": "4fadf18820c50198",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "report-service",
+      "name": "GET:/report-service/report/render",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/report/render",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "FullGcPause",
+            "event": "error",
+            "message": "Full GC pause exceeded 1800ms during object churn frequent full gc",
+            "stack": "FullGcPause: Full GC pause exceeded 1800ms during object churn frequent full gc\n\tat com.aliyun.report.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "report-service",
+      "resource.attributes.service@instance@id": "report-service@report-service-10.131.94.122",
+      "resource.attributes.http@url": "http://report-service/report-service/report/render?requestId=4b44f9e7b51d",
+      "resource.attributes.sw8@trace_id": "36c7685beee3e69baf3fe2467af7e630",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://report-service/report-service/report/render?requestId=4b44f9e7b51d",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/report-service/report/render",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "36c7685beee3e69baf3fe2467af7e630/11046adbdfcb4410",
+    "_score": 1,
+    "_source": {
+      "traceId": "36c7685beee3e69baf3fe2467af7e630",
+      "spanId": "11046adbdfcb4410",
+      "parentSpanId": "654c3b046d33ecd9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "template-service",
+      "name": "GET:/template-service/report/render",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/report/render",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "template-service",
+      "resource.attributes.service@instance@id": "template-service@template-service-10.61.9.94",
+      "resource.attributes.http@url": "http://template-service/template-service/report/render?requestId=ecb118409c20",
+      "resource.attributes.sw8@trace_id": "36c7685beee3e69baf3fe2467af7e630",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://template-service/template-service/report/render?requestId=ecb118409c20",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/template-service/report/render",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

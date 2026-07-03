@@ -1,0 +1,41 @@
+{
+  "case_id": "04_service_full_gc",
+  "name": "frequent full gc",
+  "category": "service",
+  "topology_shape": "four-hop",
+  "source_fault_injection": "fault=frequent_full_gc",
+  "alert_event": {
+    "api": "/report/render",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / P99 ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "report-service",
+      "service": "report-service",
+      "type": "frequent_full_gc",
+      "exception_type": "FullGcPause",
+      "message": "Full GC pause exceeded 1800ms during object churn frequent full gc"
+    },
+    "affected_services": [
+      "api-gateway",
+      "report-bff",
+      "report-service",
+      "template-service"
+    ],
+    "affected_interfaces": [
+      "/report/render"
+    ],
+    "business_impact": "/report/render production business path is affected by frequent_full_gc",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> report-bff -> report-service -> template-service and localizes the main fault at report-service.",
+      "log": "Root service logs contain FullGcPause and frequent_full_gc keywords.",
+      "metric": "Metric jvm.gc.full_gc.duration.p99 breaches threshold on report-service."
+    },
+    "non_root_noise": [
+      "template-service render cache miss is downstream symptom without heap growth",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

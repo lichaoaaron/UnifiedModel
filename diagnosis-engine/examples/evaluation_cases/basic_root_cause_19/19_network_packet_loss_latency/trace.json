@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "2d898fcfd44410802272a21b87b1d656/5dcb4ede834fc44f",
+    "_score": 1,
+    "_source": {
+      "traceId": "2d898fcfd44410802272a21b87b1d656",
+      "spanId": "5dcb4ede834fc44f",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "edge-gateway",
+      "name": "GET:/shipping/quote",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/shipping/quote",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "edge-gateway",
+      "resource.attributes.service@instance@id": "edge-gateway@edge-gateway-10.39.116.185",
+      "resource.attributes.http@url": "http://edge-gateway/shipping/quote?requestId=452bb8060ed3",
+      "resource.attributes.sw8@trace_id": "2d898fcfd44410802272a21b87b1d656",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://edge-gateway/shipping/quote?requestId=452bb8060ed3",
+      "span.attributes.http@status_code": "504",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/shipping/quote",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "2d898fcfd44410802272a21b87b1d656/ec93f7da43001943",
+    "_score": 1,
+    "_source": {
+      "traceId": "2d898fcfd44410802272a21b87b1d656",
+      "spanId": "ec93f7da43001943",
+      "parentSpanId": "5dcb4ede834fc44f",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "shipping-service",
+      "name": "GET:/shipping-service/shipping/quote",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:18.616Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/shipping/quote",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.616Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "SocketTimeoutException",
+            "event": "error",
+            "message": "SocketTimeoutException: packet loss and tcp retransmit network delay on node-network link",
+            "stack": "SocketTimeoutException: SocketTimeoutException: packet loss and tcp retransmit network delay on node-network link\n\tat com.aliyun.shipping.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "shipping-service",
+      "resource.attributes.service@instance@id": "shipping-service@shipping-service-10.40.35.130",
+      "resource.attributes.http@url": "http://shipping-service/shipping-service/shipping/quote?requestId=ae9337b4e12d",
+      "resource.attributes.sw8@trace_id": "2d898fcfd44410802272a21b87b1d656",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://shipping-service/shipping-service/shipping/quote?requestId=ae9337b4e12d",
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/shipping-service/shipping/quote",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "2d898fcfd44410802272a21b87b1d656/6a6f296bf794cb18",
+    "_score": 1,
+    "_source": {
+      "traceId": "2d898fcfd44410802272a21b87b1d656",
+      "spanId": "6a6f296bf794cb18",
+      "parentSpanId": "ec93f7da43001943",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "carrier-adapter",
+      "name": "GET:/carrier-adapter/shipping/quote",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:14.179Z",
+      "durationInNanos": 155000000,
+      "traceGroup": "GET:/shipping/quote",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.179Z",
+        "durationInNanos": 155000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "carrier-adapter",
+      "resource.attributes.service@instance@id": "carrier-adapter@carrier-adapter-10.32.126.110",
+      "resource.attributes.http@url": "http://carrier-adapter/carrier-adapter/shipping/quote?requestId=ff00b6538aa6",
+      "resource.attributes.sw8@trace_id": "2d898fcfd44410802272a21b87b1d656",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://carrier-adapter/carrier-adapter/shipping/quote?requestId=ff00b6538aa6",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/carrier-adapter/shipping/quote",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "2d898fcfd44410802272a21b87b1d656/bdb38c959aec60cb",
+    "_score": 1,
+    "_source": {
+      "traceId": "2d898fcfd44410802272a21b87b1d656",
+      "spanId": "bdb38c959aec60cb",
+      "parentSpanId": "6a6f296bf794cb18",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "node-network",
+      "name": "GET:/node-network/shipping/quote",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/shipping/quote",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "node-network",
+      "resource.attributes.service@instance@id": "node-network@node-network-10.180.62.226",
+      "resource.attributes.http@url": "http://node-network/node-network/shipping/quote?requestId=781d90d2c1e5",
+      "resource.attributes.sw8@trace_id": "2d898fcfd44410802272a21b87b1d656",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://node-network/node-network/shipping/quote?requestId=781d90d2c1e5",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/node-network/shipping/quote",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

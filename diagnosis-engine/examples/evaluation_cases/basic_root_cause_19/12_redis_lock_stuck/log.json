@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "order-service",
+    "resource.attributes.service@name": "order-service",
+    "traceId": "6165950966e2157cc364ea682ee8ca76",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: RedisLockStuckException: redis.lock.wait.timeout.count exceeded for distributed lock key on redis-lock for /order/submit",
+    "log.attributes.stack_trace": "RedisLockStuckException: redis.lock.wait.timeout.count exceeded for distributed lock key"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "api-gateway",
+    "resource.attributes.service@name": "api-gateway",
+    "traceId": "6165950966e2157cc364ea682ee8ca76",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /order/submit",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "6165950966e2157cc364ea682ee8ca76",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

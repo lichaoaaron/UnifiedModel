@@ -1,0 +1,74 @@
+# ⚠️ DEMO ONLY — 此文件为演示用虚构拓扑本体数据，可整体删除，不影响任何真实逻辑
+# 用途：为 ServiceCallGraph 组件提供完整本体层可视化的示例数据（含真实服务+虚构补充节点）
+# 加载入口：GraphAnalysisSkill 通过 OntologyConfigAdapter.load_demo_topology_ontology() 读取
+# 删除方式：直接删除本文件，ServiceCallGraph 将自动降级为服务调用链视图
+
+meta:
+  purpose: demo
+  description: 演示用拓扑本体，含与真实 Trace 数据匹配的服务/接口节点，以及用于丰富本体层展示的虚构节点
+  deletable: true
+
+# 节点列表（id 为唯一标识，label 为展示名，type 对应 MModel 实体类型）
+nodes:
+  # ── Service 层（微服务）─────────────────────────────────────────────
+  - { id: "query-gateway",    label: "query-gateway",    type: Service }
+  - { id: "order-center",     label: "order-center",     type: Service }
+  - { id: "product-service",  label: "product-service",  type: Service }  # DEMO only
+  - { id: "user-service",     label: "user-service",     type: Service }  # DEMO only
+  - { id: "payment-service",  label: "payment-service",  type: Service }  # DEMO only
+  - { id: "inventory-service", label: "inventory-service", type: Service }  # DEMO only
+
+  # ── Instance layer ──────────────────────────────────────────────────
+  - { id: "query-gateway-7f68d4c6bf-9x2lm", label: "query-gateway-7f68d4c6bf-9x2lm", type: Instance }  # DEMO only
+  - { id: "order-center-5d7b8c9f6d-hk42p",  label: "order-center-5d7b8c9f6d-hk42p",  type: Instance }  # DEMO only
+  - { id: "order-center-5d7b8c9f6d-mt8qn",  label: "order-center-5d7b8c9f6d-mt8qn",  type: Instance }  # DEMO only
+  - { id: "inventory-service-6bbf8b9c7f-px3wr", label: "inventory-service-6bbf8b9c7f-px3wr", type: Instance }  # DEMO only
+
+  # ── Interface 层（接口）─────────────────────────────────────────────
+  - { id: "/order/getOrder",       label: "/order/getOrder",       type: Interface }
+  - { id: "/product/getOrderById", label: "/product/getOrderById", type: Interface }
+  - { id: "/user/profile",         label: "/user/profile",         type: Interface }  # DEMO 虚构节点
+  - { id: "/payment/submit",       label: "/payment/submit",       type: Interface }  # DEMO 虚构节点
+  - { id: "/inventory/reserve",    label: "/inventory/reserve",    type: Interface }  # DEMO only
+
+  # ── Business 层（业务域）────────────────────────────────────────────
+  - { id: "biz-order",   label: "biz-order",   type: Business }    # DEMO only
+  - { id: "biz-payment", label: "biz-payment", type: Business }    # DEMO only
+  - { id: "biz-fulfillment", label: "biz-fulfillment", type: Business }    # DEMO only
+
+  # ── BusinessFlow layer ──────────────────────────────────────────────
+  - { id: "flow-core-trade", label: "flow-core-trade", type: BusinessFlow }  # DEMO only
+
+# 边列表（source/target 对应 node id，type 对应 MModel 关系类型）
+edges:
+  # Service → Service: calls（服务调用）
+  - { source: "query-gateway",   target: "order-center",     type: calls,      label: calls }
+  - { source: "query-gateway",   target: "user-service",     type: calls,      label: calls }
+  - { source: "order-center",    target: "product-service",  type: calls,      label: calls }
+  - { source: "order-center",    target: "inventory-service", type: calls,     label: calls }
+  - { source: "payment-service", target: "order-center",     type: calls,      label: calls }
+
+  # Service → Instance: runs_on（服务运行实例）
+  - { source: "query-gateway",   target: "query-gateway-7f68d4c6bf-9x2lm", type: runs_on, label: runs_on }
+  - { source: "order-center",    target: "order-center-5d7b8c9f6d-hk42p",  type: runs_on, label: runs_on }
+  - { source: "order-center",    target: "order-center-5d7b8c9f6d-mt8qn",  type: runs_on, label: runs_on }
+  - { source: "inventory-service", target: "inventory-service-6bbf8b9c7f-px3wr", type: runs_on, label: runs_on }
+
+  # Service → Interface: exposes
+  - { source: "query-gateway",   target: "/product/getOrderById", type: exposes, label: exposes }
+  - { source: "order-center",    target: "/order/getOrder",       type: exposes, label: exposes }
+  - { source: "user-service",    target: "/user/profile",         type: exposes, label: exposes }
+  - { source: "payment-service", target: "/payment/submit",       type: exposes, label: exposes }
+  - { source: "inventory-service", target: "/inventory/reserve",  type: exposes, label: exposes }
+
+  # Service → Business: belongs_to（服务归属业务域）
+  - { source: "query-gateway",   target: "biz-order",   type: belongs_to, label: belongs_to }
+  - { source: "order-center",    target: "biz-order",   type: belongs_to, label: belongs_to }
+  - { source: "product-service", target: "biz-order",   type: belongs_to, label: belongs_to }
+  - { source: "payment-service", target: "biz-payment", type: belongs_to, label: belongs_to }
+  - { source: "inventory-service", target: "biz-fulfillment", type: belongs_to, label: belongs_to }
+
+  # Business → BusinessFlow: belongs_to（业务域归属核心链路）
+  - { source: "biz-order",   target: "flow-core-trade", type: belongs_to, label: belongs_to }
+  - { source: "biz-payment", target: "flow-core-trade", type: belongs_to, label: belongs_to }
+  - { source: "biz-fulfillment", target: "flow-core-trade", type: belongs_to, label: belongs_to }

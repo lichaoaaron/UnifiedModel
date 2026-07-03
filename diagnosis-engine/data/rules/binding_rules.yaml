@@ -1,0 +1,123 @@
+﻿# Binding Rules V3
+# 定义 trace/log/metric 字段如何绑定到本体层实体
+#
+# 这些规则是 UModel 官方 data_link / entity_set_link 的轻量化表达。
+# 当前用于 Demo，后续可替换为 UModel 官方 YAML 规则解析（UModelYamlAdapter）。
+#
+# UModel 对应：
+#   data_link / apm.data_link.apm.service_related_to_apm.trace.common
+#   data_link / apm.data_link.apm.service_related_to_apm.log.agent_info
+#   data_link / apm.data_link.apm.service_related_to_apm.metric.apm.service
+#   entity_set_link / apm.entity_set_link.apm.service_contains_apm.instance
+#   entity_set_link / apm.entity_set_link.apm.service_contains_apm.operation
+#   entity_set_link / apm.entity_set_link.apm.service_calls_apm.service
+
+bindings:
+
+  # --------------------------------------------------------
+  # Trace → Service
+  # UModel ref: apm.data_link.apm.service_related_to_apm.trace.common
+  # --------------------------------------------------------
+  trace_to_service:
+    source: trace
+    source_field: resource.attributes.service@name
+    target_entity: Service
+    target_field: name
+    description: trace 的 resource.attributes.service@name 字段映射到 Service.name
+
+  trace_servicename_to_service:
+    source: trace
+    source_field: serviceName
+    target_entity: Service
+    target_field: name
+    description: trace 顶层 serviceName 字段也映射到 Service.name（备用字段）
+
+  # --------------------------------------------------------
+  # Trace → Instance（需要提取 IP）
+  # UModel ref: apm.entity_set_link.apm.service_contains_apm.instance
+  # --------------------------------------------------------
+  trace_to_instance:
+    source: trace
+    source_field: resource.attributes.service@instance@id
+    target_entity: Instance
+    target_field: name
+    transform: extract_ip_after_at
+    description: 从 service@instance@id 中提取 @ 后面的 IP，映射到 Instance.name
+
+  # --------------------------------------------------------
+  # Trace → Interface
+  # UModel ref: apm.entity_set_link.apm.service_contains_apm.operation
+  # --------------------------------------------------------
+  trace_span_name_to_interface:
+    source: trace
+    source_field: name
+    target_entity: Interface
+    target_field: name
+    description: trace 的 span.name 映射到 Interface.name（接口路径）
+
+  trace_url_to_interface:
+    source: trace
+    source_field: span.attributes.url
+    target_entity: Interface
+    target_field: url
+    transform: extract_path_from_url
+    description: 从 span.attributes.url 提取路径部分，辅助识别接口
+
+  # --------------------------------------------------------
+  # Log → Service
+  # UModel ref: apm.data_link.apm.service_related_to_apm.log.agent_info
+  # --------------------------------------------------------
+  log_to_service:
+    source: log
+    source_field: resource.attributes.service@name
+    target_entity: Service
+    target_field: name
+    description: log 的 resource.attributes.service@name 映射到 Service.name
+
+  log_servicename_to_service:
+    source: log
+    source_field: serviceName
+    target_entity: Service
+    target_field: name
+    description: log 顶层 serviceName 字段也映射到 Service.name（备用字段）
+
+  # --------------------------------------------------------
+  # Metric → Service
+  # UModel ref: apm.data_link.apm.service_related_to_apm.metric.apm.service
+  # --------------------------------------------------------
+  metric_to_service:
+    source: metric
+    source_field: resource.attributes.compose_service
+    target_entity: Service
+    target_field: name
+    description: metric 的 compose_service 字段映射到 Service.name
+
+  # --------------------------------------------------------
+  # Metric → Instance / Container
+  # UModel ref: apm.data_link.apm.instance_related_to_apm.metric.apm.instance
+  # --------------------------------------------------------
+  metric_to_container:
+    source: metric
+    source_field: resource.attributes.container@name
+    target_entity: Instance
+    target_field: container_name
+    description: metric 的 container@name 字段映射到 Instance.container_name
+
+  # --------------------------------------------------------
+  # 业务语义绑定（Interface → Business → BusinessFlow）
+  # 当前通过 runtime_domain_model.yaml 中的 relations 静态配置
+  # 后续可替换为 CMDB / K8s Service Label 自动同步
+  # --------------------------------------------------------
+  interface_to_business:
+    source: domain_model
+    source_field: relations[type=belongs_to][source=Interface]
+    target_entity: Business
+    target_field: name
+    description: Interface 通过 belongs_to 关系归属 Business（来自 runtime_domain_model.yaml）
+
+  business_to_flow:
+    source: domain_model
+    source_field: relations[type=belongs_to][source=Business]
+    target_entity: BusinessFlow
+    target_field: name
+    description: Business 通过 belongs_to 关系归属 BusinessFlow（来自 runtime_domain_model.yaml）

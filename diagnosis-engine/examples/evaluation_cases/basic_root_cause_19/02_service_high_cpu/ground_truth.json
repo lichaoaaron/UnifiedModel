@@ -1,0 +1,39 @@
+{
+  "case_id": "02_service_high_cpu",
+  "name": "service high cpu",
+  "category": "service",
+  "topology_shape": "single",
+  "source_fault_injection": "fault=high_cpu",
+  "alert_event": {
+    "api": "/recommend/feed",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 504 / ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "recommend-service",
+      "service": "recommend-service",
+      "type": "high_cpu",
+      "exception_type": "HighCpuSaturation",
+      "message": "high cpu CPU intensive ranking loop saturated worker threads"
+    },
+    "affected_services": [
+      "edge-gateway",
+      "recommend-service"
+    ],
+    "affected_interfaces": [
+      "/recommend/feed"
+    ],
+    "business_impact": "/recommend/feed production business path is affected by high_cpu",
+    "primary_evidence": {
+      "trace": "Runtime trace follows edge-gateway -> recommend-service and localizes the main fault at recommend-service.",
+      "log": "Root service logs contain HighCpuSaturation and high_cpu keywords.",
+      "metric": "Metric container.cpu.usage.percent breaches threshold on recommend-service."
+    },
+    "non_root_noise": [
+      "cache warmup warning has normal latency and no CPU saturation",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

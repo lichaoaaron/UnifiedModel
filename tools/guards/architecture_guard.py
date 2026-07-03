@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import pathlib
 import re
+import subprocess
 import sys
+import os
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -37,14 +39,32 @@ def iter_files() -> list[pathlib.Path]:
     # .claude holds gitignored local agent artifacts — nested git worktrees of
     # other branches and copies of tooling — which are not the source tree under
     # review and would otherwise trip the path-exact self-exclusion / allowlist.
-    ignored_parts = {".git", ".venv", "__pycache__", "node_modules", ".claude"}
+    ignored_parts = {".git", ".venv", "__pycache__", "node_modules", ".claude", "dist", ".cache"}
     files: list[pathlib.Path] = []
-    for path in ROOT.rglob("*"):
-        if not path.is_file() or path.suffix not in TEXT_SUFFIXES:
-            continue
-        if ignored_parts.intersection(path.parts):
-            continue
-        files.append(path)
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "--cached", "--others", "--exclude-standard"],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        result = None
+    if result and result.returncode == 0:
+        for rel in result.stdout.splitlines():
+            path = ROOT / rel
+            if path.suffix in TEXT_SUFFIXES and not ignored_parts.intersection(path.parts):
+                files.append(path)
+        return files
+
+    for dirpath, dirnames, filenames in os.walk(ROOT):
+        dirnames[:] = [dirname for dirname in dirnames if dirname not in ignored_parts]
+        current = pathlib.Path(dirpath)
+        for filename in filenames:
+            path = current / filename
+            if path.suffix in TEXT_SUFFIXES:
+                files.append(path)
     return files
 
 

@@ -1,0 +1,32 @@
+[
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "checkout-service",
+    "resource.attributes.service@name": "checkout-service",
+    "traceId": "27eb9c6a249690ac338cc67980ff2730",
+    "spanId": "",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "error signal: upstream timed out while nginx waited for checkout-service response on checkout-service for /checkout/preview",
+    "log.attributes.stack_trace": "NginxUpstreamTimeout: upstream timed out while nginx waited for checkout-service response"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "nginx-ingress",
+    "resource.attributes.service@name": "nginx-ingress",
+    "traceId": "27eb9c6a249690ac338cc67980ff2730",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "NestedServletException observed while handling /checkout/preview",
+    "log.attributes.stack_trace": "NestedServletException: downstream dependency failure returned to caller"
+  },
+  {
+    "time": "2026-04-10 10:51:14",
+    "serviceName": "audit-service",
+    "resource.attributes.service@name": "audit-service",
+    "traceId": "27eb9c6a249690ac338cc67980ff2730",
+    "spanId": "",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "observed symptom in audit batch outside alert path",
+    "log.attributes.stack_trace": ""
+  }
+]

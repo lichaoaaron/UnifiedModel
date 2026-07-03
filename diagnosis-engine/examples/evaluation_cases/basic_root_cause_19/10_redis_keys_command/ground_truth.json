@@ -1,0 +1,39 @@
+{
+  "case_id": "10_redis_keys_command",
+  "name": "redis expensive KEYS command",
+  "category": "redis",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=redis_keys_command",
+  "alert_event": {
+    "api": "/admin/cache/scan",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / Redis CPU ??"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "redis-session",
+      "service": "admin-service",
+      "type": "redis_keys_command",
+      "exception_type": "RedisSlowCommandException",
+      "message": "Redis KEYS command caused redis cpu usage spike during cache scan"
+    },
+    "affected_services": [
+      "admin-gateway",
+      "admin-service"
+    ],
+    "affected_interfaces": [
+      "/admin/cache/scan"
+    ],
+    "business_impact": "/admin/cache/scan production business path is affected by redis_keys_command",
+    "primary_evidence": {
+      "trace": "Runtime trace follows admin-gateway -> admin-service -> redis-session and localizes the main fault at admin-service.",
+      "log": "Root service logs contain RedisSlowCommandException and redis_keys_command keywords.",
+      "metric": "Metric redis.cpu.usage.percent breaches threshold on admin-service."
+    },
+    "non_root_noise": [
+      "admin-gateway has slow client span but no redis CPU metric",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

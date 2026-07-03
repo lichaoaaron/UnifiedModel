@@ -1,0 +1,94 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "571f919dda0314a27f987a71cb9cfe71/bdf4d4c47bc2ca79",
+    "_score": 1,
+    "_source": {
+      "traceId": "571f919dda0314a27f987a71cb9cfe71",
+      "spanId": "bdf4d4c47bc2ca79",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/checkout/submit",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.268Z",
+      "durationInNanos": 1260000000,
+      "traceGroup": "GET:/checkout/submit",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.268Z",
+        "durationInNanos": 1260000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.71.27.60",
+      "resource.attributes.http@url": "http://api-gateway/checkout/submit?requestId=e09b8840874b",
+      "resource.attributes.sw8@trace_id": "571f919dda0314a27f987a71cb9cfe71",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/checkout/submit?requestId=e09b8840874b",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/checkout/submit",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "571f919dda0314a27f987a71cb9cfe71/305b9c1bf1535249",
+    "_score": 1,
+    "_source": {
+      "traceId": "571f919dda0314a27f987a71cb9cfe71",
+      "spanId": "305b9c1bf1535249",
+      "parentSpanId": "bdf4d4c47bc2ca79",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/submit",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:16.416Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/checkout/submit",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.416Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.016Z",
+          "attributes": {
+            "error@kind": "SlowRequest",
+            "event": "error",
+            "message": "SlowRequest latency anomaly: slow interface exceeded latency budget",
+            "stack": "SlowRequest: SlowRequest latency anomaly: slow interface exceeded latency budget\n\tat com.aliyun.checkout.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "checkout-service",
+      "resource.attributes.service@instance@id": "checkout-service@checkout-service-10.171.7.136",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/submit?requestId=d9f37c1ee248",
+      "resource.attributes.sw8@trace_id": "571f919dda0314a27f987a71cb9cfe71",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/submit?requestId=d9f37c1ee248",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/checkout-service/checkout/submit",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  }
+]

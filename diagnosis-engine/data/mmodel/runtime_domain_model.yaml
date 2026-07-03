@@ -1,0 +1,75 @@
+# MModel 运行时轻量本体配置
+# 这是 MModel 的默认运行时本体来源，由 OntologyConfigAdapter 读取。
+# specs/01_domain/mmodel_domain_spec.yaml 仅作为规范说明参考，不再作为默认运行时数据源。
+# examples/ontology/umodel_data/ 是 UModel 参考资料目录，不参与默认图分析。
+# 阅读建议：需要看运行时默认加载文件时读本文件；需要看字段语义与设计边界时读 specs/01_domain/mmodel_domain_spec.yaml。
+
+source:
+  reference_dir: examples/ontology/umodel_data
+  description: 参考 UModel 官方 YAML 示例目录，抽取与当前 4A 诊断场景相关的最小子集
+  compatible_with:
+    - entity_set       # 实体类型定义（对应 apm.service / apm.instance / apm.operation）
+    - entity_set_link  # 实体关系类型定义（对应 calls / contains / hosts 等）
+    - trace_set        # Trace 数据集（对应 apm.trace_set.apm.trace.common）
+    - log_set          # Log 数据集
+    - metric_set       # Metric 数据集
+    - data_link        # 实体与观测数据绑定（对应 apm.service related_to apm.trace.common 等）
+
+# ============================================================
+# 实体类型（对应 entity_set 中的类型定义）
+# ============================================================
+entity_types:
+  - name: Service
+    description: 微服务（对应 UModel apm.service）
+    umodel_ref: apm.entity_set.apm.service
+
+  - name: Instance
+    description: 服务实例（对应 UModel apm.instance）
+    umodel_ref: apm.entity_set.apm.instance
+
+  - name: Interface
+    description: 服务接口/操作（对应 UModel apm.operation）
+    umodel_ref: apm.entity_set.apm.operation
+
+  - name: Business
+    description: 业务功能模块（Demo 自定义，无直接 UModel 对应，可映射到业务标签）
+
+  - name: BusinessFlow
+    description: 核心业务链路（Demo 自定义，可映射到 UModel 的业务拓扑层）
+
+# ============================================================
+# 关系类型（对应 entity_set_link 中的关系定义）
+# ============================================================
+relation_types:
+  - name: calls
+    description: 服务调用关系
+    umodel_ref: apm.entity_set_link.apm.service_calls_apm.service
+    direction: source → target
+
+  - name: runs_on
+    description: 服务运行在实例上
+    umodel_ref: apm.entity_set_link.apm.service_contains_apm.instance
+    direction: source → target
+
+  - name: exposes
+    description: 服务暴露接口
+    umodel_ref: apm.entity_set.apm.service_contains_apm.operation
+    direction: source → target
+
+  - name: belongs_to
+    description: 接口或服务归属业务
+    umodel_ref: 自定义（可映射到业务标签层）
+    direction: source → target
+
+  - name: impacts
+    description: 故障影响关系（用于表示从根因服务到受影响服务的语义关系）
+    umodel_ref: 自定义（演示/推理用途）
+    direction: source → target
+
+# ============================================================
+# 运行时实体实例与关系说明
+# ============================================================
+# 注意：运行时实体实例（entities）与具体关系实例（relations）不应写入本 runtime_domain_model.yaml。
+# 实例数据应来自真实观测（trace / log / metric）或示例目录（examples/），并由 EntityBindingSkill 在运行时解析/绑定。
+# 如需演示样例，请将具体实体与关系放入 examples/ontology 或 examples/evaluation_cases 目录，
+# 而不是写入 runtime_domain_model.yaml。此文件仅保留通用类型与关系定义。

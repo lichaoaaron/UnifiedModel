@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "dcea77e74c313660ccb19ba20f740c1c/8ab1bc53f33d9f23",
+    "_score": 1,
+    "_source": {
+      "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+      "spanId": "8ab1bc53f33d9f23",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/user/profile",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/user/profile",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.120.194.123",
+      "resource.attributes.http@url": "http://api-gateway/user/profile?requestId=b7dfc1c1baa1",
+      "resource.attributes.sw8@trace_id": "dcea77e74c313660ccb19ba20f740c1c",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/user/profile?requestId=b7dfc1c1baa1",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/user/profile",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "dcea77e74c313660ccb19ba20f740c1c/0b57be053cfbdf6d",
+    "_score": 1,
+    "_source": {
+      "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+      "spanId": "0b57be053cfbdf6d",
+      "parentSpanId": "8ab1bc53f33d9f23",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "user-bff",
+      "name": "GET:/user-bff/user/profile",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/user/profile",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "user-bff",
+      "resource.attributes.service@instance@id": "user-bff@user-bff-10.37.163.136",
+      "resource.attributes.http@url": "http://user-bff/user-bff/user/profile?requestId=0782167f134a",
+      "resource.attributes.sw8@trace_id": "dcea77e74c313660ccb19ba20f740c1c",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://user-bff/user-bff/user/profile?requestId=0782167f134a",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/user-bff/user/profile",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "dcea77e74c313660ccb19ba20f740c1c/32e655234510d96f",
+    "_score": 1,
+    "_source": {
+      "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+      "spanId": "32e655234510d96f",
+      "parentSpanId": "0b57be053cfbdf6d",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "user-service",
+      "name": "GET:/user-service/user/profile",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:16.424Z",
+      "durationInNanos": 2400000000,
+      "traceGroup": "GET:/user/profile",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:16.424Z",
+        "durationInNanos": 2400000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "MetadataLockTimeoutException",
+            "event": "error",
+            "message": "metadata lock waiting for table mysql-user blocked profile query",
+            "stack": "MetadataLockTimeoutException: metadata lock waiting for table mysql-user blocked profile query\n\tat com.aliyun.user.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "user-service",
+      "resource.attributes.service@instance@id": "user-service@user-service-10.184.167.14",
+      "resource.attributes.http@url": "http://user-service/user-service/user/profile?requestId=6e7c834f0f4e",
+      "resource.attributes.sw8@trace_id": "dcea77e74c313660ccb19ba20f740c1c",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://user-service/user-service/user/profile?requestId=6e7c834f0f4e",
+      "span.attributes.http@status_code": "200",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/user-service/user/profile",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "dcea77e74c313660ccb19ba20f740c1c/fe71291f524a8564",
+    "_score": 1,
+    "_source": {
+      "traceId": "dcea77e74c313660ccb19ba20f740c1c",
+      "spanId": "fe71291f524a8564",
+      "parentSpanId": "32e655234510d96f",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "mysql-user",
+      "name": "GET:/mysql-user/user/profile",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/user/profile",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "mysql-user",
+      "resource.attributes.service@instance@id": "mysql-user@mysql-user-10.174.147.102",
+      "resource.attributes.http@url": "http://mysql-user/mysql-user/user/profile?requestId=cc0f8d4319fc",
+      "resource.attributes.sw8@trace_id": "dcea77e74c313660ccb19ba20f740c1c",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://mysql-user/mysql-user/user/profile?requestId=cc0f8d4319fc",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/mysql-user/user/profile",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

@@ -1,0 +1,40 @@
+{
+  "case_id": "13_mysql_slow_query",
+  "name": "mysql slow query",
+  "category": "mysql",
+  "topology_shape": "dependency",
+  "source_fault_injection": "fault=mysql_slow_query",
+  "alert_event": {
+    "api": "/search/orders",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "??? / DB ????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "mysql-order",
+      "service": "order-service",
+      "type": "mysql_slow_query",
+      "exception_type": "QueryTimeoutException",
+      "message": "QueryTimeoutException: mysql slow query SELECT SLEEP(10) exceeded timeout"
+    },
+    "affected_services": [
+      "api-gateway",
+      "search-bff",
+      "order-service"
+    ],
+    "affected_interfaces": [
+      "/search/orders"
+    ],
+    "business_impact": "/search/orders production business path is affected by mysql_slow_query",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> search-bff -> order-service -> mysql-order and localizes the main fault at order-service.",
+      "log": "Root service logs contain QueryTimeoutException and mysql_slow_query keywords.",
+      "metric": "Metric mysql.query.duration.p99 breaches threshold on order-service."
+    },
+    "non_root_noise": [
+      "search-bff response is slow only after order-service waits on mysql",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}

@@ -1,0 +1,174 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "27eb9c6a249690ac338cc67980ff2730/903d1587606e5f7d",
+    "_score": 1,
+    "_source": {
+      "traceId": "27eb9c6a249690ac338cc67980ff2730",
+      "spanId": "903d1587606e5f7d",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "nginx-ingress",
+      "name": "GET:/checkout/preview",
+      "startTime": "2026-04-10T02:51:14.008Z",
+      "endTime": "2026-04-10T02:51:15.828Z",
+      "durationInNanos": 1820000000,
+      "traceGroup": "GET:/checkout/preview",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:15.828Z",
+        "durationInNanos": 1820000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "nginx-ingress",
+      "resource.attributes.service@instance@id": "nginx-ingress@nginx-ingress-10.72.5.111",
+      "resource.attributes.http@url": "http://nginx-ingress/checkout/preview?requestId=eb166c4a5700",
+      "resource.attributes.sw8@trace_id": "27eb9c6a249690ac338cc67980ff2730",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://nginx-ingress/checkout/preview?requestId=eb166c4a5700",
+      "span.attributes.http@status_code": "504",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/checkout/preview",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474001000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "27eb9c6a249690ac338cc67980ff2730/a9bae66bfc2a439d",
+    "_score": 1,
+    "_source": {
+      "traceId": "27eb9c6a249690ac338cc67980ff2730",
+      "spanId": "a9bae66bfc2a439d",
+      "parentSpanId": "903d1587606e5f7d",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "GET:/api-gateway/checkout/preview",
+      "startTime": "2026-04-10T02:51:14.016Z",
+      "endTime": "2026-04-10T02:51:14.146Z",
+      "durationInNanos": 130000000,
+      "traceGroup": "GET:/checkout/preview",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.146Z",
+        "durationInNanos": 130000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "api-gateway",
+      "resource.attributes.service@instance@id": "api-gateway@api-gateway-10.184.137.94",
+      "resource.attributes.http@url": "http://api-gateway/api-gateway/checkout/preview?requestId=f9de0d5d5de8",
+      "resource.attributes.sw8@trace_id": "27eb9c6a249690ac338cc67980ff2730",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://api-gateway/api-gateway/checkout/preview?requestId=f9de0d5d5de8",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/api-gateway/checkout/preview",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474002000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "27eb9c6a249690ac338cc67980ff2730/b7632c273bdf2c18",
+    "_score": 1,
+    "_source": {
+      "traceId": "27eb9c6a249690ac338cc67980ff2730",
+      "spanId": "b7632c273bdf2c18",
+      "parentSpanId": "a9bae66bfc2a439d",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/preview",
+      "startTime": "2026-04-10T02:51:14.024Z",
+      "endTime": "2026-04-10T02:51:18.624Z",
+      "durationInNanos": 4600000000,
+      "traceGroup": "GET:/checkout/preview",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:18.624Z",
+        "durationInNanos": 4600000000,
+        "statusCode": 2
+      },
+      "events": [
+        {
+          "name": "logs",
+          "time": "2026-04-10T02:51:14.024Z",
+          "attributes": {
+            "error@kind": "NginxUpstreamTimeout",
+            "event": "error",
+            "message": "upstream timed out while nginx waited for checkout-service response",
+            "stack": "NginxUpstreamTimeout: upstream timed out while nginx waited for checkout-service response\n\tat com.aliyun.checkout.service.handler.RequestHandler.handle(RequestHandler.java:88)"
+          },
+          "droppedAttributesCount": 0
+        }
+      ],
+      "links": [],
+      "resource.attributes.service@name": "checkout-service",
+      "resource.attributes.service@instance@id": "checkout-service@checkout-service-10.38.13.114",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/preview?requestId=4533a3052df6",
+      "resource.attributes.sw8@trace_id": "27eb9c6a249690ac338cc67980ff2730",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/preview?requestId=4533a3052df6",
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "GET:/checkout-service/checkout/preview",
+      "derived.error": "1",
+      "derived.fault": "1",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474003000000
+    ]
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "27eb9c6a249690ac338cc67980ff2730/0be17b8dd65fa79f",
+    "_score": 1,
+    "_source": {
+      "traceId": "27eb9c6a249690ac338cc67980ff2730",
+      "spanId": "0be17b8dd65fa79f",
+      "parentSpanId": "b7632c273bdf2c18",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "pricing-service",
+      "name": "GET:/pricing-service/checkout/preview",
+      "startTime": "2026-04-10T02:51:14.032Z",
+      "endTime": "2026-04-10T02:51:14.212Z",
+      "durationInNanos": 180000000,
+      "traceGroup": "GET:/checkout/preview",
+      "traceGroupFields": {
+        "endTime": "2026-04-10T02:51:14.212Z",
+        "durationInNanos": 180000000,
+        "statusCode": 1
+      },
+      "events": [],
+      "links": [],
+      "resource.attributes.service@name": "pricing-service",
+      "resource.attributes.service@instance@id": "pricing-service@pricing-service-10.147.80.54",
+      "resource.attributes.http@url": "http://pricing-service/pricing-service/checkout/preview?requestId=f7d8c2eaabe7",
+      "resource.attributes.sw8@trace_id": "27eb9c6a249690ac338cc67980ff2730",
+      "span.attributes.http@method": "GET",
+      "span.attributes.url": "http://pricing-service/pricing-service/checkout/preview?requestId=f7d8c2eaabe7",
+      "span.attributes.http@status_code": "200",
+      "status.code": 1,
+      "status.message": "OK",
+      "derived.operation": "GET:/pricing-service/checkout/preview",
+      "derived.error": "0",
+      "derived.fault": "0",
+      "derived.environment": "prod-cn-hangzhou"
+    },
+    "sort": [
+      1775789474004000000
+    ]
+  }
+]

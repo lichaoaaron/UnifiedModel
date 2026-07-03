@@ -1,0 +1,40 @@
+{
+  "case_id": "05_service_thread_pool_exhaustion",
+  "name": "thread pool exhausted",
+  "category": "service",
+  "topology_shape": "three-hop",
+  "source_fault_injection": "fault=thread_pool_exhaustion",
+  "alert_event": {
+    "api": "/notify/send",
+    "time": "2026-04-10 10:51:14",
+    "symptom": "HTTP 503 / ??????"
+  },
+  "expected": {
+    "root_cause": {
+      "component": "notification-service",
+      "service": "notification-service",
+      "type": "thread_pool_exhaustion",
+      "exception_type": "RejectedExecutionException",
+      "message": "RejectedExecutionException: thread pool queue size exceeded and tasks rejected"
+    },
+    "affected_services": [
+      "api-gateway",
+      "notify-bff",
+      "notification-service"
+    ],
+    "affected_interfaces": [
+      "/notify/send"
+    ],
+    "business_impact": "/notify/send production business path is affected by thread_pool_exhaustion",
+    "primary_evidence": {
+      "trace": "Runtime trace follows api-gateway -> notify-bff -> notification-service and localizes the main fault at notification-service.",
+      "log": "Root service logs contain RejectedExecutionException and thread_pool_exhaustion keywords.",
+      "metric": "Metric executor.queue.size breaches threshold on notification-service."
+    },
+    "non_root_noise": [
+      "sms-provider returned one retryable 429 after notification queue was already full",
+      "background audit-service warning is outside the affected call path",
+      "noise-service metric is normal and outside the affected call path"
+    ]
+  }
+}
