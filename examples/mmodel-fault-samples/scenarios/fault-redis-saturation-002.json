@@ -1,0 +1,70 @@
+{
+  "scenario_id": "fault-redis-saturation-002",
+  "title": "Redis saturation and rejected calls: ais-configure",
+  "fault_type": "redis_saturation",
+  "severity": "P1",
+  "source_trace_id": "7febe3d3cba1498638350a919c21b3fc",
+  "synthetic_trace_id": "d689fc3b5533a202cf08ea085e076f17",
+  "start_time": "2026-06-03T01:00:09.506Z",
+  "end_time": "2026-06-03T01:08:09.506Z",
+  "root_cause_service": "ais-amc",
+  "root_cause_middleware": {
+    "type": "redis",
+    "entity_type": "platform.redis",
+    "instance": "10.252.199.142:6389",
+    "id": "a824e83ca293bcb0d98d076498213492"
+  },
+  "impacted_service": "ais-configure",
+  "services": [
+    "ais-amc",
+    "ais-application-service",
+    "ais-configure",
+    "ais-gold",
+    "ais-mmj-service",
+    "iam-manage"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-configure",
+      "to": "ais-amc"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-gold"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-mmj-service"
+    },
+    {
+      "from": "ais-gold",
+      "to": "ais-application-service"
+    },
+    {
+      "from": "ais-gold",
+      "to": "iam-manage"
+    },
+    {
+      "from": "iam-manage",
+      "to": "ais-configure"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Redis saturation and rejected calls",
+    "probable_root_cause": "10.252.199.142:6389",
+    "root_cause_entity_type": "platform.redis",
+    "blast_radius": [
+      "ais-amc",
+      "ais-configure"
+    ],
+    "evidence": {
+      "trace_id": "d689fc3b5533a202cf08ea085e076f17",
+      "injected_span_id": "a4dde9ace8a4388b",
+      "metric_names": [
+        "redis_commands_duration_seconds_total",
+        "redis_commands_failed_calls_total",
+        "redis_commands_rejected_calls_total"
+      ]
+    }
+  }
+}

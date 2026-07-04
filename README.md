@@ -58,6 +58,8 @@ make quickstart
 make quickstart-diagnosis
 ```
 
+`make quickstart-diagnosis` auto-prepares the Diagnosis Engine Python virtualenv from `diagnosis-engine/requirements.txt` and loads versioned demo assets from `examples/mmodel-fault-samples` and `examples/otel-demo`; no pre-generated `outputs/` directory or manual `uvicorn` install is required.
+
 `make quickstart-diagnosis` 保持 `make quickstart` 的默认 `demo` workspace 行为不变，并额外导入两个诊断演示 workspace：
 
 - `mmodel-faults`：MModel 故障样例，用于智能诊断页的故障定位演示。

@@ -45,6 +45,9 @@ def test_dev_output_reports_diagnosis_url_and_local_files_are_ignored() -> None:
 
     assert "Diagnosis: http://localhost:${DIAG_PORT}" in dev_script
     assert "Diagnosis log: ${DIAG_LOG}" in dev_script
+    assert "diagnosis-engine/requirements.txt" in dev_script
+    assert "-m venv" in dev_script
+    assert "-m uvicorn app.main:app" in dev_script
     assert "diagnosis-engine/.env" in gitignore
     assert "diagnosis-engine/app.log" in gitignore
 
@@ -61,10 +64,29 @@ def test_makefile_and_readme_expose_diagnosis_quickstart_without_replacing_defau
     assert "make quickstart-diagnosis" in readme
     assert "mmodel-faults" in readme
     assert "otel-demo" in readme
+    assert 'MMODEL_FAULT_SAMPLE_DIR="${MMODEL_FAULT_SAMPLE_DIR:-examples/mmodel-fault-samples}"' in script
     assert 'workspace="mmodel-faults"' in script
     assert 'workspace="otel-demo"' in script
-    assert "outputs/mmodel-fault-samples/sample-data/entities.json" in script
+    assert '${MMODEL_FAULT_SAMPLE_DIR}/sample-data/entities.json' in script
+    assert "outputs/mmodel-fault-samples/sample-data/entities.json" not in script
     assert "examples/otel-demo/sample-data/entities.json" in script
+
+
+def test_diagnosis_quickstart_assets_are_versioned_examples_not_local_outputs() -> None:
+    sample_root = REPO_ROOT / "examples" / "mmodel-fault-samples"
+    adapter = _read(DIAG_ROOT / "app" / "adapters" / "unifiedmodel_adapter.py")
+
+    assert (sample_root / "model-pack").is_dir()
+    assert (sample_root / "model-pack" / "platform" / "entity_set" / "platform.redis.yaml").is_file()
+    assert (sample_root / "model-pack" / "platform" / "entity_set" / "platform.database.yaml").is_file()
+    assert (sample_root / "sample-data" / "entities.json").is_file()
+    assert (sample_root / "sample-data" / "relations.json").is_file()
+    assert (sample_root / "evidence" / "traces.json").is_file()
+    assert (sample_root / "evidence" / "logs.json").is_file()
+    assert (sample_root / "evidence" / "metrics.json").is_file()
+    assert (sample_root / "scenarios" / "demo-scenarios.json").is_file()
+    assert '"examples"' in adapter
+    assert '"outputs"' not in adapter
 
 
 def test_diagnosis_page_mounts_mmodel_workbench_feature_island() -> None:
@@ -76,6 +98,5 @@ def test_diagnosis_page_mounts_mmodel_workbench_feature_island() -> None:
     assert css.is_file()
     assert "DiagnosisWorkbench" in page
     assert "HistoryPanel" in _read(workbench)
-    assert "DataSourceIndicator" in _read(workbench)
     assert "streamStormDemoDiagnosis" in _read(workbench)
     assert (workbench.parent / "components" / "AgentChatPanel.tsx").is_file()

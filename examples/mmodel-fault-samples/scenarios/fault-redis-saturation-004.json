@@ -1,0 +1,56 @@
+{
+  "scenario_id": "fault-redis-saturation-004",
+  "title": "Redis saturation and rejected calls: ais-application-service",
+  "fault_type": "redis_saturation",
+  "severity": "P1",
+  "source_trace_id": "6a49b9a0ece940cb9bbec0a593b6cf55",
+  "synthetic_trace_id": "3231896105bb470c3b6e54d65b9ba1ae",
+  "start_time": "2026-06-03T01:01:48.232Z",
+  "end_time": "2026-06-03T01:09:48.232Z",
+  "root_cause_service": "ais-amc",
+  "root_cause_middleware": {
+    "type": "redis",
+    "entity_type": "platform.redis",
+    "instance": "10.252.199.142:6389",
+    "id": "a824e83ca293bcb0d98d076498213492"
+  },
+  "impacted_service": "ais-application-service",
+  "services": [
+    "ais-amc",
+    "ais-application-service",
+    "ais-configure",
+    "ais-pmc"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-application-service",
+      "to": "ais-amc"
+    },
+    {
+      "from": "ais-application-service",
+      "to": "ais-configure"
+    },
+    {
+      "from": "ais-application-service",
+      "to": "ais-pmc"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Redis saturation and rejected calls",
+    "probable_root_cause": "10.252.199.142:6389",
+    "root_cause_entity_type": "platform.redis",
+    "blast_radius": [
+      "ais-amc",
+      "ais-application-service"
+    ],
+    "evidence": {
+      "trace_id": "3231896105bb470c3b6e54d65b9ba1ae",
+      "injected_span_id": "d869b169fe88bd8b",
+      "metric_names": [
+        "redis_commands_duration_seconds_total",
+        "redis_commands_failed_calls_total",
+        "redis_commands_rejected_calls_total"
+      ]
+    }
+  }
+}

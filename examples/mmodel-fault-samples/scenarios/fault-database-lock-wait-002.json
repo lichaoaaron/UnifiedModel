@@ -1,0 +1,63 @@
+{
+  "scenario_id": "fault-database-lock-wait-002",
+  "title": "Database lock wait contention: csc-cm-it",
+  "fault_type": "database_lock_wait",
+  "severity": "P1",
+  "source_trace_id": "edc9cb08d8804408315036ebd1bf6d0a",
+  "synthetic_trace_id": "e622524dc321ef94c1dd5dae4e82605f",
+  "start_time": "2026-06-03T01:01:52.531Z",
+  "end_time": "2026-06-03T01:09:52.531Z",
+  "root_cause_service": "iam-manage",
+  "root_cause_middleware": {
+    "type": "database",
+    "entity_type": "platform.database",
+    "instance": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=iam_imc",
+    "id": "0fc9467a3856819a965864927e011dba"
+  },
+  "impacted_service": "csc-cm-it",
+  "services": [
+    "ais-amc",
+    "ais-application-service",
+    "ais-configure",
+    "ais-mmj-service",
+    "ais-pmc",
+    "csc-cm-it",
+    "iam-manage"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-configure",
+      "to": "ais-mmj-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "ais-application-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "iam-manage"
+    },
+    {
+      "from": "iam-manage",
+      "to": "ais-configure"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Database lock wait contention",
+    "probable_root_cause": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=iam_imc",
+    "root_cause_entity_type": "platform.database",
+    "blast_radius": [
+      "csc-cm-it",
+      "iam-manage"
+    ],
+    "evidence": {
+      "trace_id": "e622524dc321ef94c1dd5dae4e82605f",
+      "injected_span_id": "283e2dc6e63a6d66",
+      "metric_names": [
+        "cmdb_stat_lock_wait_statis_avg_wait_time",
+        "cmdb_stat_lock_wait_statis_max_wait_time",
+        "cmdb_stat_lock_wait_statis_failed_wait"
+      ]
+    }
+  }
+}

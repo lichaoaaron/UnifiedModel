@@ -16,6 +16,7 @@ QUICKSTART_WORKSPACE="${QUICKSTART_WORKSPACE:-demo}"
 QUICKSTART_SAMPLE="${QUICKSTART_SAMPLE:-multi-domain-quickstart}"
 DIAGNOSIS_ENABLED="${DIAGNOSIS_ENABLED:-1}"
 DIAG_PORT="${DIAG_PORT:-8000}"
+DIAG_VENV="${DIAG_VENV:-}"
 PNPM="${PNPM:-pnpm}"
 PID_DIR="${PID_DIR:-${ROOT_DIR}/.run}"
 LOG_DIR="${LOG_DIR:-${PID_DIR}/logs}"
@@ -27,6 +28,13 @@ esac
 case "${LOG_DIR}" in
   /*) ;;
   *) LOG_DIR="${ROOT_DIR}/${LOG_DIR}" ;;
+esac
+if [[ -z "${DIAG_VENV}" ]]; then
+  DIAG_VENV="${PID_DIR}/diagnosis-venv"
+fi
+case "${DIAG_VENV}" in
+  /*) ;;
+  *) DIAG_VENV="${ROOT_DIR}/${DIAG_VENV}" ;;
 esac
 
 API_PID_FILE="${PID_DIR}/openumodel-dev-api.pid"
@@ -96,6 +104,92 @@ resolve_web_tooling() {
   echo "pnpm 9 or newer is required to install Web UI dependencies." >&2
   echo "Install pnpm, enable corepack, or provide npm so make dev can run npm exec pnpm@${PNPM_VERSION}." >&2
   exit 1
+}
+
+resolve_python_bin() {
+  local configured="${PYTHON:-}"
+  if [[ -n "${configured}" ]]; then
+    if command -v "${configured}" >/dev/null 2>&1; then
+      echo "${configured}"
+      return
+    fi
+    echo "Configured PYTHON=${configured} was not found." >&2
+    exit 1
+  fi
+
+  if command -v python >/dev/null 2>&1; then
+    echo "python"
+    return
+  fi
+  if command -v python3 >/dev/null 2>&1; then
+    echo "python3"
+    return
+  fi
+
+  echo "Python 3.10+ is required for the diagnosis engine." >&2
+  echo "Install Python or retry with PYTHON=/path/to/python make quickstart-diagnosis." >&2
+  exit 1
+}
+
+venv_python() {
+  if [[ -x "${DIAG_VENV}/bin/python" ]]; then
+    echo "${DIAG_VENV}/bin/python"
+    return
+  fi
+  if [[ -x "${DIAG_VENV}/Scripts/python.exe" ]]; then
+    echo "${DIAG_VENV}/Scripts/python.exe"
+    return
+  fi
+}
+
+install_diagnosis_dependencies() {
+  local diag_dir="${ROOT_DIR}/diagnosis-engine"
+  local req_file="${diag_dir}/requirements.txt"
+  local python_bin
+  local diag_python
+  local req_hash
+  local marker_file
+
+  if [[ ! -f "${req_file}" ]]; then
+    echo "Diagnosis requirements file was not found at ${req_file}." >&2
+    exit 1
+  fi
+
+  diag_python="$(venv_python || true)"
+  if [[ -z "${diag_python}" ]]; then
+    python_bin="$(resolve_python_bin)"
+    if ! "${python_bin}" -c 'import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)' >/dev/null 2>&1; then
+      echo "Python 3.10+ is required for the diagnosis engine; found $(${python_bin} --version 2>&1)." >&2
+      exit 1
+    fi
+    echo "Creating diagnosis Python virtual environment at ${DIAG_VENV}"
+    "${python_bin}" -m venv "${DIAG_VENV}"
+    diag_python="$(venv_python || true)"
+  fi
+
+  if [[ -z "${diag_python}" ]]; then
+    echo "Diagnosis Python virtual environment was created but no Python executable was found in ${DIAG_VENV}." >&2
+    exit 1
+  fi
+
+  req_hash="$("${diag_python}" - "${req_file}" <<'PY'
+import hashlib
+import pathlib
+import sys
+
+path = pathlib.Path(sys.argv[1])
+print(hashlib.sha256(path.read_bytes()).hexdigest())
+PY
+)"
+  marker_file="${DIAG_VENV}/.requirements.sha256"
+
+  if [[ ! -f "${marker_file}" ]] || [[ "$(cat "${marker_file}" 2>/dev/null || true)" != "${req_hash}" ]]; then
+    echo "Installing diagnosis engine dependencies from diagnosis-engine/requirements.txt"
+    "${diag_python}" -m pip install -r "${req_file}" >> "${DIAG_LOG}" 2>&1
+    echo "${req_hash}" > "${marker_file}"
+  fi
+
+  DIAG_PYTHON="${diag_python}"
 }
 
 install_web_dependencies() {
@@ -250,6 +344,7 @@ assert_pid_file_stale_or_absent "UModel API" "${API_PID_FILE}"
 assert_pid_file_stale_or_absent "UModel Web" "${WEB_PID_FILE}"
 if is_enabled "${DIAGNOSIS_ENABLED}"; then
   assert_pid_file_stale_or_absent "Diagnosis Engine" "${DIAG_PID_FILE}"
+  install_diagnosis_dependencies
 fi
 
 echo "Installing UModel Web dependencies..."
@@ -300,17 +395,7 @@ if is_enabled "${DIAGNOSIS_ENABLED}"; then
 
   (
     cd "${DIAG_DIR}"
-    # Use uvicorn if available, otherwise try python -m uvicorn
-    if command -v uvicorn >/dev/null 2>&1; then
-      exec nohup uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
-    elif command -v python >/dev/null 2>&1; then
-      exec nohup python -m uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
-    elif command -v python3 >/dev/null 2>&1; then
-      exec nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
-    else
-      echo "Python not found — diagnosis engine will not start." >&2
-      exit 1
-    fi
+    exec nohup "${DIAG_PYTHON}" -m uvicorn app.main:app --host 0.0.0.0 --port "${DIAG_PORT}" >> "${DIAG_LOG}" 2>&1 < /dev/null
   ) &
   DIAG_PID="$!"
   echo "${DIAG_PID}" > "${DIAG_PID_FILE}"

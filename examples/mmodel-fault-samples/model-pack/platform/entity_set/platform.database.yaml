@@ -1,0 +1,41 @@
+kind: entity_set
+schema:
+  url: "umodel.aliyun.com"
+  version: "v0.1.0"
+metadata:
+  name: "platform.database"
+  domain: platform
+  display_name:
+    en_us: "Database Instance"
+    zh_cn: "数据库实例"
+  description:
+    en_us: "A database middleware instance discovered from telemetry."
+    zh_cn: "从可观测数据中发现的数据库中间件实例。"
+spec:
+  fields:
+    - name: id
+      type: string
+      display_name: { en_us: "ID", zh_cn: "ID" }
+    - name: display_name
+      type: string
+      display_name: { en_us: "Name", zh_cn: "名称" }
+    - name: instance
+      type: string
+      display_name: { en_us: "Instance", zh_cn: "实例" }
+    - name: engine
+      type: string
+      display_name: { en_us: "Engine", zh_cn: "引擎" }
+    - name: status
+      type: string
+      display_name: { en_us: "Status", zh_cn: "状态" }
+    - name: source
+      type: string
+      display_name: { en_us: "Source", zh_cn: "来源" }
+  primary_key_fields:
+    - id
+  id_generator: "id"
+  name_fields:
+    - display_name
+  ordered_fields: ["id", "display_name", "instance", "engine", "status", "source"]
+  first_observed_time_field: "__first_observed_time__"
+  last_observed_time_field: "__last_observed_time__"

@@ -7,6 +7,7 @@ VIRTUAL_ENV_PYTHON := $(if $(VIRTUAL_ENV),$(VIRTUAL_ENV)/bin/python)
 PYTHON ?= $(or $(wildcard $(VENV_PYTHON)),$(wildcard $(CONDA_PYTHON)),$(wildcard $(VIRTUAL_ENV_PYTHON)),python3)
 GOCACHE ?= $(CURDIR)/.cache/go-build
 PNPM ?= pnpm
+BASH ?= $(if $(wildcard C:/Progra~1/Git/bin/bash.exe),C:/Progra~1/Git/bin/bash.exe,bash)
 BIN_DIR ?= bin
 GOEXE ?= $(shell go env GOEXE 2>/dev/null)
 UMCTL_BIN ?= $(BIN_DIR)/umctl$(GOEXE)
@@ -98,13 +99,13 @@ install-cli:
 	echo "Make sure $$bin is on PATH."
 
 build-ui:
-	@PNPM="$(PNPM)" bash ./scripts/env.sh web-build
+	@PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh web-build
 
 build-sdk-go:
 	cd ./sdk/go && go build ./...
 
 dev:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PNPM="$(PNPM)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PNPM="$(PNPM)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" "$(BASH)" ./scripts/dev.sh
 
 quickstart: GRAPHSTORE = memory
 quickstart: QUICKSTART = 1
@@ -113,29 +114,29 @@ quickstart: dev
 quickstart-diagnosis: GRAPHSTORE = memory
 quickstart-diagnosis: QUICKSTART = 1
 quickstart-diagnosis: dev
-	@API_URL="$(API_URL)" bash ./scripts/quickstart-diagnosis.sh
+	@API_URL="$(API_URL)" "$(BASH)" ./scripts/quickstart-diagnosis.sh
 
 deploy: GRAPHSTORE = file.memory
 deploy: build-ui
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/deploy.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" GO_TAGS="$(GO_TAGS)" QUICKSTART="$(QUICKSTART)" QUICKSTART_WORKSPACE="$(QUICKSTART_WORKSPACE)" QUICKSTART_SAMPLE="$(QUICKSTART_SAMPLE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" "$(BASH)" ./scripts/deploy.sh
 
 dev-api:
 	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
 
 dev-web:
-	@API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PNPM="$(PNPM)" bash ./scripts/env.sh web-dev
+	@API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh web-dev
 
 stop-all:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="all" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="all" "$(BASH)" ./scripts/stop-dev.sh
 
 stop-dev:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="dev" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="dev" "$(BASH)" ./scripts/stop-dev.sh
 
 stop-deploy:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="deploy" bash ./scripts/stop-dev.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" FORCE="$(FORCE)" DRY_RUN="$(DRY_RUN)" STOP_MODE="deploy" "$(BASH)" ./scripts/stop-dev.sh
 
 status:
-	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" bash ./scripts/status.sh
+	@API_ADDR="$(API_ADDR)" API_URL="$(API_URL)" WEB_PORT="$(WEB_PORT)" DIAG_PORT="$(DIAG_PORT)" DATA_ROOT="$(DATA_ROOT)" GRAPHSTORE="$(GRAPHSTORE)" PID_DIR="$(PID_DIR)" LOG_DIR="$(LOG_DIR)" "$(BASH)" ./scripts/status.sh
 
 serve-ui: build-ui
 	go run $(GO_RUN_TAGS) ./cmd/umodel-server --addr "$(API_ADDR)" --data "$(DATA_ROOT)" --graphstore "$(GRAPHSTORE)" --ui-dir web/dist $(if $(filter 1 true TRUE yes YES on ON,$(QUICKSTART)),--quickstart --quickstart-workspace "$(QUICKSTART_WORKSPACE)" --quickstart-sample "$(QUICKSTART_SAMPLE)")
@@ -149,7 +150,7 @@ vulncheck:
 	go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 test-ui:
-	@PNPM="$(PNPM)" bash ./scripts/env.sh web-build
+	@PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh web-build
 
 test-ui-e2e:
 	@cd web && npx playwright test --reporter=list
@@ -229,15 +230,15 @@ ci: guard schemas-embed-check build-service test-service test-capability test-qu
 	@echo "Local CI passed."
 
 check-env:
-	@PYTHON="$(PYTHON)" PNPM="$(PNPM)" bash ./scripts/env.sh check
+	@PYTHON="$(PYTHON)" PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh check
 
 install-env:
-	@PYTHON="$(PYTHON)" PNPM="$(PNPM)" bash ./scripts/env.sh install
+	@PYTHON="$(PYTHON)" PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh install
 
 setup: install-env
 
 setup-ui:
-	@PNPM="$(PNPM)" bash ./scripts/env.sh web-install
+	@PNPM="$(PNPM)" "$(BASH)" ./scripts/env.sh web-install
 
 clean:
 	@rm -rf dist/

@@ -1,0 +1,74 @@
+{
+  "scenario_id": "fault-database-lock-wait-004",
+  "title": "Database lock wait contention: iam-manage",
+  "fault_type": "database_lock_wait",
+  "severity": "P1",
+  "source_trace_id": "6b60d1e2478b41dddbffa12f4fbc9ebd",
+  "synthetic_trace_id": "7508270b1b4f89784ee7b1467270b2e9",
+  "start_time": "2026-06-03T01:00:07.490Z",
+  "end_time": "2026-06-03T01:08:07.490Z",
+  "root_cause_service": "ais-configure",
+  "root_cause_middleware": {
+    "type": "database",
+    "entity_type": "platform.database",
+    "instance": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=ais_iam",
+    "id": "1e049584b0eafd4c8c466b77d3f3b773"
+  },
+  "impacted_service": "iam-manage",
+  "services": [
+    "ais-application-service",
+    "ais-configure",
+    "ais-mmj-service",
+    "ais-pmc",
+    "csc-cm-it",
+    "iam-manage"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-application-service",
+      "to": "ais-configure"
+    },
+    {
+      "from": "ais-application-service",
+      "to": "ais-pmc"
+    },
+    {
+      "from": "ais-application-service",
+      "to": "iam-manage"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-mmj-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "ais-application-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "iam-manage"
+    },
+    {
+      "from": "iam-manage",
+      "to": "ais-configure"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Database lock wait contention",
+    "probable_root_cause": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=ais_iam",
+    "root_cause_entity_type": "platform.database",
+    "blast_radius": [
+      "ais-configure",
+      "iam-manage"
+    ],
+    "evidence": {
+      "trace_id": "7508270b1b4f89784ee7b1467270b2e9",
+      "injected_span_id": "95e85387b1d867aa",
+      "metric_names": [
+        "cmdb_stat_lock_wait_statis_avg_wait_time",
+        "cmdb_stat_lock_wait_statis_max_wait_time",
+        "cmdb_stat_lock_wait_statis_failed_wait"
+      ]
+    }
+  }
+}

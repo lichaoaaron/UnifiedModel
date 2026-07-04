@@ -1,9 +1,9 @@
 """
-UnifiedModelAdapter: reads generated fault samples from UnifiedModel outputs.
+UnifiedModelAdapter: reads versioned fault samples from UnifiedModel examples.
 
 This adapter provides:
   - File-based mode (DATA_SOURCE=unifiedmodel): reads local JSON from
-    UnifiedModel/outputs/mmodel-fault-samples/
+    UnifiedModel/examples/mmodel-fault-samples/
   - REST API mode (DATA_SOURCE=mmodel_api): calls MModel REST API
     (Query Service evidence(), .entity, .topo) to fetch runtime data.
 
@@ -28,7 +28,8 @@ _DEFAULT_SAMPLE_DIR = os.path.normpath(
         os.path.dirname(__file__),
         "..",
         "..",
-        "outputs",
+        "..",
+        "examples",
         "mmodel-fault-samples",
     )
 )

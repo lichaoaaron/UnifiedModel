@@ -1,0 +1,70 @@
+{
+  "scenario_id": "fault-downstream-timeout-001",
+  "title": "Downstream service timeout: ais-amc",
+  "fault_type": "downstream_timeout",
+  "severity": "P2",
+  "source_trace_id": "6b60d1e2528b41dd639ab9f44fbc9ebd",
+  "synthetic_trace_id": "ec1bdfcb69a7883ad7afe74b354bc85d",
+  "start_time": "2026-06-03T01:01:19.582Z",
+  "end_time": "2026-06-03T01:09:19.582Z",
+  "root_cause_service": "csc-cm-it",
+  "root_cause_middleware": null,
+  "impacted_service": "ais-amc",
+  "services": [
+    "ais-amc",
+    "ais-application-service",
+    "ais-configure",
+    "ais-mmj-service",
+    "ais-pmc",
+    "csc-cm-it",
+    "iam-manage"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-application-service",
+      "to": "ais-pmc"
+    },
+    {
+      "from": "ais-application-service",
+      "to": "iam-manage"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-mmj-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "ais-amc"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "ais-application-service"
+    },
+    {
+      "from": "csc-cm-it",
+      "to": "iam-manage"
+    },
+    {
+      "from": "iam-manage",
+      "to": "ais-configure"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Downstream service timeout",
+    "probable_root_cause": "csc-cm-it",
+    "root_cause_entity_type": "platform.service",
+    "blast_radius": [
+      "ais-amc",
+      "csc-cm-it"
+    ],
+    "evidence": {
+      "trace_id": "ec1bdfcb69a7883ad7afe74b354bc85d",
+      "injected_span_id": "28fa68161d37df60",
+      "metric_names": [
+        "service_request_latency_ms",
+        "service_error_rate",
+        "service_timeout_count"
+      ]
+    }
+  }
+}

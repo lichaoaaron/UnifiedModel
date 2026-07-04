@@ -1,0 +1,209 @@
+[
+  {
+    "scenario_id": "fault-downstream-timeout-001",
+    "title": "Downstream service timeout: ais-amc",
+    "fault_type": "downstream_timeout",
+    "severity": "P2",
+    "source_trace_id": "6b60d1e2528b41dd639ab9f44fbc9ebd",
+    "synthetic_trace_id": "ec1bdfcb69a7883ad7afe74b354bc85d",
+    "start_time": "2026-06-03T01:01:19.582Z",
+    "end_time": "2026-06-03T01:09:19.582Z",
+    "root_cause_service": "csc-cm-it",
+    "root_cause_middleware": null,
+    "impacted_service": "ais-amc",
+    "services": [
+      "ais-amc",
+      "ais-application-service",
+      "ais-configure",
+      "ais-mmj-service",
+      "ais-pmc",
+      "csc-cm-it",
+      "iam-manage"
+    ],
+    "dependencies": [
+      {
+        "from": "ais-application-service",
+        "to": "ais-pmc"
+      },
+      {
+        "from": "ais-application-service",
+        "to": "iam-manage"
+      },
+      {
+        "from": "ais-configure",
+        "to": "ais-mmj-service"
+      },
+      {
+        "from": "csc-cm-it",
+        "to": "ais-amc"
+      },
+      {
+        "from": "csc-cm-it",
+        "to": "ais-application-service"
+      },
+      {
+        "from": "csc-cm-it",
+        "to": "iam-manage"
+      },
+      {
+        "from": "iam-manage",
+        "to": "ais-configure"
+      }
+    ],
+    "expected_diagnosis": {
+      "symptom": "Downstream service timeout",
+      "probable_root_cause": "csc-cm-it",
+      "root_cause_entity_type": "platform.service",
+      "blast_radius": [
+        "ais-amc",
+        "csc-cm-it"
+      ],
+      "evidence": {
+        "trace_id": "ec1bdfcb69a7883ad7afe74b354bc85d",
+        "injected_span_id": "28fa68161d37df60",
+        "metric_names": [
+          "service_request_latency_ms",
+          "service_error_rate",
+          "service_timeout_count"
+        ]
+      }
+    }
+  },
+  {
+    "scenario_id": "fault-redis-saturation-001",
+    "title": "Redis saturation and rejected calls: ais-configure",
+    "fault_type": "redis_saturation",
+    "severity": "P1",
+    "source_trace_id": "0dcd9927c2784966566f0ea6ea7d2ecc",
+    "synthetic_trace_id": "b4718bd204144788216a9e8eef57e289",
+    "start_time": "2026-06-03T01:00:04.895Z",
+    "end_time": "2026-06-03T01:08:04.895Z",
+    "root_cause_service": "ais-amc",
+    "root_cause_middleware": {
+      "type": "redis",
+      "entity_type": "platform.redis",
+      "instance": "10.252.199.142:6389",
+      "id": "a824e83ca293bcb0d98d076498213492"
+    },
+    "impacted_service": "ais-configure",
+    "services": [
+      "ais-amc",
+      "ais-application-service",
+      "ais-configure",
+      "ais-gold",
+      "ais-mmj-service",
+      "iam-manage"
+    ],
+    "dependencies": [
+      {
+        "from": "ais-application-service",
+        "to": "ais-configure"
+      },
+      {
+        "from": "ais-configure",
+        "to": "ais-amc"
+      },
+      {
+        "from": "ais-configure",
+        "to": "ais-gold"
+      },
+      {
+        "from": "ais-configure",
+        "to": "ais-mmj-service"
+      },
+      {
+        "from": "ais-gold",
+        "to": "ais-application-service"
+      },
+      {
+        "from": "ais-gold",
+        "to": "iam-manage"
+      },
+      {
+        "from": "iam-manage",
+        "to": "ais-configure"
+      }
+    ],
+    "expected_diagnosis": {
+      "symptom": "Redis saturation and rejected calls",
+      "probable_root_cause": "10.252.199.142:6389",
+      "root_cause_entity_type": "platform.redis",
+      "blast_radius": [
+        "ais-amc",
+        "ais-configure"
+      ],
+      "evidence": {
+        "trace_id": "b4718bd204144788216a9e8eef57e289",
+        "injected_span_id": "3883052abcab8d36",
+        "metric_names": [
+          "redis_commands_duration_seconds_total",
+          "redis_commands_failed_calls_total",
+          "redis_commands_rejected_calls_total"
+        ]
+      }
+    }
+  },
+  {
+    "scenario_id": "fault-database-lock-wait-001",
+    "title": "Database lock wait contention: ais-amc",
+    "fault_type": "database_lock_wait",
+    "severity": "P1",
+    "source_trace_id": "1731b411f69142786eee37a8541c334f",
+    "synthetic_trace_id": "879cb583129ec5cabc0cc90495498ec8",
+    "start_time": "2026-06-03T01:01:45.658Z",
+    "end_time": "2026-06-03T01:09:45.658Z",
+    "root_cause_service": "csc-cm-it",
+    "root_cause_middleware": {
+      "type": "database",
+      "entity_type": "platform.database",
+      "instance": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=csc_cm_it",
+      "id": "1ab6c9ddf523113d02d888c8181cbca0"
+    },
+    "impacted_service": "ais-amc",
+    "services": [
+      "ais-amc",
+      "ais-application-service",
+      "ais-configure",
+      "ais-mmj-service",
+      "ais-pmc",
+      "csc-cm-it",
+      "iam-manage"
+    ],
+    "dependencies": [
+      {
+        "from": "ais-configure",
+        "to": "ais-mmj-service"
+      },
+      {
+        "from": "csc-cm-it",
+        "to": "ais-application-service"
+      },
+      {
+        "from": "csc-cm-it",
+        "to": "iam-manage"
+      },
+      {
+        "from": "iam-manage",
+        "to": "ais-configure"
+      }
+    ],
+    "expected_diagnosis": {
+      "symptom": "Database lock wait contention",
+      "probable_root_cause": "Shanghai&useUnicode=true&characterEncoding=utf8&currentSchema=csc_cm_it",
+      "root_cause_entity_type": "platform.database",
+      "blast_radius": [
+        "ais-amc",
+        "csc-cm-it"
+      ],
+      "evidence": {
+        "trace_id": "879cb583129ec5cabc0cc90495498ec8",
+        "injected_span_id": "7fdf83b9a28d7137",
+        "metric_names": [
+          "cmdb_stat_lock_wait_statis_avg_wait_time",
+          "cmdb_stat_lock_wait_statis_max_wait_time",
+          "cmdb_stat_lock_wait_statis_failed_wait"
+        ]
+      }
+    }
+  }
+]

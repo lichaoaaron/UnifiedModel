@@ -1,0 +1,35 @@
+{
+  "sample": "mmodel-fault-samples",
+  "title": "MModel Controlled Fault Samples",
+  "description": "Deterministic fault samples derived from exported log, metric, and trace data.",
+  "schema_pack": "examples/incident-investigation",
+  "additional_schema_pack": "examples/mmodel-fault-samples/model-pack",
+  "data_source": "data",
+  "generation": {
+    "script": "scripts/generate_mmodel_fault_samples.py",
+    "trace_scan_limit": 180000,
+    "log_scan_limit": 300000,
+    "per_type": 4
+  },
+  "counts": {
+    "scenarios": 12,
+    "entities": 25,
+    "relations": 52,
+    "logs": 141,
+    "metrics": 324,
+    "traces": 832
+  },
+  "files": {
+    "entities": "sample-data/entities.json",
+    "relations": "sample-data/relations.json",
+    "scenarios": "scenarios/index.json",
+    "demo_scenarios": "scenarios/demo-scenarios.json",
+    "logs": "evidence/logs.json",
+    "metrics": "evidence/metrics.json",
+    "traces": "evidence/traces.json"
+  },
+  "limitations": [
+    "Fault signals are controlled synthetic mutations of exported telemetry.",
+    "The samples validate the MModel closed loop but are not production incident ground truth."
+  ]
+}

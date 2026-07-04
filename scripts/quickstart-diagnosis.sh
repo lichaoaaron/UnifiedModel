@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 API_URL="${API_URL:-${UMODEL_API_URL:-http://localhost:8080}}"
+MMODEL_FAULT_SAMPLE_DIR="${MMODEL_FAULT_SAMPLE_DIR:-examples/mmodel-fault-samples}"
 
 cd "${ROOT_DIR}"
 
@@ -42,15 +43,15 @@ import_mmodel_faults() {
   echo "Loading ${workspace} workspace..."
 
   require_path "examples/incident-investigation"
-  require_path "outputs/mmodel-fault-samples/model-pack"
-  require_path "outputs/mmodel-fault-samples/sample-data/entities.json"
-  require_path "outputs/mmodel-fault-samples/sample-data/relations.json"
+  require_path "${MMODEL_FAULT_SAMPLE_DIR}/model-pack"
+  require_path "${MMODEL_FAULT_SAMPLE_DIR}/sample-data/entities.json"
+  require_path "${MMODEL_FAULT_SAMPLE_DIR}/sample-data/relations.json"
 
   create_workspace "${workspace}" "MModel Fault Samples"
   go run ./cmd/umctl --addr "${API_URL}" umodel import "${workspace}" examples/incident-investigation
-  go run ./cmd/umctl --addr "${API_URL}" umodel import "${workspace}" outputs/mmodel-fault-samples/model-pack
-  go run ./cmd/umctl --addr "${API_URL}" entity write "${workspace}" outputs/mmodel-fault-samples/sample-data/entities.json
-  go run ./cmd/umctl --addr "${API_URL}" topo write "${workspace}" outputs/mmodel-fault-samples/sample-data/relations.json
+  go run ./cmd/umctl --addr "${API_URL}" umodel import "${workspace}" "${MMODEL_FAULT_SAMPLE_DIR}/model-pack"
+  go run ./cmd/umctl --addr "${API_URL}" entity write "${workspace}" "${MMODEL_FAULT_SAMPLE_DIR}/sample-data/entities.json"
+  go run ./cmd/umctl --addr "${API_URL}" topo write "${workspace}" "${MMODEL_FAULT_SAMPLE_DIR}/sample-data/relations.json"
 }
 
 import_otel_demo() {

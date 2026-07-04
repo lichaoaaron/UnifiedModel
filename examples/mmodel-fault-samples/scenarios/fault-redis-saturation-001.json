@@ -1,0 +1,103 @@
+{
+  "scenario_id": "fault-redis-saturation-001",
+  "title": "Redis saturation and rejected calls: ais-configure",
+  "fault_type": "redis_saturation",
+  "severity": "P1",
+  "source_trace_id": "0dcd9927c2784966566f0ea6ea7d2ecc",
+  "synthetic_trace_id": "b4718bd204144788216a9e8eef57e289",
+  "start_time": "2026-06-03T01:00:04.895Z",
+  "end_time": "2026-06-03T01:08:04.895Z",
+  "root_cause_service": "ais-amc",
+  "root_cause_middleware": {
+    "type": "redis",
+    "entity_type": "platform.redis",
+    "instance": "10.252.199.142:6389",
+    "id": "a824e83ca293bcb0d98d076498213492"
+  },
+  "impacted_service": "ais-configure",
+  "services": [
+    "ais-amc",
+    "ais-application-service",
+    "ais-configure",
+    "ais-gold",
+    "ais-mmj-service",
+    "iam-manage"
+  ],
+  "dependencies": [
+    {
+      "from": "ais-application-service",
+      "to": "ais-configure"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-amc"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-gold"
+    },
+    {
+      "from": "ais-configure",
+      "to": "ais-mmj-service"
+    },
+    {
+      "from": "ais-gold",
+      "to": "ais-application-service"
+    },
+    {
+      "from": "ais-gold",
+      "to": "iam-manage"
+    },
+    {
+      "from": "iam-manage",
+      "to": "ais-configure"
+    }
+  ],
+  "expected_diagnosis": {
+    "symptom": "Redis saturation and rejected calls",
+    "probable_root_cause": "10.252.199.142:6389",
+    "root_cause_entity_type": "platform.redis",
+    "blast_radius": [
+      "ais-amc",
+      "ais-configure"
+    ],
+    "evidence": {
+      "trace_id": "b4718bd204144788216a9e8eef57e289",
+      "injected_span_id": "3883052abcab8d36",
+      "metric_names": [
+        "redis_commands_duration_seconds_total",
+        "redis_commands_failed_calls_total",
+        "redis_commands_rejected_calls_total"
+      ]
+    }
+  },
+  "merely_observed_nodes": [
+    {
+      "service": "ais-mmj-service",
+      "reason": "Called by ais-configure but has no direct Redis dependency and responds normally during the incident window.",
+      "node_type": "merely_observed_node"
+    },
+    {
+      "service": "iam-manage",
+      "reason": "Appears in trace and calls a different Redis instance (10.252.199.188:6379), not the saturated one. Its own operations complete normally.",
+      "node_type": "merely_observed_node"
+    }
+  ],
+  "noise_nodes": [
+    {
+      "service": "ais-configure",
+      "reason": "Entry service shows high RT and WARN/ERROR logs as a consequence of Redis propagation upstream. Without object-topology context, it looks like a root cause candidate.",
+      "node_type": "cascaded_slow_misleading"
+    },
+    {
+      "service": "ais-application-service",
+      "reason": "Shows elevated RT and pool pressure as a downstream consequence. A naive scan of slow spans would flag this service.",
+      "node_type": "cascaded_slow_misleading"
+    }
+  ],
+  "hardening": {
+    "applied": true,
+    "version": "v1",
+    "intent": "High-noise scenario: misleading cascaded slow spans and logs added to require object-centered convergence for correct root-cause identification."
+  }
+}
