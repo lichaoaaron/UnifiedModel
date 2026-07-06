@@ -55,3 +55,10 @@ data/
 !diagnosis-engine/examples/**
 docs/docs/
 docs/
+
+# data directory (runtime state) - root-anchored so nested data/ dirs
+# (e.g. internal/mmodel/schemaspec/data/ embedded schemas) stay tracked
+/data/
+
+# jetbrain ide
+.idea/
