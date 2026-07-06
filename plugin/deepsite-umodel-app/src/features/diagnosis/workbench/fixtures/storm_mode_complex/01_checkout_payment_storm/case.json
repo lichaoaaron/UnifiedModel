@@ -1,0 +1,388 @@
+{
+  "case_id": "01_checkout_payment_storm",
+  "name": "checkout payment storm with secondary redis noise",
+  "purpose": "Demonstrate storm mode with branch-specific skill selection, conflict resolution, extra evidence collection, and final common-root convergence.",
+  "alert_event": {
+    "api": "/checkout/pay",
+    "time": "2026-05-18 10:17:35",
+    "time_window": {
+      "start": "2026-05-18 10:10:00",
+      "end": "2026-05-18 10:25:00"
+    },
+    "symptom": "HTTP 504 spike, payment success rate drop from 99.2% to 71.4%, order latency p95 increased to 4.8s",
+    "severity": "P1",
+    "tenant": "prod-cn-hangzhou",
+    "business_flow": "flash-sale checkout"
+  },
+  "storm_task_overview": {
+    "error_trace_count": 5,
+    "diagnosis_branch_count": 5,
+    "default_rounds": [
+      "abnormal_context_establishment",
+      "parallel_evidence_collection",
+      "conflict_evidence_resolution",
+      "root_cause_convergence"
+    ],
+    "runtime_adjustment": {
+      "skipped_rounds": [],
+      "extra_rounds": [
+        "round_5_secondary_cause_boundary_check"
+      ],
+      "early_stop": false
+    }
+  },
+  "topology": {
+    "entry": "api-gateway:/checkout/pay",
+    "nodes": [
+      "api-gateway",
+      "checkout-bff",
+      "checkout-service",
+      "mysql-checkout",
+      "inventory-service",
+      "redis-inventory",
+      "payment-service",
+      "third-party-pay",
+      "order-service",
+      "mysql-order",
+      "promotion-service",
+      "recommendation-service"
+    ],
+    "edges": [
+      "api-gateway -> checkout-bff",
+      "checkout-bff -> checkout-service",
+      "checkout-service -> mysql-checkout",
+      "checkout-service -> inventory-service",
+      "inventory-service -> redis-inventory",
+      "checkout-service -> payment-service",
+      "payment-service -> third-party-pay",
+      "checkout-service -> order-service",
+      "order-service -> mysql-order",
+      "checkout-service -> promotion-service",
+      "checkout-bff -> recommendation-service"
+    ]
+  },
+  "branches": [
+    {
+      "branch_id": "A",
+      "name": "checkout-service transaction creation timeout",
+      "trace_count": 1,
+      "initial_signal": "checkout-service span duration 3.9s to 5.2s, HTTP 504 propagated to entry API",
+      "branch_hypothesis": "checkout-service cannot acquire DB connection before payment orchestration",
+      "expected_role": "primary_common_root"
+    },
+    {
+      "branch_id": "B",
+      "name": "payment-service upstream timeout",
+      "trace_count": 1,
+      "initial_signal": "payment-service reports client timeout and cancelled payment request",
+      "branch_hypothesis": "payment provider outage or caller-side cancellation",
+      "expected_role": "propagated_impact"
+    },
+    {
+      "branch_id": "C",
+      "name": "inventory redis hot key latency",
+      "trace_count": 1,
+      "initial_signal": "inventory-service has Redis GET/DECR latency spikes on flash-sale SKU",
+      "branch_hypothesis": "Redis hot key contributes to partial latency but is not shared by all failed traces",
+      "expected_role": "secondary_local_issue"
+    },
+    {
+      "branch_id": "D",
+      "name": "order-service mysql slow insert",
+      "trace_count": 1,
+      "initial_signal": "order-service insert_order waits behind checkout transaction",
+      "branch_hypothesis": "MySQL lock wait is downstream consequence of checkout transaction pressure",
+      "expected_role": "downstream_symptom"
+    },
+    {
+      "branch_id": "E",
+      "name": "recommendation-service canary restart noise",
+      "trace_count": 1,
+      "initial_signal": "recommendation-service pod restarted during the same time window",
+      "branch_hypothesis": "Unrelated noisy event sharing the alert window",
+      "expected_role": "noise"
+    }
+  ],
+  "rounds": [
+    {
+      "round_id": 1,
+      "intent": "异常上下文建立",
+      "goal": "将单个告警扩展为多条 Error Trace，并按调用路径、异常形态、实体关系生成诊断分支。",
+      "branch_actions": [
+        {
+          "branch_id": "A",
+          "selected_skill": "analyze_trace",
+          "reason": "A 分支 Trace 完整且 checkout-service 是最长错误 span。",
+          "evidence_delta": [
+            "5 条 Trace 在 checkout-service 出现 ERROR 或 timeout",
+            "checkout-service 到 mysql-checkout 的连接获取 span 出现 timeout",
+            "入口 504 与 checkout-service 超时高度同步"
+          ]
+        },
+        {
+          "branch_id": "B",
+          "selected_skill": "analyze_trace",
+          "reason": "B 分支需要确认 payment-service 是根因还是被上游取消。",
+          "evidence_delta": [
+            "payment-service span 出现 cancelled by caller",
+            "third-party-pay 无全局错误率升高"
+          ]
+        },
+        {
+          "branch_id": "C",
+          "selected_skill": "bind_entities",
+          "reason": "C 分支 Trace 中 Redis 调用缺少完整服务标签，需要先绑定实体。",
+          "evidence_delta": [
+            "redis-inventory 绑定到 inventory-service",
+            "热点 SKU sku-8848 出现在 2 条异常 Trace"
+          ]
+        },
+        {
+          "branch_id": "D",
+          "selected_skill": "analyze_graph",
+          "reason": "D 分支涉及 order-service 与 mysql-order，需要先确认下游关系。",
+          "evidence_delta": [
+            "order-service 位于 checkout-service 下游",
+            "MySQL slow insert 发生在 checkout-service 超时之后"
+          ]
+        },
+        {
+          "branch_id": "E",
+          "selected_skill": "alert_context",
+          "reason": "E 分支可能是时间窗口噪声，先确认是否属于告警主链路。",
+          "evidence_delta": [
+            "recommendation-service 不在 checkout 强依赖路径",
+            "重启事件无入口错误率同步上升"
+          ]
+        }
+      ],
+      "round_summary": "已生成 5 个分支。A 分支最接近共同根因；B/D 可能是传播影响；C 是局部次要问题候选；E 暂时标记为噪声。下一轮并行取证，不要求所有分支调用相同 Skill。"
+    },
+    {
+      "round_id": 2,
+      "intent": "并行证据收集",
+      "goal": "每个分支根据当前缺失证据选择最合适的 Skill，补齐 Trace、Log、Metric 或 Graph 证据。",
+      "branch_actions": [
+        {
+          "branch_id": "A",
+          "selected_skill": "check_metrics",
+          "reason": "A 已有 Trace 证据，需要确认 checkout-service 是否存在资源或连接池瓶颈。",
+          "evidence_delta": [
+            "db.pool.active.connections 100%",
+            "db.pool.pending.acquire p95 2800ms",
+            "CPU 62%、memory 71%，未达到资源饱和阈值"
+          ]
+        },
+        {
+          "branch_id": "B",
+          "selected_skill": "analyze_log",
+          "reason": "B 需要从日志确认 payment-service 是主动失败还是收到取消请求。",
+          "evidence_delta": [
+            "payment-service log: request cancelled by upstream checkout timeout",
+            "未发现 PaymentProviderUnavailableException"
+          ]
+        },
+        {
+          "branch_id": "C",
+          "selected_skill": "check_metrics",
+          "reason": "C 需要验证 Redis hot key 是否形成系统性瓶颈。",
+          "evidence_delta": [
+            "redis-inventory p99 latency 95ms",
+            "hotkey sku-8848 qps 异常升高",
+            "只覆盖 1/5 条 Error Trace"
+          ]
+        },
+        {
+          "branch_id": "D",
+          "selected_skill": "analyze_log",
+          "reason": "D 需要确认 MySQL slow insert 的具体等待原因。",
+          "evidence_delta": [
+            "order-service log: lock wait timeout after checkout transaction hold",
+            "slow insert 时间晚于 checkout-service pool pending"
+          ]
+        },
+        {
+          "branch_id": "E",
+          "selected_skill": "analyze_impact",
+          "reason": "E 已疑似噪声，只需确认它对 checkout 主链路是否有影响。",
+          "evidence_delta": [
+            "recommendation-service 只影响推荐位降级",
+            "不影响 /checkout/pay 主流程"
+          ]
+        }
+      ],
+      "round_summary": "A 分支新增强指标证据，支持 checkout-service 连接池耗尽。B/D 更像 A 的传播影响。C 是真实局部问题但覆盖面不足。E 可排除。"
+    },
+    {
+      "round_id": 3,
+      "intent": "冲突证据消解",
+      "goal": "解决 Redis hot key、payment timeout、MySQL slow insert 与 checkout 连接池耗尽之间的主次关系。",
+      "branch_actions": [
+        {
+          "branch_id": "A",
+          "selected_skill": "analyze_log",
+          "reason": "A 需要日志异常栈确认连接池耗尽是否发生在最早错误点。",
+          "evidence_delta": [
+            "checkout-service log: DbConnectionAcquireTimeoutException",
+            "first_error_time=10:16:58，早于 B/C/D 分支显性错误"
+          ]
+        },
+        {
+          "branch_id": "B",
+          "selected_skill": "check_metrics",
+          "reason": "B 需要排除 payment provider 自身故障。",
+          "evidence_delta": [
+            "payment-service CPU、线程池、provider_error_rate 正常",
+            "payment timeout 与 checkout caller timeout 同步"
+          ]
+        },
+        {
+          "branch_id": "C",
+          "selected_skill": "analyze_trace",
+          "reason": "C 需要确认 Redis hot key 是否存在于共同失败路径。",
+          "evidence_delta": [
+            "Redis hot key 只出现在库存预占路径",
+            "4 条失败 Trace 未调用 redis-inventory"
+          ]
+        },
+        {
+          "branch_id": "D",
+          "selected_skill": "check_metrics",
+          "reason": "D 需要确认 mysql-order 是源头瓶颈还是被上游事务拖慢。",
+          "evidence_delta": [
+            "mysql-order max_connections 63%",
+            "lock_wait_count 升高发生在 checkout pool pending 之后"
+          ]
+        }
+      ],
+      "round_summary": "冲突已基本消解：Redis 是局部次要问题，payment timeout 与 MySQL slow insert 是传播影响，checkout-service DB 连接池耗尽是最早且覆盖面最大的共同根因。"
+    },
+    {
+      "round_id": 4,
+      "intent": "根因收敛",
+      "goal": "合并多分支证据，形成共同根因、分支差异、影响面与置信度。",
+      "branch_actions": [
+        {
+          "branch_id": "A",
+          "selected_skill": "infer_root_cause",
+          "reason": "A 分支已具备 Trace、Metric、Log 三类强证据。",
+          "evidence_delta": [
+            "root_cause_candidate=checkout-service db_connection_pool_exhaustion",
+            "confidence=0.91"
+          ]
+        },
+        {
+          "branch_id": "B",
+          "selected_skill": "analyze_impact",
+          "reason": "B 已排除独立根因，转为影响面分析。",
+          "evidence_delta": [
+            "payment success rate drop 是 checkout timeout 的业务影响",
+            "未发现支付供应商全局故障"
+          ]
+        },
+        {
+          "branch_id": "C",
+          "selected_skill": "infer_root_cause",
+          "reason": "C 存在真实异常但覆盖面不足，需要判断是否为第二根因。",
+          "evidence_delta": [
+            "secondary_candidate=redis hot key",
+            "confidence=0.48",
+            "requires_extra_boundary_check=true"
+          ]
+        },
+        {
+          "branch_id": "D",
+          "selected_skill": "analyze_impact",
+          "reason": "D 转为下游影响面确认。",
+          "evidence_delta": [
+            "order creation degradation follows checkout transaction pressure",
+            "not_common_root=true"
+          ]
+        }
+      ],
+      "round_summary": "共同根因已收敛到 checkout-service DB 连接池耗尽，置信度 0.91。但 C 分支存在 Redis hot key 局部异常，需要追加一轮补证据，明确它是次要问题还是并发第二根因。"
+    },
+    {
+      "round_id": 5,
+      "intent": "追加补证据：次要根因边界确认",
+      "goal": "验证 Redis hot key 是否需要作为并发第二根因进入最终报告。",
+      "is_extra_round": true,
+      "branch_actions": [
+        {
+          "branch_id": "C",
+          "selected_skill": "evidence_consistency",
+          "reason": "C 分支需要与全量 5 条 Error Trace 做覆盖率和时间线一致性检查。",
+          "evidence_delta": [
+            "Redis hot key 覆盖 1/5 条 Error Trace",
+            "Redis p99 升高开始于 10:18:12，晚于 checkout pool 耗尽 74 秒",
+            "Redis 异常可解释库存预占慢，但不能解释 payment timeout 与 order lock wait"
+          ]
+        },
+        {
+          "branch_id": "A",
+          "selected_skill": "evidence_consistency",
+          "reason": "A 分支作为共同根因候选，需要验证覆盖率。",
+          "evidence_delta": [
+            "checkout DB pool pending 覆盖 4/5 条 Error Trace",
+            "mysql-checkout 依赖节点在 checkout-service 下游，连接获取失败早于业务下游调用",
+            "first_error_time 最早",
+            "可解释 payment、order、entry 504 三类症状"
+          ]
+        }
+      ],
+      "round_summary": "追加补证据后，Redis hot key 被降级为局部次要问题；checkout-service DB 连接池耗尽保留为共同根因。最终报告需要同时给出主根因和次要风险。"
+    }
+  ],
+  "final_convergence": {
+    "status": "confirmed_common_root",
+    "common_root_cause": {
+      "service": "checkout-service",
+      "component": "container-checkout-service-a",
+      "interface": "/checkout/pay",
+      "type": "db_connection_pool_exhaustion",
+      "message": "checkout-service DB connection pool was exhausted before payment orchestration and order creation."
+    },
+    "confidence": 0.93,
+    "covered_error_traces": "4/5",
+    "secondary_findings": [
+      {
+        "component": "redis-inventory",
+        "type": "hot_key_latency",
+        "role": "secondary_local_issue",
+        "covered_error_traces": "1/5"
+      }
+    ],
+    "excluded_candidates": [
+      {
+        "component": "payment-service",
+        "reason": "Timeouts were caused by upstream cancellation; payment provider metrics were normal."
+      },
+      {
+        "component": "mysql-order",
+        "reason": "Lock waits occurred after checkout transaction pressure and did not start first."
+      },
+      {
+        "component": "recommendation-service",
+        "reason": "Canary restart was outside the checkout critical path."
+      }
+    ],
+    "business_impact": [
+      "Flash-sale checkout success rate dropped to 71.4%.",
+      "Payment requests were cancelled before provider confirmation.",
+      "Some order creation requests entered retry or pending state.",
+      "Inventory reservation for hot SKU sku-8848 showed partial latency amplification."
+    ],
+    "recommended_actions": [
+      "Immediately raise checkout-service DB pool limit only if database capacity allows it.",
+      "Reduce checkout transaction hold time and add timeout isolation before payment orchestration.",
+      "Add pool pending acquire alert and caller-cancelled payment alert correlation.",
+      "Mitigate redis-inventory hot key with local cache or sharded reservation counter.",
+      "Keep recommendation-service restart out of P1 root cause but record it as noise in the incident timeline."
+    ]
+  },
+  "presentation_notes": [
+    "This case should show that storm mode does not force every branch through the same fixed Skill path.",
+    "The key review moment is round 5: the system dynamically adds a boundary-check round instead of prematurely declaring two root causes.",
+    "The topology view should mark checkout-service as the common root, redis-inventory as a secondary local issue, and payment/order as impacted downstream nodes."
+  ]
+}

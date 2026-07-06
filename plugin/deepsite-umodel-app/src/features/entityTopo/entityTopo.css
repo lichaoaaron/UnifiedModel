@@ -1,0 +1,1861 @@
+.eto-root {
+  --eto-sidebar-content-width: 260px;
+  --eto-bg: var(--om-surface);
+  --eto-bg-subtle: var(--om-surface-subtle);
+  --eto-surface: var(--om-surface);
+  --eto-surface-muted: var(--om-surface-subtle);
+  --eto-border: var(--om-border);
+  --eto-border-strong: var(--om-border-strong);
+  --eto-panel-border: var(--om-panel-border);
+  --eto-text: var(--om-text);
+  --eto-muted: var(--om-text-muted);
+  --eto-faint: var(--om-text-faint);
+  --eto-accent: var(--om-indigo);
+  --eto-accent-soft: var(--om-indigo-soft);
+  --eto-radius-panel: var(--om-radius-panel);
+  --eto-radius: var(--om-radius);
+  --eto-radius-sm: var(--om-radius-sm);
+  --eto-shadow-card: var(--om-shadow-sm);
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--eto-bg);
+  color: var(--eto-text);
+  font-size: 13px;
+}
+
+.workspace-content:has(.eto-root) {
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.eto-root * {
+  scrollbar-color: rgba(113, 113, 122, 0.34) transparent;
+  scrollbar-width: thin;
+}
+
+.eto-root *::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.eto-root *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.eto-root *::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(113, 113, 122, 0.34);
+  background-clip: padding-box;
+}
+
+.eto-sidebar {
+  width: calc(var(--eto-sidebar-content-width) + var(--om-panel-overlap));
+  min-width: calc(var(--eto-sidebar-content-width) + var(--om-panel-overlap));
+  max-width: calc(var(--eto-sidebar-content-width) + var(--om-panel-overlap));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-right: var(--om-panel-overlap);
+  border: 1px solid var(--eto-panel-border);
+  border-left: 0;
+  border-radius: 0;
+  background: var(--eto-bg-subtle);
+  color: var(--eto-muted);
+}
+
+.eto-sidebar-header {
+  min-height: 62px;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eto-sidebar-header strong,
+.eto-detail-title strong {
+  display: block;
+  color: var(--eto-text);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.eto-sidebar-header span,
+.eto-detail-title code {
+  display: block;
+  margin-top: 2px;
+  color: var(--eto-faint);
+  font-family: var(--om-mono);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-sidebar-mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--eto-accent-soft);
+  color: var(--eto-accent);
+}
+
+.eto-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.eto-stat-card {
+  min-width: 0;
+  padding: 11px;
+  border-radius: var(--eto-radius);
+  background: var(--eto-surface);
+  box-shadow: var(--eto-shadow-card);
+}
+
+.eto-stat-card strong {
+  display: block;
+  color: var(--eto-text);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.eto-stat-card span,
+.eto-stat-card small {
+  display: block;
+  margin-top: 5px;
+  color: var(--eto-muted);
+  font-size: 11px;
+}
+
+.eto-stat-card small {
+  margin-top: 2px;
+  color: var(--eto-faint);
+}
+
+.eto-sidebar-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 12px 12px 0;
+}
+
+.eto-sidebar-tabs button {
+  width: 32px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-faint);
+  cursor: pointer;
+}
+
+.eto-sidebar-tabs button:hover,
+.eto-sidebar-tabs button.active {
+  background: var(--eto-surface);
+  color: var(--eto-text);
+  box-shadow: var(--eto-shadow-card);
+}
+
+.eto-sidebar-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 12px;
+}
+
+.eto-sidebar-section + .eto-sidebar-section {
+  margin-top: 18px;
+}
+
+.eto-sidebar-section-title {
+  margin-bottom: 8px;
+  color: var(--eto-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.eto-sidebar-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eto-filter-row {
+  width: 100%;
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.eto-filter-row:hover,
+.eto-filter-row.active {
+  background: var(--eto-surface);
+  color: var(--eto-text);
+}
+
+.eto-filter-row.active {
+  box-shadow: var(--eto-shadow-card);
+}
+
+.eto-filter-row.dimmed {
+  opacity: 0.54;
+}
+
+.eto-type-dot,
+.eto-search-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.eto-filter-label {
+  min-width: 0;
+  flex: 1;
+}
+
+.eto-filter-label b {
+  display: block;
+  overflow: hidden;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-filter-label small {
+  display: block;
+  overflow: hidden;
+  margin-top: 1px;
+  color: var(--eto-faint);
+  font-family: var(--om-mono);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-filter-count {
+  flex: 0 0 auto;
+  color: var(--eto-faint);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.eto-filter-row-meta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.eto-filter-suffix {
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  color: var(--eto-faint);
+}
+
+.eto-filter-row:hover .eto-filter-suffix,
+.eto-filter-row.active .eto-filter-suffix {
+  color: var(--eto-accent);
+}
+
+.eto-sidebar-more {
+  align-self: flex-start;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-accent);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.eto-sidebar-more:hover {
+  background: var(--eto-accent-soft);
+}
+
+.eto-sidebar-segmented.om-segmented {
+  width: 100%;
+}
+
+.eto-sidebar-segmented.om-segmented button {
+  flex: 1;
+}
+
+.eto-layout-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eto-layout-block {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.eto-layout-options,
+.eto-layout-toggle-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.eto-layout-radio {
+  width: 100%;
+  min-height: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.eto-layout-radio:hover {
+  background: var(--eto-surface-muted);
+  color: var(--eto-text);
+}
+
+.eto-layout-radio.active {
+  background: var(--eto-surface);
+  color: var(--eto-text);
+  box-shadow: var(--eto-shadow-card);
+}
+
+.eto-layout-radio-mark {
+  width: 14px;
+  height: 14px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  border: 2px solid var(--eto-border-strong);
+  border-radius: 999px;
+}
+
+.eto-layout-radio.active .eto-layout-radio-mark {
+  border-color: var(--eto-accent);
+  color: var(--eto-accent);
+}
+
+.eto-layout-radio-mark i {
+  width: 6px;
+  height: 6px;
+  display: none;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.eto-layout-radio.active .eto-layout-radio-mark i {
+  display: block;
+}
+
+.eto-layout-radio-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.eto-layout-radio-copy b {
+  color: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.25;
+}
+
+.eto-layout-radio-copy small {
+  color: var(--eto-faint);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.eto-layout-toggle {
+  width: 100%;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+}
+
+.eto-layout-toggle:hover:not(:disabled) {
+  background: var(--eto-surface-muted);
+  color: var(--eto-text);
+}
+
+.eto-layout-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.eto-layout-switch {
+  position: relative;
+  width: 32px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 1px solid var(--eto-border-strong);
+  border-radius: 999px;
+  background: var(--eto-surface-muted);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.eto-layout-switch i {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+  transition: left 160ms ease;
+}
+
+.eto-layout-toggle.active .eto-layout-switch {
+  border-color: var(--eto-accent);
+  background: var(--eto-accent);
+}
+
+.eto-layout-toggle.active .eto-layout-switch i {
+  left: 15px;
+}
+
+.eto-setting-toggle,
+.eto-radio-list button {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.eto-setting-toggle:hover,
+.eto-radio-list button:hover,
+.eto-radio-list button.active {
+  background: var(--eto-surface);
+  color: var(--eto-text);
+}
+
+.eto-setting-toggle > span:last-child {
+  position: relative;
+  width: 30px;
+  height: 17px;
+  border-radius: 999px;
+  background: var(--eto-border-strong);
+  transition: background 160ms ease;
+}
+
+.eto-setting-toggle > span:last-child i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  transition: transform 160ms ease;
+}
+
+.eto-setting-toggle > span:last-child.active {
+  background: var(--eto-accent);
+}
+
+.eto-setting-toggle > span:last-child.active i {
+  transform: translateX(13px);
+}
+
+.eto-radio-list button {
+  justify-content: flex-start;
+}
+
+.eto-radio-list button > span {
+  width: 13px;
+  height: 13px;
+  display: grid;
+  place-items: center;
+  color: var(--eto-accent);
+}
+
+.eto-main {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto 1fr 30px;
+  overflow: hidden;
+  margin-left: calc(var(--om-panel-overlap) * -1);
+  border: 1px solid var(--eto-panel-border);
+  border-right: 0;
+  border-radius: var(--eto-radius-panel) 0 0 var(--eto-radius-panel);
+  background: var(--eto-bg);
+  box-shadow: var(--om-shadow-panel);
+}
+
+.eto-topbar {
+  position: relative;
+  z-index: 30;
+  min-height: 56px;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--eto-border);
+  background: var(--om-surface);
+  backdrop-filter: blur(18px);
+}
+
+.eto-search-wrap,
+.eto-timebar {
+  position: relative;
+  z-index: 31;
+  min-width: 0;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius);
+  background: var(--eto-surface);
+  color: var(--eto-faint);
+  box-shadow: var(--om-shadow-control);
+}
+
+.eto-search-wrap {
+  padding: 0 11px;
+}
+
+.eto-search-wrap input {
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--eto-text);
+  font-size: 13px;
+}
+
+.eto-timebar {
+  flex: 0 0 auto;
+  padding: 0 7px 0 10px;
+  font-size: 12px;
+}
+
+.eto-timebar input {
+  width: 150px;
+  min-width: 150px;
+  height: 28px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--eto-text);
+  font-size: 12px;
+}
+
+.eto-timebar button:not(.om-icon-button) {
+  height: 24px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-surface-muted);
+  color: var(--eto-muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.eto-timebar button:not(.om-icon-button):hover {
+  background: var(--eto-accent-soft);
+  color: var(--eto-accent);
+}
+
+.eto-timebar button.eto-execute-button:not(.om-icon-button) {
+  height: 24px;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-accent);
+  color: var(--om-text-inverse);
+  box-shadow: none;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.eto-timebar button.eto-execute-button:not(.om-icon-button):hover {
+  background: var(--om-primary-strong);
+  color: var(--om-text-inverse);
+  box-shadow: none;
+}
+
+.eto-timebar button.eto-execute-button:not(.om-icon-button):disabled {
+  border-color: var(--eto-border-strong);
+  background: var(--eto-surface-muted);
+  color: var(--eto-faint);
+}
+
+.eto-icon-button.om-icon-button,
+.eto-icon-button {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+
+.eto-filterbar {
+  position: relative;
+  z-index: 28;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: auto hidden;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--eto-border);
+  background: var(--eto-bg-subtle);
+  color: var(--eto-muted);
+  font-size: 12px;
+}
+
+.eto-filterbar.ghost {
+  color: var(--eto-faint);
+}
+
+.eto-filter-help,
+.eto-filter-count-label,
+.eto-filter-empty {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  color: var(--eto-faint);
+}
+
+.eto-filter-help {
+  cursor: help;
+}
+
+.eto-filter-empty {
+  font-weight: 600;
+}
+
+.eto-filter-chip,
+.eto-focus-chip,
+.eto-stack-toggle,
+.eto-clear-filters {
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 0 8px;
+  border: 1px solid var(--eto-border);
+  border-radius: 999px;
+  background: var(--eto-surface);
+  color: var(--eto-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.eto-filter-chip button,
+.eto-focus-chip button,
+.eto-clear-filters,
+.eto-stack-toggle {
+  border: 0;
+  cursor: pointer;
+}
+
+.eto-filter-chip button {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--eto-faint);
+}
+
+.eto-filter-chip.dimmed {
+  opacity: 0.48;
+  background: var(--eto-surface-muted);
+}
+
+.eto-filter-chip > span:not(.eto-filter-chip-dot):not(.eto-filter-chip-prefix) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eto-filter-chip-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.eto-filter-chip-prefix {
+  color: var(--eto-faint);
+  font-weight: 600;
+}
+
+.eto-focus-chip {
+  border-color: color-mix(in srgb, var(--eto-accent) 52%, var(--eto-border));
+  background: var(--eto-accent-soft);
+  color: var(--eto-accent);
+  cursor: pointer;
+}
+
+.eto-focus-chip button {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: currentColor;
+  opacity: 0.7;
+}
+
+.eto-filter-separator {
+  width: 1px;
+  height: 16px;
+  flex: 0 0 auto;
+  background: var(--eto-border-strong);
+}
+
+.eto-stack-toggle span:first-child {
+  position: relative;
+  width: 26px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--om-border-strong);
+  transition: background 160ms ease;
+}
+
+.eto-stack-toggle span:first-child i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+  transition: left 160ms ease;
+}
+
+.eto-stack-toggle.active {
+  background: var(--eto-accent-soft);
+  color: var(--eto-accent);
+}
+
+.eto-stack-toggle.active span:first-child {
+  background: var(--eto-accent);
+}
+
+.eto-stack-toggle.active span:first-child i {
+  left: 14px;
+}
+
+.eto-clear-filters {
+  background: transparent;
+}
+
+.eto-filter-help-panel,
+.eto-focus-dropdown {
+  position: fixed;
+  z-index: 2147483647;
+  border: 1px solid var(--eto-border, var(--om-border, rgba(15, 23, 42, 0.12)));
+  background: var(--om-surface);
+  box-shadow:
+    0 16px 40px rgba(15, 23, 42, 0.16),
+    0 4px 12px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.eto-filter-help-panel {
+  padding: 12px 14px;
+  border-radius: var(--eto-radius-panel, var(--om-radius-panel, 12px));
+  background: rgba(15, 23, 42, 0.93);
+  color: #f8fafc;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.eto-filter-help-panel strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+.eto-filter-help-panel p {
+  margin: 4px 0;
+}
+
+.eto-focus-dropdown {
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: var(--eto-radius-panel, var(--om-radius-panel, 12px));
+  padding: 6px 0;
+  font-size: 12px;
+}
+
+.eto-focus-dropdown-head {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px 8px;
+  border-bottom: 1px solid var(--eto-border, var(--om-border, rgba(15, 23, 42, 0.12)));
+}
+
+.eto-focus-dropdown-head strong {
+  color: var(--eto-text, var(--om-text, #1f2937));
+}
+
+.eto-focus-dropdown-head button {
+  border: 0;
+  background: transparent;
+  color: var(--om-red-text);
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.eto-focus-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 10px;
+}
+
+.eto-focus-dropdown-row > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+
+.eto-focus-dropdown-row b,
+.eto-focus-dropdown-row small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-focus-dropdown-row b {
+  color: var(--eto-text, var(--om-text, #1f2937));
+  font-size: 12px;
+}
+
+.eto-focus-dropdown-row small {
+  margin-top: 2px;
+  color: var(--eto-faint, var(--om-text-faint, #94a3b8));
+  font-size: 10px;
+}
+
+.eto-focus-dropdown-row button {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--eto-radius-sm, var(--om-radius-sm, 6px));
+  background: transparent;
+  color: var(--eto-faint, var(--om-text-faint, #94a3b8));
+  cursor: pointer;
+}
+
+.eto-focus-dropdown-row button:hover {
+  background: var(--eto-surface-muted, var(--om-surface-subtle, #f4f4f5));
+  color: var(--eto-text, var(--om-text, #1f2937));
+}
+
+.eto-content-area {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  min-height: 0;
+  display: block;
+  overflow: hidden;
+}
+
+.eto-canvas-panel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--eto-bg);
+}
+
+.eto-graph-shell {
+  position: relative;
+  width: 100%;
+  min-width: 240px;
+  height: 100%;
+}
+
+.eto-cosmos-shell {
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.04), transparent 36%), var(--eto-bg);
+  isolation: isolate;
+}
+
+.eto-cosmos-host,
+.eto-cosmos-label-layer,
+.eto-cosmos-vector-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.eto-cosmos-host {
+  z-index: 1;
+}
+
+.eto-cosmos-host canvas {
+  outline: none;
+}
+
+.eto-cosmos-label-layer {
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.eto-cosmos-vector-layer {
+  z-index: 3;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.eto-cosmos-vector-node {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  color: var(--eto-node-color);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--eto-node-color) 10%, transparent);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  transform: translate3d(-50%, -50%, 0);
+  transition:
+    opacity 120ms ease,
+    box-shadow 120ms ease;
+  will-change: transform, opacity;
+}
+
+.eto-cosmos-vector-node.active {
+  box-shadow:
+    0 0 0 1px rgba(91, 91, 214, 0.42),
+    0 0 0 4px rgba(91, 91, 214, 0.08);
+}
+
+.eto-cosmos-vector-node svg {
+  width: 56%;
+  height: 56%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.eto-cosmos-label {
+  position: absolute;
+  pointer-events: none;
+  letter-spacing: 0;
+}
+
+.eto-cosmos-label.node {
+  max-width: 150px;
+  overflow: hidden;
+  color: var(--om-text);
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.3;
+  opacity: var(--eto-label-opacity, 0.9);
+  text-align: center;
+  text-overflow: ellipsis;
+  text-shadow:
+    0 0 3px rgba(250, 250, 250, 0.95),
+    0 0 8px rgba(250, 250, 250, 0.8);
+  transform: translate3d(-50%, 0, 0);
+  transition:
+    opacity 180ms ease,
+    color 180ms ease;
+  white-space: nowrap;
+}
+
+.eto-cosmos-label.edge {
+  max-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 7px;
+  border: 1px solid rgba(100, 116, 139, 0.18);
+  border-radius: 8px;
+  background: var(--om-surface);
+  color: var(--eto-muted);
+  font-size: 10px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.eto-cosmos-label.cluster {
+  max-width: 228px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 999px;
+  background: var(--om-surface);
+  color: var(--om-text);
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(8px);
+  transform: translate3d(-50%, -50%, 0);
+}
+
+.eto-cosmos-label.cluster b {
+  font-size: 12px;
+}
+
+.eto-cosmos-label.node b {
+  font-size: 10px;
+  font-weight: inherit;
+}
+
+.eto-cosmos-label.cluster small {
+  margin-left: 2px;
+  color: var(--om-text-faint);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.eto-cosmos-label.active {
+  opacity: 1;
+}
+
+.eto-cosmos-label.node.active {
+  color: var(--eto-node-color);
+  font-weight: 760;
+}
+
+.eto-cosmos-label.edge.active,
+.eto-cosmos-label.cluster.active {
+  border-color: color-mix(in srgb, var(--eto-node-color) 48%, transparent);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--eto-node-color) 12%, transparent),
+    0 16px 34px rgba(15, 23, 42, 0.12);
+}
+
+.eto-cosmos-label.related {
+  opacity: 0.92;
+}
+
+.eto-cosmos-label span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: var(--eto-node-color);
+}
+
+.eto-cosmos-label b,
+.eto-cosmos-label small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-cosmos-label b {
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.eto-cosmos-label small {
+  color: var(--eto-faint);
+  font-size: 10px;
+}
+
+.eto-cosmos-label.edge span,
+.eto-cosmos-label.edge small {
+  display: none;
+}
+
+.eto-cosmos-toolbar,
+.eto-cosmos-engine-badge,
+.eto-cosmos-minimap,
+.eto-cosmos-hover {
+  position: absolute;
+  z-index: 8;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--om-surface);
+  box-shadow: var(--eto-shadow-card);
+  backdrop-filter: blur(14px);
+}
+
+.eto-cosmos-toolbar {
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+}
+
+.eto-cosmos-toolbar button {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+}
+
+.eto-cosmos-toolbar button:hover {
+  background: var(--eto-surface-muted);
+  color: var(--eto-text);
+}
+
+.eto-cosmos-engine-badge {
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: var(--eto-muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.eto-cosmos-engine-badge span {
+  color: var(--eto-accent);
+  font-size: 11px;
+}
+
+.eto-cosmos-minimap {
+  right: 14px;
+  bottom: 12px;
+  width: 228px;
+  max-width: calc(100% - 24px);
+  display: grid;
+  gap: 8px;
+  padding: 10px 11px 11px;
+  border-radius: var(--eto-radius);
+}
+
+.eto-cosmos-minimap-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.eto-cosmos-minimap-head strong {
+  color: var(--eto-faint);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.eto-cosmos-minimap-head span {
+  color: var(--eto-faint);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.eto-cosmos-minimap svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.07);
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-surface);
+}
+
+.eto-cosmos-minimap rect {
+  fill: #fff;
+}
+
+.eto-cosmos-minimap line {
+  opacity: 0.16;
+  stroke-width: 0.75;
+}
+
+.eto-cosmos-minimap circle {
+  opacity: 0.78;
+}
+
+.eto-cosmos-minimap path {
+  fill: rgba(79, 70, 229, 0.08);
+  stroke: #4f46e5;
+  stroke-width: 1.2;
+}
+
+.eto-cosmos-type-strip {
+  min-width: 0;
+  display: flex;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.eto-cosmos-type-strip span {
+  min-width: 0;
+  max-width: 76px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex: 0 1 auto;
+  overflow: hidden;
+  color: var(--eto-muted);
+  font-size: 10px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-cosmos-type-strip i {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.eto-cosmos-hover {
+  padding: 12px;
+  border-radius: var(--eto-radius);
+  color: var(--eto-text);
+  pointer-events: auto;
+}
+
+.eto-cosmos-hover-title {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.eto-cosmos-hover-title strong,
+.eto-cosmos-hover-title span,
+.eto-cosmos-hover-entity b,
+.eto-cosmos-hover-entity span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-cosmos-hover-title strong {
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.eto-cosmos-hover-title span,
+.eto-cosmos-hover-entity span {
+  margin-top: 2px;
+  color: var(--eto-faint);
+  font-size: 11px;
+}
+
+.eto-cosmos-node-glyph {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  box-shadow: 0 0 0 4px currentColor;
+}
+
+.eto-cosmos-hover-glyph {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  background: var(--eto-surface);
+  box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 10%, transparent);
+  font-size: 11px;
+  font-weight: 760;
+}
+
+.eto-cosmos-hover-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.eto-cosmos-hover-stats span {
+  min-width: 0;
+  padding: 8px;
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-surface-muted);
+  color: var(--eto-muted);
+  font-size: 11px;
+}
+
+.eto-cosmos-hover-stats b {
+  display: block;
+  color: var(--eto-text);
+  font-size: 15px;
+}
+
+.eto-cosmos-hover button {
+  width: 100%;
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-surface);
+  color: var(--eto-text);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 720;
+}
+
+.eto-cosmos-hover-route {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.eto-cosmos-hover-entity {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  border-radius: var(--eto-radius-sm);
+  background: var(--eto-surface-muted);
+}
+
+.eto-cosmos-hover-entity b {
+  font-size: 12px;
+}
+
+.eto-route-node b,
+.eto-search-section button b {
+  display: block;
+  overflow: hidden;
+  color: var(--eto-text);
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-route-node small,
+.eto-search-section button small {
+  display: block;
+  overflow: hidden;
+  margin-top: 2px;
+  color: var(--eto-faint);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eto-floating-badge,
+.eto-loading {
+  position: absolute;
+  z-index: 12;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--eto-border);
+  border-radius: 999px;
+  background: var(--om-surface);
+  color: var(--eto-muted);
+  box-shadow: var(--om-shadow-sm);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.eto-floating-badge {
+  top: 12px;
+  right: 12px;
+  padding: 5px 10px;
+}
+
+.eto-loading {
+  top: 50%;
+  left: 50%;
+  padding: 8px 12px;
+  transform: translate(-50%, -50%);
+}
+
+.eto-empty-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.eto-detail-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  width: 378px;
+  min-width: 378px;
+  max-width: min(48vw, 520px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--eto-panel-border);
+  border-radius: var(--eto-radius-panel) 0 0 var(--eto-radius-panel);
+  background: var(--eto-surface);
+  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.08);
+}
+
+.eto-detail-header {
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--eto-border);
+}
+
+.eto-detail-icon {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid;
+  border-radius: 10px;
+}
+
+.eto-detail-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.eto-icon-button.subtle,
+.eto-detail-header .eto-icon-button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--eto-radius-sm);
+  background: transparent;
+  color: var(--eto-faint);
+  cursor: pointer;
+}
+
+.eto-icon-button.subtle:hover {
+  background: var(--eto-surface-muted);
+  color: var(--eto-text);
+}
+
+.eto-detail-body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+}
+
+.eto-detail-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.eto-detail-summary span {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius);
+  background: var(--eto-bg-subtle);
+  color: var(--eto-muted);
+  font-size: 11px;
+}
+
+.eto-detail-summary strong {
+  display: block;
+  color: var(--eto-text);
+  font-size: 17px;
+}
+
+.eto-edge-route {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.eto-route-node {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius);
+  background: var(--eto-bg-subtle);
+  cursor: pointer;
+  text-align: left;
+}
+
+.eto-route-node:hover {
+  background: var(--eto-surface);
+  border-color: var(--eto-border-strong);
+}
+
+.eto-route-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+}
+
+.eto-route-line {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--eto-faint);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.eto-route-line::before,
+.eto-route-line::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: var(--eto-border);
+}
+
+.eto-route-line span {
+  padding: 0 8px;
+}
+
+.eto-detail-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius);
+  overflow: hidden;
+}
+
+.eto-detail-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--eto-border);
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.eto-detail-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.eto-detail-table td:first-child {
+  width: 36%;
+  color: var(--eto-faint);
+  background: var(--eto-bg-subtle);
+  font-family: var(--om-mono);
+}
+
+.eto-detail-table td:last-child {
+  color: var(--eto-text);
+  word-break: break-word;
+}
+
+.eto-detail-empty {
+  padding: 18px;
+  color: var(--eto-faint);
+  text-align: center;
+}
+
+.eto-search-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+  width: min(620px, calc(100vw - 360px));
+  max-height: min(520px, calc(100vh - 110px));
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid var(--eto-border);
+  border-radius: var(--eto-radius-panel);
+  background: var(--om-surface);
+  box-shadow: var(--om-shadow-md);
+}
+
+.eto-search-command,
+.eto-search-section button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  border-radius: var(--eto-radius);
+  background: transparent;
+  color: var(--eto-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.eto-search-command {
+  min-height: 34px;
+  padding: 0 9px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.eto-search-command:hover,
+.eto-search-section button:hover {
+  background: var(--eto-surface-muted);
+  color: var(--eto-text);
+}
+
+.eto-search-section {
+  margin-top: 10px;
+}
+
+.eto-search-section > strong {
+  display: block;
+  margin: 0 0 6px;
+  color: var(--eto-faint);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.eto-search-section button {
+  min-height: 42px;
+  padding: 7px 9px;
+}
+
+.eto-search-empty {
+  display: block;
+  padding: 6px 9px;
+  color: var(--eto-faint);
+  font-size: 12px;
+}
+
+.eto-token-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eto-token-cloud button {
+  width: auto;
+  min-height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--eto-border);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.eto-token-cloud button span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+.eto-statusbar {
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-top: 1px solid var(--eto-border);
+  background: var(--eto-bg-subtle);
+  color: var(--eto-muted);
+  font-size: 11px;
+}
+
+.eto-statusbar strong {
+  color: var(--eto-text);
+}
+
+.eto-status-sep {
+  width: 1px;
+  height: 12px;
+  background: var(--eto-border-strong);
+}
+
+.eto-status-spacer {
+  margin-left: auto;
+}
+
+.eto-status-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--om-amber);
+}
+
+.eto-status-warning span {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--om-amber);
+}
+
+@media (max-width: 1400px) {
+  .eto-topbar {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .eto-timebar {
+    justify-content: flex-start;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 1180px) {
+  .eto-detail-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    max-width: min(420px, calc(100% - 42px));
+    border-left: 1px solid var(--eto-panel-border);
+    box-shadow: -18px 0 36px rgba(15, 23, 42, 0.12);
+  }
+}
+
+@media (max-width: 860px) {
+  .eto-sidebar {
+    --eto-sidebar-content-width: 230px;
+    padding-right: 12px;
+  }
+
+  .eto-detail-panel {
+    width: 320px;
+    min-width: 320px;
+  }
+
+  .eto-timebar input {
+    width: 136px;
+    min-width: 136px;
+  }
+}
+
+@media (max-width: 720px) {
+  .eto-sidebar {
+    --eto-sidebar-content-width: 210px;
+    padding-right: 10px;
+  }
+
+  .eto-topbar {
+    padding-inline: 10px;
+  }
+
+  .eto-filterbar,
+  .eto-statusbar {
+    padding-inline: 10px;
+  }
+
+  .eto-cosmos-engine-badge {
+    display: none;
+  }
+
+  .eto-cosmos-minimap {
+    width: 184px;
+  }
+}

@@ -1,0 +1,91 @@
+[
+  {
+    "kind": "GAUGE",
+    "name": "db.pool.active.connections",
+    "description": "checkout-service active DB pool connections",
+    "unit": "count",
+    "time": "May 18, 2026 @ 10:17:00.000",
+    "value": "80",
+    "threshold": "80",
+    "resource.attributes.compose_service": "checkout-service",
+    "resource.attributes.container@id": "container-checkout-service-a",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-5c20816053a81c601fd7"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "db.pool.pending.acquire.p95",
+    "description": "checkout-service DB pool pending acquire p95",
+    "unit": "ms",
+    "time": "May 18, 2026 @ 10:17:00.000",
+    "value": "2800",
+    "threshold": "500",
+    "resource.attributes.compose_service": "checkout-service",
+    "resource.attributes.container@id": "container-checkout-service-a",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-ffc300268a209f7dffc6"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "process.cpu.utilization",
+    "description": "checkout-service CPU utilization",
+    "unit": "percent",
+    "time": "May 18, 2026 @ 10:17:00.000",
+    "value": "62",
+    "threshold": "85",
+    "resource.attributes.compose_service": "checkout-service",
+    "resource.attributes.container@id": "container-checkout-service-a",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-48dd5a83a270e898d1fa"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "redis.command.latency.p99",
+    "description": "redis-inventory command latency p99",
+    "unit": "ms",
+    "time": "May 18, 2026 @ 10:18:12.000",
+    "value": "95",
+    "threshold": "50",
+    "resource.attributes.compose_service": "redis-inventory",
+    "resource.attributes.key": "stock:sku-8848",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-8e3c821e5cbf89543006"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "payment.provider.error.rate",
+    "description": "payment provider error rate",
+    "unit": "percent",
+    "time": "May 18, 2026 @ 10:17:24.000",
+    "value": "0.2",
+    "threshold": "3",
+    "resource.attributes.compose_service": "payment-service",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-0da61f13c03dac22a3c6"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "mysql.lock.wait.count",
+    "description": "mysql-order lock wait count",
+    "unit": "count",
+    "time": "May 18, 2026 @ 10:17:47.000",
+    "value": "43",
+    "threshold": "10",
+    "resource.attributes.compose_service": "mysql-order",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-b178e60cf5fc4531f76f"
+  },
+  {
+    "kind": "GAUGE",
+    "name": "k8s.pod.restart.count",
+    "description": "recommendation-service canary restart count",
+    "unit": "count",
+    "time": "May 18, 2026 @ 10:18:30.000",
+    "value": "1",
+    "threshold": "0",
+    "resource.attributes.compose_service": "recommendation-service",
+    "resource.attributes.pod": "recommendation-canary-7f9d",
+    "_index": "otel-metrics-prod",
+    "_id": "metric-0335c9901d6f7af6da73"
+  }
+]

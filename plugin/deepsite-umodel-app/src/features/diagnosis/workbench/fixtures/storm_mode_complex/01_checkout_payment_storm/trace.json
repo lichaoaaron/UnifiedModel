@@ -1,0 +1,432 @@
+[
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/9f0bd4e23c51a101",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "9f0bd4e23c51a101",
+      "parentSpanId": "4e1f531869291f4f",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "mysql-checkout",
+      "name": "MySQL:acquire_connection",
+      "startTime": "2026-05-18T02:16:58.220Z",
+      "endTime": "2026-05-18T02:16:58.360Z",
+      "durationInNanos": 140000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:16:58.360Z",
+          "attributes": {
+            "error@kind": "DbConnectionAcquireTimeoutException",
+            "message": "database connection acquire timed out from checkout-service pool"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.dependency": "1",
+      "derived.operation": "MySQL:acquire_connection",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.db.system": "mysql",
+      "resource.attributes.db.name": "checkout",
+      "span.attributes.db.system": "mysql"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/8b02b5bc7a5270c9",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "8b02b5bc7a5270c9",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "POST:/checkout/pay",
+      "startTime": "2026-05-18T02:16:58.020Z",
+      "endTime": "2026-05-18T02:17:02.880Z",
+      "durationInNanos": 4860000000,
+      "traceGroup": "POST:/checkout/pay",
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.operation": "POST:/checkout/pay",
+      "derived.error": "1",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9",
+      "span.attributes.url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/45545641e09ea3a6",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "45545641e09ea3a6",
+      "parentSpanId": "8b02b5bc7a5270c9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-bff",
+      "name": "POST:/checkout-bff/checkout/pay",
+      "startTime": "2026-05-18T02:16:58.040Z",
+      "endTime": "2026-05-18T02:17:02.760Z",
+      "durationInNanos": 4720000000,
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.error": "1",
+      "derived.operation": "POST:/checkout-bff/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://checkout-bff/checkout-bff/checkout/pay?requestId=543b81550157",
+      "span.attributes.url": "http://checkout-bff/checkout-bff/checkout/pay?requestId=543b81550157"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/4e1f531869291f4f",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "4e1f531869291f4f",
+      "parentSpanId": "45545641e09ea3a6",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/pay",
+      "startTime": "2026-05-18T02:16:58.080Z",
+      "endTime": "2026-05-18T02:17:02.620Z",
+      "durationInNanos": 4540000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:16:58.360Z",
+          "attributes": {
+            "error@kind": "DbConnectionAcquireTimeoutException",
+            "message": "checkout-service failed to acquire DB connection before payment orchestration",
+            "stack": "DbConnectionAcquireTimeoutException: db.pool.pending.acquire timed out"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.root_candidate": "1",
+      "derived.operation": "GET:/checkout-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/pay?requestId=f28f1801c172",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/pay?requestId=f28f1801c172"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/8b02b5bc7a5270c9",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "8b02b5bc7a5270c9",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "POST:/checkout/pay",
+      "startTime": "2026-05-18T02:17:20.020Z",
+      "endTime": "2026-05-18T02:17:24.990Z",
+      "durationInNanos": 4970000000,
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.error": "1",
+      "derived.operation": "POST:/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9",
+      "span.attributes.url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/45545641e09ea3a6",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "45545641e09ea3a6",
+      "parentSpanId": "8b02b5bc7a5270c9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/pay",
+      "startTime": "2026-05-18T02:17:20.060Z",
+      "endTime": "2026-05-18T02:17:24.860Z",
+      "durationInNanos": 4800000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:17:20.330Z",
+          "attributes": {
+            "error@kind": "DbConnectionAcquireTimeoutException",
+            "message": "connection pool exhausted before calling payment-service"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.root_candidate": "1",
+      "derived.operation": "GET:/checkout-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/4e1f531869291f4f",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "4e1f531869291f4f",
+      "parentSpanId": "45545641e09ea3a6",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "payment-service",
+      "name": "POST:/payment-service/checkout/pay",
+      "startTime": "2026-05-18T02:17:24.100Z",
+      "endTime": "2026-05-18T02:17:24.850Z",
+      "durationInNanos": 750000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:17:24.850Z",
+          "attributes": {
+            "error@kind": "CallerCancelledException",
+            "message": "request cancelled by upstream checkout timeout"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.propagated": "1",
+      "derived.operation": "POST:/payment-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://payment-service/payment-service/checkout/pay?requestId=f28f1801c172",
+      "span.attributes.url": "http://payment-service/payment-service/checkout/pay?requestId=f28f1801c172"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/8b02b5bc7a5270c9",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "8b02b5bc7a5270c9",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "POST:/checkout/pay",
+      "startTime": "2026-05-18T02:18:12.000Z",
+      "endTime": "2026-05-18T02:18:14.400Z",
+      "durationInNanos": 2400000000,
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.error": "1",
+      "derived.operation": "POST:/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9",
+      "span.attributes.url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/45545641e09ea3a6",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "45545641e09ea3a6",
+      "parentSpanId": "8b02b5bc7a5270c9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/pay",
+      "startTime": "2026-05-18T02:18:12.040Z",
+      "endTime": "2026-05-18T02:18:14.260Z",
+      "durationInNanos": 2220000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:18:12.120Z",
+          "attributes": {
+            "error@kind": "DbConnectionAcquireTimeoutException",
+            "message": "checkout DB pool pending while inventory reservation also hit hot key"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.root_candidate": "1",
+      "derived.operation": "GET:/checkout-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/4e1f531869291f4f",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "4e1f531869291f4f",
+      "parentSpanId": "45545641e09ea3a6",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "inventory-service",
+      "name": "GET:/inventory-service/checkout/pay",
+      "startTime": "2026-05-18T02:18:12.260Z",
+      "endTime": "2026-05-18T02:18:12.420Z",
+      "durationInNanos": 160000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:18:12.420Z",
+          "attributes": {
+            "error@kind": "RedisHotKeyLatency",
+            "message": "hot key sku-8848 latency exceeded local threshold"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.secondary_candidate": "1",
+      "derived.operation": "GET:/inventory-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://inventory-service/inventory-service/checkout/pay?requestId=f28f1801c172",
+      "span.attributes.url": "http://inventory-service/inventory-service/checkout/pay?requestId=f28f1801c172"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/8b02b5bc7a5270c9",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "8b02b5bc7a5270c9",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "api-gateway",
+      "name": "POST:/checkout/pay",
+      "startTime": "2026-05-18T02:17:42.020Z",
+      "endTime": "2026-05-18T02:17:47.010Z",
+      "durationInNanos": 4990000000,
+      "span.attributes.http@status_code": "504",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "derived.error": "1",
+      "derived.operation": "POST:/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9",
+      "span.attributes.url": "http://api-gateway/checkout/pay?requestId=c92c98a547f9"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/45545641e09ea3a6",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "45545641e09ea3a6",
+      "parentSpanId": "8b02b5bc7a5270c9",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "checkout-service",
+      "name": "GET:/checkout-service/checkout/pay",
+      "startTime": "2026-05-18T02:17:42.060Z",
+      "endTime": "2026-05-18T02:17:46.880Z",
+      "durationInNanos": 4820000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:17:42.400Z",
+          "attributes": {
+            "error@kind": "DbConnectionAcquireTimeoutException",
+            "message": "checkout transaction held while waiting for DB connection"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.root_candidate": "1",
+      "derived.operation": "GET:/checkout-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157",
+      "span.attributes.url": "http://checkout-service/checkout-service/checkout/pay?requestId=543b81550157"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/4e1f531869291f4f",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "4e1f531869291f4f",
+      "parentSpanId": "45545641e09ea3a6",
+      "kind": "SPAN_KIND_CLIENT",
+      "serviceName": "order-service",
+      "name": "GET:/order-service/checkout/pay",
+      "startTime": "2026-05-18T02:17:46.100Z",
+      "endTime": "2026-05-18T02:17:46.860Z",
+      "durationInNanos": 760000000,
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:17:46.860Z",
+          "attributes": {
+            "error@kind": "MySQLLockWaitTimeout",
+            "message": "lock wait after checkout transaction pressure"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.propagated": "1",
+      "derived.operation": "GET:/order-service/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://order-service/order-service/checkout/pay?requestId=f28f1801c172",
+      "span.attributes.url": "http://order-service/order-service/checkout/pay?requestId=f28f1801c172"
+    }
+  },
+  {
+    "_index": "otel-v1-apm-span-prod",
+    "_id": "bef10b0b85234c0d57ee2f82f0db067b/8b02b5bc7a5270c9",
+    "_source": {
+      "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+      "spanId": "8b02b5bc7a5270c9",
+      "parentSpanId": "",
+      "kind": "SPAN_KIND_SERVER",
+      "serviceName": "recommendation-service",
+      "name": "GET:/checkout/pay",
+      "startTime": "2026-05-18T02:18:30.000Z",
+      "endTime": "2026-05-18T02:18:30.340Z",
+      "durationInNanos": 340000000,
+      "span.attributes.http@status_code": "503",
+      "status.code": 2,
+      "status.message": "ERROR",
+      "events": [
+        {
+          "name": "exception",
+          "time": "2026-05-18T02:18:30.030Z",
+          "attributes": {
+            "error@kind": "PodRestarting",
+            "message": "canary pod restarting outside checkout critical path"
+          }
+        }
+      ],
+      "derived.error": "1",
+      "derived.noise": "1",
+      "derived.operation": "GET:/checkout/pay",
+      "resource.attributes.sw8@trace_id": "bef10b0b85234c0d57ee2f82f0db067b",
+      "derived.environment": "prod-cn-hangzhou",
+      "resource.attributes.http@url": "http://recommendation-service/checkout/pay?requestId=c92c98a547f9",
+      "span.attributes.url": "http://recommendation-service/checkout/pay?requestId=c92c98a547f9"
+    }
+  }
+]

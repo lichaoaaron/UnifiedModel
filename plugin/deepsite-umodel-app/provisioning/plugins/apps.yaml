@@ -1,0 +1,22 @@
+apiVersion: 1
+
+apps:
+  - type: 'deepsite-umodel-app'
+    org_id: 1
+    org_name: 'deepsite'
+    disabled: false
+    jsonData:
+      # Base URL of the UModel server (cmd/umodel-server). The Go backend reverse-
+      # proxies /api/* and /healthz here. It must be reachable from the Grafana
+      # SERVER (container), so never "localhost" — on Docker Desktop use
+      # http://host.docker.internal:8080. Override locally or via the
+      # Configuration page for your environment.
+      apiUrl: http://host.docker.internal:8080
+      # Optional. Base URL of the diagnosis service the Diagnosis page streams
+      # from (SSE); the Go backend proxies /diagnosis/* here. Reachable from the
+      # Grafana SERVER, same as apiUrl. Leave empty if the Diagnosis page is unused.
+      diagnosisUrl: http://host.docker.internal:8000
+    secureJsonData:
+      # Optional bearer token for the UModel server. Empty because umodel-server is
+      # currently unauthenticated.
+      apiKey: ''

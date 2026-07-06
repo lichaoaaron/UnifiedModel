@@ -1,0 +1,47 @@
+[
+  {
+    "time": "2026-05-18 10:16:58",
+    "serviceName": "checkout-service",
+    "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+    "spanId": "0003",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "DbConnectionAcquireTimeoutException: db pool pending acquire timed out before payment orchestration",
+    "log.attributes.stack_trace": "DbConnectionAcquireTimeoutException: db.pool.pending.acquire timed out\n\tat checkout.TransactionContext.open(TransactionContext.java:88)"
+  },
+  {
+    "time": "2026-05-18 10:17:24",
+    "serviceName": "payment-service",
+    "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+    "spanId": "0003",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "Payment request cancelled by upstream checkout timeout",
+    "log.attributes.stack_trace": "CallerCancelledException: upstream deadline exceeded before provider call completed"
+  },
+  {
+    "time": "2026-05-18 10:18:12",
+    "serviceName": "inventory-service",
+    "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+    "spanId": "0002",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "Redis hot key latency detected for sku-8848",
+    "log.attributes.stack_trace": "RedisHotKeyLatency: command=DECR key=stock:sku-8848 latency=160ms"
+  },
+  {
+    "time": "2026-05-18 10:17:46",
+    "serviceName": "order-service",
+    "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+    "spanId": "0003",
+    "log.attributes.log@level": "ERROR",
+    "log.attributes.message": "MySQL lock wait timeout after checkout transaction pressure",
+    "log.attributes.stack_trace": "MySQLLockWaitTimeout: insert_order waited for transaction lock"
+  },
+  {
+    "time": "2026-05-18 10:18:30",
+    "serviceName": "recommendation-service",
+    "traceId": "bef10b0b85234c0d57ee2f82f0db067b",
+    "spanId": "0001",
+    "log.attributes.log@level": "WARN",
+    "log.attributes.message": "Canary pod restarting during rollout",
+    "log.attributes.stack_trace": "PodRestarting: recommendation-canary-7f9d restarting outside checkout critical path"
+  }
+]

@@ -1,0 +1,356 @@
+.om-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--om-radius-sm);
+  background: var(--om-surface);
+  color: var(--om-text);
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+  white-space: nowrap;
+}
+
+.om-button.md {
+  min-height: 34px;
+}
+
+.om-button.sm {
+  min-height: 28px;
+  padding: 0 9px;
+  font-size: 13px;
+}
+
+.om-button:hover {
+  border-color: var(--om-border-strong);
+  box-shadow: var(--om-shadow-sm);
+}
+
+.om-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+.om-button.primary {
+  background: var(--om-primary);
+  color: var(--om-text-inverse);
+  box-shadow: 0 8px 18px var(--om-primary-ring);
+}
+
+.om-button.primary:hover {
+  border-color: transparent;
+  background: var(--om-primary-strong);
+  box-shadow: 0 10px 24px var(--om-primary-ring);
+}
+
+.om-button.secondary {
+  border-color: var(--om-border);
+}
+
+.om-button.ghost {
+  background: transparent;
+}
+
+.om-button.subtle {
+  background: var(--om-surface-subtle);
+  color: var(--om-text-muted);
+}
+
+.om-button.subtle:hover {
+  color: var(--om-text);
+}
+
+.om-button.danger {
+  color: var(--om-red);
+  border-color: var(--om-red-soft);
+  background: var(--om-red-soft);
+}
+
+.om-icon-button {
+  padding: 0;
+}
+
+.om-icon-button.md {
+  width: 34px;
+}
+
+.om-icon-button.sm {
+  width: 30px;
+}
+
+.om-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.om-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--om-text-muted);
+}
+
+.om-input,
+.om-textarea,
+.om-select {
+  width: 100%;
+  border: 1px solid var(--om-border);
+  border-radius: var(--om-radius-sm);
+  background: var(--om-surface);
+  color: var(--om-text);
+  outline: none;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.om-input,
+.om-select {
+  height: 36px;
+  padding: 0 10px;
+}
+
+.om-textarea {
+  min-height: 120px;
+  padding: 10px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.om-input:focus,
+.om-textarea:focus,
+.om-select:focus {
+  border-color: var(--om-primary);
+  box-shadow: 0 0 0 3px var(--om-primary-ring);
+}
+
+.om-json {
+  font-family: var(--om-mono);
+  font-size: 12px;
+  min-height: 240px;
+}
+
+.om-panel {
+  border: 1px solid var(--om-border);
+  border-radius: var(--om-radius);
+  background: var(--om-surface);
+  box-shadow: var(--om-shadow-sm);
+}
+
+.om-panel-header {
+  min-height: 46px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--om-border);
+}
+
+.om-panel-body {
+  padding: 14px;
+}
+
+.om-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  border: 1px solid var(--om-border);
+  background: var(--om-surface-subtle);
+  color: var(--om-text-muted);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.om-badge.success {
+  color: var(--om-accent-strong);
+  background: var(--om-accent-soft);
+  border-color: var(--om-accent);
+}
+
+.om-badge.warning {
+  color: var(--om-amber);
+  background: var(--om-amber-soft);
+  border-color: var(--om-amber);
+}
+
+.om-badge.danger {
+  color: var(--om-red);
+  background: var(--om-red-soft);
+  border-color: var(--om-red);
+}
+
+.om-badge.indigo {
+  color: var(--om-primary);
+  background: var(--om-primary-soft);
+  border-color: var(--om-primary-border);
+}
+
+.om-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--om-text-faint);
+}
+
+.om-status-dot.ok {
+  background: var(--om-accent);
+}
+
+.om-status-dot.warn {
+  background: var(--om-amber);
+}
+
+.om-status-dot.bad {
+  background: var(--om-red);
+}
+
+.om-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--om-radius-sm);
+  background: var(--om-surface-subtle);
+}
+
+.om-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--om-radius-xs);
+  background: transparent;
+  color: var(--om-text-muted);
+  cursor: pointer;
+}
+
+.om-tab.active {
+  background: var(--om-surface);
+  color: var(--om-text);
+  box-shadow: var(--om-shadow-sm);
+}
+
+.om-segmented {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--om-surface-subtle);
+}
+
+.om-segmented button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--om-text-faint);
+  cursor: pointer;
+  transition:
+    background 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.om-segmented.md button {
+  height: 30px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.om-segmented.sm button {
+  height: 26px;
+  padding: 0 11px;
+  font-size: 12px;
+}
+
+.om-segmented button:hover:not(:disabled) {
+  color: var(--om-text-muted);
+}
+
+.om-segmented button.active {
+  background: var(--om-surface);
+  color: var(--om-text);
+  box-shadow: var(--om-shadow-control);
+}
+
+.om-segmented button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.om-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.om-table th,
+.om-table td {
+  padding: 9px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--om-border);
+  vertical-align: top;
+}
+
+.om-table th {
+  font-size: 12px;
+  color: var(--om-text-muted);
+  font-weight: 700;
+  background: var(--om-surface-subtle);
+}
+
+.om-table tr:hover td {
+  background: var(--om-surface-subtle);
+}
+
+.om-empty {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  color: var(--om-text-muted);
+  text-align: center;
+}
+
+.om-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: var(--om-scrim);
+}
+
+.om-modal {
+  width: min(680px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--om-radius);
+  background: var(--om-surface);
+  box-shadow: var(--om-shadow-md);
+  border: 1px solid var(--om-border);
+}
+
+.om-modal-body {
+  overflow: auto;
+}
