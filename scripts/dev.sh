@@ -293,7 +293,7 @@ if ! wait_for_api; then
   exit 1
 fi
 
-# 鈹€鈹€ Diagnosis Engine (Python, port 8000) 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+# Diagnosis Engine (Python, port 8000)
 if is_enabled "${DIAGNOSIS_ENABLED}"; then
   DIAG_DIR="${ROOT_DIR}/diagnosis-engine"
   echo "Starting MModel Diagnosis Engine at http://localhost:${DIAG_PORT}"
