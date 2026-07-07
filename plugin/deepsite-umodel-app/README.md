@@ -22,6 +22,10 @@ App plugins can let you create a custom out-of-the-box monitoring experience by 
 2. Build plugin backend binaries for Linux, Windows and Darwin:
 
    ```bash
+   # if mage is not installed
+   go install github.com/magefile/mage@latest
+
+   # build
    mage -v
    ```
 
