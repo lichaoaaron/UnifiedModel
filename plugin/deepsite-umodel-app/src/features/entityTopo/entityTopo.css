@@ -33,7 +33,7 @@
 }
 
 .eto-root * {
-  scrollbar-color: rgba(113, 113, 122, 0.34) transparent;
+  scrollbar-color: var(--om-border-strong) transparent;
   scrollbar-width: thin;
 }
 
@@ -49,7 +49,7 @@
 .eto-root *::-webkit-scrollbar-thumb {
   border: 3px solid transparent;
   border-radius: 999px;
-  background: rgba(113, 113, 122, 0.34);
+  background: var(--om-border-strong);
   background-clip: padding-box;
 }
 
@@ -1064,7 +1064,7 @@
   align-items: center;
   gap: 6px;
   padding: 3px 7px;
-  border: 1px solid rgba(100, 116, 139, 0.18);
+  border: 1px solid var(--om-border);
   border-radius: 8px;
   background: var(--om-surface);
   color: var(--eto-muted);
@@ -1254,7 +1254,7 @@
 }
 
 .eto-cosmos-minimap rect {
-  fill: #fff;
+  fill: var(--om-surface);
 }
 
 .eto-cosmos-minimap line {
@@ -1267,8 +1267,8 @@
 }
 
 .eto-cosmos-minimap path {
-  fill: rgba(79, 70, 229, 0.08);
-  stroke: #4f46e5;
+  fill: var(--om-primary-soft);
+  stroke: var(--om-primary);
   stroke-width: 1.2;
 }
 

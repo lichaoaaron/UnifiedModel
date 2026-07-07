@@ -552,7 +552,7 @@ function ActiveFilterChip({
         } as CSSProperties
       }
     >
-      {dotColor && <i style={{ background: dimmed ? '#bbb' : dotColor }} />}
+      {dotColor && <i style={{ background: dimmed ? 'var(--ume-color-text-muted)' : dotColor }} />}
       {prefix && <small>{prefix}</small>}
       {label}
       {suffix && <small>{suffix}</small>}

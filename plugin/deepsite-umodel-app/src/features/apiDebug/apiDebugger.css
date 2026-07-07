@@ -162,7 +162,7 @@
 .api-debug-request:hover,
 .api-debug-response:hover,
 .api-debug-doc-table-wrap:hover {
-  scrollbar-color: rgba(113, 113, 122, 0.34) transparent;
+  scrollbar-color: var(--om-border-strong) transparent;
 }
 
 .api-debug-list::-webkit-scrollbar,
@@ -194,7 +194,7 @@
 .api-debug-request:hover::-webkit-scrollbar-thumb,
 .api-debug-response:hover::-webkit-scrollbar-thumb,
 .api-debug-doc-table-wrap:hover::-webkit-scrollbar-thumb {
-  background: rgba(113, 113, 122, 0.34);
+  background: var(--om-border-strong);
   background-clip: padding-box;
 }
 
@@ -202,7 +202,7 @@
 .api-debug-request::-webkit-scrollbar-thumb:hover,
 .api-debug-response::-webkit-scrollbar-thumb:hover,
 .api-debug-doc-table-wrap::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(82, 82, 91, 0.5);
+  background-color: var(--om-text-faint);
   background-clip: padding-box;
 }
 
@@ -240,7 +240,7 @@
 
 .api-debug-group button:hover,
 .api-debug-group button.active {
-  border-color: rgba(101, 89, 217, 0.24);
+  border-color: var(--om-primary-border);
   background: var(--om-indigo-soft);
   color: var(--om-indigo);
 }
@@ -408,7 +408,7 @@
 
 .api-debug-monaco .monaco-scrollable-element > .scrollbar > .slider {
   border-radius: 999px !important;
-  background: rgba(113, 113, 122, 0.34) !important;
+  background: var(--om-border-strong) !important;
 }
 
 .api-debug-body-section {

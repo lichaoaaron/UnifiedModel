@@ -1102,11 +1102,13 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
         role="img"
         aria-label={t('entityTopoExplorer.graph.miniMap')}
       >
-        <rect x="0" y="0" width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} fill="#fff" />
+        {/* fill comes from `.eto-cosmos-minimap rect` (themed via --om-surface); SVG attrs can't read var() */}
+        <rect x="0" y="0" width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} />
         {data.points.map((point, index) => (
           <circle key={index} cx={point.x} cy={point.y} r="1.15" fill={point.color} opacity="0.72" />
         ))}
-        {viewportPath && <path d={viewportPath} fill="rgba(79, 70, 229, 0.08)" stroke="#4f46e5" strokeWidth="1.2" />}
+        {/* fill/stroke come from `.eto-cosmos-minimap path` (themed via --om-primary); SVG attrs can't read var() */}
+        {viewportPath && <path d={viewportPath} />}
       </svg>
     </div>
   );
