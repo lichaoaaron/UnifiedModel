@@ -27,7 +27,8 @@ umodel-server（cmd/umodel-server, REST :8080）
 要点：
 - 统一经 `/api/plugins/<id>/resources/*` 反代 → 复用 Grafana 鉴权、无 CORS、密钥只在服务端。
 - 本项目**无** Prometheus/Loki/Tempo：metric/log/trace 被建模为图实体，走 `/api/v1/query`（后端再查 OpenSearch），**不引入任何原生 datasource/dashboard**。
-- `apiUrl` / `apiKey` 由 [`provisioning/plugins/apps.yaml`](../provisioning/plugins/apps.yaml) 注入，或在 AppConfig 配置页运行时填。
+- **诊断页是第二上游**：它不查 umodel-server，而是经 `streamProxyTo` 把 `/diagnosis/*` **流式反代**到独立诊断服务（`jsonData.diagnosisUrl`，SSE）——详见 [§5](#5-约束与坑速查)。
+- `apiUrl` / `diagnosisUrl`（jsonData）与 `apiKey`（secureJsonData）由 [`provisioning/plugins/apps.yaml`](../provisioning/plugins/apps.yaml) 注入，或在 AppConfig 配置页运行时填。
 
 ---
 
@@ -42,7 +43,7 @@ plugin/deepsite-umodel-app/
 │  ├─ declarations.d.ts             *.css 模块声明
 │  ├─ components/
 │  │  ├─ App/App.tsx                react-router <Routes>：各页路由 + 默认重定向 UModel + Suspense；外层 <I18nProvider>
-│  │  ├─ AppConfig/AppConfig.tsx    配置页（jsonData.apiUrl + secureJsonData.apiKey）
+│  │  ├─ AppConfig/AppConfig.tsx    配置页（jsonData.apiUrl + jsonData.diagnosisUrl + secureJsonData.apiKey）
 │  │  ├─ WorkspacePage.tsx          页面外壳：<PluginPage> + Workspace 选择器 + 未选门控 + UModelRoot
 │  │  └─ WorkspaceSelect.tsx        @grafana/ui Combobox 工作区选择器
 │  ├─ context/WorkspaceContext.tsx  工作区列表 + 选中态（localStorage 'openumodel.workspace'）+ 共享 UModelApi，经 Context 透传
@@ -69,17 +70,17 @@ plugin/deepsite-umodel-app/
 ├─ pkg/                             Go 后端（mage → dist/gpx_umodel_<os>_<arch>）
 │  ├─ main.go                       app.Manage("deepsite-umodel-app", plugin.NewApp)
 │  └─ plugin/
-│     ├─ app.go                     读 jsonData.apiUrl + secureJsonData.apiKey；CheckHealth
-│     ├─ resources.go               proxyTo() 反代；registerRoutes 转发 /api/、/healthz → apiUrl
+│     ├─ app.go                     读 jsonData.{apiUrl,diagnosisUrl} + secureJsonData.apiKey；CheckHealth（只校 apiUrl）
+│     ├─ resources.go               registerRoutes 挂载：/ping；proxyTo() 反代 /api/、/healthz → apiUrl；streamProxyTo() 流式反代 /diagnosis/ → diagnosisUrl
 │     └─ resources_test.go          ping + 反代转发 + 未配置 502 单测
-├─ provisioning/plugins/apps.yaml   自动启用插件 + 注入 jsonData.apiUrl / secureJsonData.apiKey
+├─ provisioning/plugins/apps.yaml   自动启用插件 + 注入 jsonData.{apiUrl,diagnosisUrl} / secureJsonData.apiKey
 ├─ docker-compose.yaml              dev/e2e 的 Grafana 容器：extends .config 基座，覆盖 grafana_version（默认 12.3.1）
 │                                   与 ports（3334:3000；列表字段替换必须 !override，见 §5）
 ├─ package.json                     前端依赖与脚本（build/dev/test/typecheck/lint/e2e/server/sign）
 ├─ playwright.config.ts             e2e 配置：auth 项目先 admin 登录存 cookie（playwright/.auth/），
 │                                   chromium 项目带该身份跑 tests/*.spec.ts；baseURL 取 GRAFANA_URL
 │                                   环境变量（默认 http://localhost:3000）。见 §4 e2e
-├─ Magefile.go / go.mod             后端构建（build.BuildAll）/ Go module（go 1.26.3 + grafana-plugin-sdk-go）
+├─ Magefile.go / go.mod             后端构建（build.BuildAll）/ Go module（go 1.26.4 + grafana-plugin-sdk-go）
 ├─ go.sum                           Go 依赖校验和锁定，go get / go mod tidy 自动维护——勿手改，随 go.mod 一起提交
 ├─ tsconfig.json                    仅 extends ./.config/tsconfig.json（脚手架基础 TS 配置）；需自定义编译选项时在此扩展，不改 .config/
 ├─ eslint.config.mjs                在脚手架基础上为移植目录域内放宽 react-hooks 新规则（见 §3.6）
@@ -90,7 +91,7 @@ plugin/deepsite-umodel-app/
 
 ## 3. 前端如何适配 Grafana（核心）
 
-本插件前端不是从零写的，而是把独立前端 [`web/`](../../../web/) **移植**进 Grafana。整个适配自始至终只解决四个问题，每个问题对应一个小节：
+本插件前端不是从零写的，而是把独立前端 [`web/`](../../../web/) **移植**进 Grafana。整个适配自始至终只解决五个问题，每个问题对应一个小节：
 
 | 适配要解决的问题 | web/ 原做法 | 插件做法 | 详见 |
 |---|---|---|---|
@@ -116,8 +117,6 @@ plugin/deepsite-umodel-app/
   - API 调试器（原静态 API map，现为 ApiSpec 目录 + Monaco 请求体 + 真实执行）
   - Diagnosis（智能诊断工作台，中文-only；SSE 流式 → 独立诊断服务，见 §5）
 
-> web 侧已删除的 Agent、Data store 页插件同步移除（Data 能力并入 Query）。**诊断工作台已移植**（`features/diagnosis/workbench/`，整目录 + 桥接），但两点特殊：**中文-only**（文案/占位/症状识别正则皆中文 NLP，不接 useI18n——"跟随 Grafana 语言"的有意例外），且走**独立诊断服务的 SSE 流式**（见 §5）。
-
 **决策二（按元素）——让它跟随主题**：只看元素的渲染介质，A/B 两路通用。
 
 - **`@grafana/ui` 组件** → 天然主题化，无需处理。
@@ -139,7 +138,7 @@ plugin/deepsite-umodel-app/
 
 ### 3.3 路由与外壳
 - [`module.tsx`](../src/module.tsx)：`AppPlugin().setRootPage(App).addConfigPage(...)`。
-- [`App.tsx`](../src/components/App/App.tsx)：react-router v6 `<Routes>`，每页一个 `<Route>`，`*` → `Navigate to /umodel`；外层包 `<I18nProvider>`。ROUTES 段与 web 的 `routes.ts` 对齐（`umodel`/`entity-topo`/`query`/`imports`/`settings`/`api-debug`）。**不采用** web 换用的 react-router v7 / BrowserRouter，插件仍用 AppPlugin + 自有 v6 路由。
+- [`App.tsx`](../src/components/App/App.tsx)：react-router v6 `<Routes>`，每页一个 `<Route>`，`*` → `Navigate to /umodel`；外层包 `<I18nProvider>`。ROUTES 段与 web 的 `routes.ts` 对齐（`umodel`/`entity-topo`/`query`/`imports`/`settings`/`api-debug`/`diagnosis`）。**不采用** web 换用的 react-router v7 / BrowserRouter，插件仍用 AppPlugin + 自有 v6 路由。
 - 每页用 `<PluginPage>`（`@grafana/runtime`）拿 Grafana 页头/面包屑。
 - **工作区**：原 web 用"选 workspace 才进主界面"。这里下沉为 `WorkspaceContext`（列表+选中态，localStorage `'openumodel.workspace'`）+ `WorkspaceSelect`（Combobox，放在 `WorkspacePage` 的页头 actions）+ 未选时空态门控。[`plugin.json`](../src/plugin.json) 的 `includes` 与 `ROUTES` 一一对应。
 
@@ -217,7 +216,7 @@ e2e 在**真实 Grafana** 里跑：[`playwright.config.ts`](../playwright.config
 
 | 文件 | 类型 | 依赖后端 |
 |---|---|---|
-| [`tests/appNavigation.spec.ts`](../tests/appNavigation.spec.ts) | 冒烟：6 个门控页（UModel/Topo/Query/Imports/Settings/ApiDebug）渲染 "No workspace selected"、选择器存在 | **否**（Provider 不自动选 workspace，未选即空态，与后端可达无关） |
+| [`tests/appNavigation.spec.ts`](../tests/appNavigation.spec.ts) | 冒烟：7 个门控页（UModel/Topo/Query/Imports/Settings/ApiDebug/Diagnosis）渲染 "No workspace selected"、选择器存在 | **否**（Provider 不自动选 workspace，未选即空态，与后端可达无关） |
 | [`tests/appConfig.spec.ts`](../tests/appConfig.spec.ts) | 冒烟：配置页保存 apiUrl/apiKey（reset 条件化） | 否 |
 | [`tests/appQuery.spec.ts`](../tests/appQuery.spec.ts) | 功能：配置 apiUrl → 选 workspace → Query 执行 SPL → 断言结果表出行 | **是**，需可达且有数据的 umodel-server；**按需开启**（见下） |
 
@@ -251,7 +250,9 @@ E2E_UMODEL_API_URL=http://host.docker.internal:8080 \  # 容器可达地址，�
 - `ECONNREFUSED` = 该 host:port 没在监听 → `docker ps` 看真实端口、`curl http://<host>:<port>/api/health` 验证连通。
 - **插件 app 配置是全局单条记录**（一个 org 一份）。`fullyParallel` 下多个测试若都改 `apiUrl` 会**互相覆盖**——让写配置的测试用**相同值**（如都取 `E2E_UMODEL_API_URL`），或串行；读配置的功能测试在列表没出时可 `page.reload()` 重拉一次以扛住并发重建的瞬时失败。
 
-### 新增/移植一个页面的既定步骤1. **@grafana/ui 重写型**：在 `src/pages/XxxPage.tsx` 用 `<WorkspacePage>` + `useWorkspace()` 取 `api/workspace`，用 `@grafana/ui` 组件实现；`useStyles2` 主题化。
+### 新增/移植一个页面的既定步骤
+
+1. **@grafana/ui 重写型**：在 `src/pages/XxxPage.tsx` 用 `<WorkspacePage>` + `useWorkspace()` 取 `api/workspace`，用 `@grafana/ui` 组件实现；`useStyles2` 主题化。
 2. **移植重型可视化 / 重型页面型**（参考 UModel/Topology/Query/apiDebug）：
    - `cp -r web/src/features/<feat> src/features/<feat>`（import 路径 `../../api`/`../../lib`/`../../design/components`/`../../i18n` 天然对齐）。
    - 每个含 JSX 的 `.tsx` 补 `import React`（本插件经典 JSX runtime；与现有 `from 'react'` 合并避免 `no-duplicate-imports`）。
@@ -271,7 +272,7 @@ E2E_UMODEL_API_URL=http://host.docker.internal:8080 \  # 容器可达地址，�
 - React/react-router/rxjs/`@grafana/*` 是 external，**版本钉死 12.3.1 / React 18**，须与运行的 Grafana 版本一致。
 - **改 [`plugin.json`](../src/plugin.json) 必须重启 Grafana**。
 - `apiUrl` **不能填 `localhost`**（反代由 Grafana 容器发起）。
-- **Go 版本坑**：容器 1.21.6 vs `go.mod` 1.26.3 → 用宿主预编译后端。
+- **Go 版本坑**：容器 1.21.6（`.config/Dockerfile` 的 `GO_VERSION`）vs `go.mod` 1.26.4 → 用宿主预编译后端。
 - Linux 二进制从 Windows 同步后 `chmod +x`。
 - 未签名插件需 `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=deepsite-umodel-app`。
 - **compose `extends` 合并坑**：映射类字段（`build.args`、`environment`）逐 key 合并，子文件直接覆盖即可；**列表类字段（`ports` 等）是追加不是替换**——根 [`docker-compose.yaml`](../docker-compose.yaml) 想改掉 base 的端口映射必须写 `ports: !override` 并**整表写全**（含 delve 的 `2345:2345`，漏写即丢失），需 Compose v2.24+。否则 base 的 `3000:3000` 仍生效，宿主 3000 被占时容器起不来。
