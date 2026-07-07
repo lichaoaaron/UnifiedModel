@@ -1,5 +1,6 @@
 import { test, expect } from './fixtures';
 import { ROUTES } from '../src/constants';
+import { testIds } from '../src/components/testIds';
 
 // Functional flow that requires a reachable UModel server WITH data. Opt in by
 // setting E2E_UMODEL_API_URL to a URL reachable from the Grafana *container*
@@ -15,8 +16,9 @@ test.describe('query flow (needs a reachable UModel server)', () => {
     // 1. Point the plugin at the UModel server (the config page is already open
     //    via the appConfigPage fixture). The Go backend re-reads apiUrl after the
     //    settings are saved.
-    await page.getByRole('textbox', { name: 'API Url' }).clear();
-    await page.getByRole('textbox', { name: 'API Url' }).fill(API_URL!);
+    const apiUrlInput = page.getByTestId(testIds.appConfig.apiUrl);
+    await apiUrlInput.clear();
+    await apiUrlInput.fill(API_URL!);
     const saveResponse = appConfigPage.waitForSettingsResponse();
     await page.getByRole('button', { name: /Save API settings/i }).click();
     await expect(saveResponse).toBeOK();

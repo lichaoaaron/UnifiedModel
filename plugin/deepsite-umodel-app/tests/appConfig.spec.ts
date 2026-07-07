@@ -1,4 +1,5 @@
 import { test, expect } from './fixtures';
+import { testIds } from '../src/components/testIds';
 
 test('saves the app configuration (API Url + API Key)', async ({ appConfigPage, page }) => {
   const apiKey = page.getByRole('textbox', { name: 'API Key' });
@@ -17,8 +18,11 @@ test('saves the app configuration (API Url + API Key)', async ({ appConfigPage, 
   // same URL the functional test uses (when provided) so parallel runs don't
   // clobber each other's apiUrl.
   const apiUrl = process.env.E2E_UMODEL_API_URL || 'http://umodel.example.com:8080';
-  await page.getByRole('textbox', { name: 'API Url' }).clear();
-  await page.getByRole('textbox', { name: 'API Url' }).fill(apiUrl);
+  // Target the apiUrl input by its test id — the Diagnosis Url field's description
+  // mentions "API Url", so a role+name lookup now matches both inputs.
+  const apiUrlInput = page.getByTestId(testIds.appConfig.apiUrl);
+  await apiUrlInput.clear();
+  await apiUrlInput.fill(apiUrl);
 
   // Persist and assert Grafana accepted the settings POST.
   const saveResponse = appConfigPage.waitForSettingsResponse();
