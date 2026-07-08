@@ -4,6 +4,7 @@ import { css } from '@emotion/css';
 import { AppPluginMeta, GrafanaTheme2, PluginConfigPageProps, PluginMeta } from '@grafana/data';
 import { getBackendSrv } from '@grafana/runtime';
 import { Button, Field, FieldSet, Input, SecretInput, useStyles2 } from '@grafana/ui';
+import { t } from '@grafana/i18n';
 import { testIds } from '../testIds';
 
 type AppPluginSettings = {
@@ -77,10 +78,13 @@ const AppConfig = ({ plugin }: AppConfigProps) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <FieldSet label="API Settings">
+      <FieldSet label={t('appConfig.fieldSet.apiSettings', 'API Settings')}>
         <Field
-          label="API Key"
-          description="Optional bearer token for the UModel server. Leave empty — the server is currently unauthenticated."
+          label={t('appConfig.apiKey.label', 'API Key')}
+          description={t(
+            'appConfig.apiKey.description',
+            'Optional bearer token for the UModel server. Leave empty — the server is currently unauthenticated.'
+          )}
         >
           <SecretInput
             width={60}
@@ -89,15 +93,18 @@ const AppConfig = ({ plugin }: AppConfigProps) => {
             name="apiKey"
             value={state.apiKey}
             isConfigured={state.isApiKeySet}
-            placeholder={'Your secret API key'}
+            placeholder={t('appConfig.apiKey.placeholder', 'Your secret API key')}
             onChange={onChange}
             onReset={onResetApiKey}
           />
         </Field>
 
         <Field
-          label="API Url"
-          description="Base URL of the UModel server (cmd/umodel-server). Must be reachable from the Grafana server — never use localhost when Grafana runs in Docker (e.g. http://host.docker.internal:8080 for local dev)."
+          label={t('appConfig.apiUrl.label', 'API Url')}
+          description={t(
+            'appConfig.apiUrl.description',
+            'Base URL of the UModel server (cmd/umodel-server). Must be reachable from the Grafana server — never use localhost when Grafana runs in Docker (e.g. http://host.docker.internal:8080 for local dev).'
+          )}
           className={s.marginTop}
         >
           <Input
@@ -106,14 +113,17 @@ const AppConfig = ({ plugin }: AppConfigProps) => {
             id="config-api-url"
             data-testid={testIds.appConfig.apiUrl}
             value={state.apiUrl}
-            placeholder={`E.g.: http://host.docker.internal:8080`}
+            placeholder={t('appConfig.apiUrl.placeholder', 'E.g.: http://host.docker.internal:8080')}
             onChange={onChange}
           />
         </Field>
 
         <Field
-          label="Diagnosis Url"
-          description="Optional. Base URL of the diagnosis service used by the Diagnosis page (SSE). Reachable from the Grafana server, same as API Url (e.g. http://host.docker.internal:18000). Leave empty if you don't use the Diagnosis page."
+          label={t('appConfig.diagnosisUrl.label', 'Diagnosis Url')}
+          description={t(
+            'appConfig.diagnosisUrl.description',
+            "Optional. Base URL of the diagnosis service used by the Diagnosis page (SSE). Reachable from the Grafana server, same as API Url (e.g. http://host.docker.internal:18000). Leave empty if you don't use the Diagnosis page."
+          )}
           className={s.marginTop}
         >
           <Input
@@ -121,14 +131,14 @@ const AppConfig = ({ plugin }: AppConfigProps) => {
             name="diagnosisUrl"
             id="config-diagnosis-url"
             value={state.diagnosisUrl}
-            placeholder={`E.g.: http://host.docker.internal:18000`}
+            placeholder={t('appConfig.diagnosisUrl.placeholder', 'E.g.: http://host.docker.internal:18000')}
             onChange={onChange}
           />
         </Field>
 
         <div className={s.marginTop}>
           <Button type="submit" data-testid={testIds.appConfig.submit} disabled={isSubmitDisabled}>
-            Save API settings
+            {t('appConfig.submit', 'Save API settings')}
           </Button>
         </div>
       </FieldSet>

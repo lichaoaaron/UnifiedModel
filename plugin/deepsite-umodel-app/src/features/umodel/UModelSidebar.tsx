@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, type CSSProperties, type ReactNode 
 import ReactDOM from 'react-dom';
 import { CircleDashed, Crosshair, Trash2, X } from 'lucide-react';
 import type { UModelElement } from '../../api/types';
-import { useI18n } from '../../i18n';
+import { t, Trans } from '@grafana/i18n';
 import {
   colorForKind,
   elementKey,
@@ -37,7 +37,6 @@ export function SummarySidebar({
   onToggleKind: (kind: string) => void;
   onToggleDomain: (domain: string) => void;
 }) {
-  const { t } = useI18n();
   const diffTotal = diff.added.length + diff.modified.length + diff.deleted.length;
   const focusableDiffCount = diff.added.length + diff.modified.length;
   const kindIsNodeFilter = (kind: string) =>
@@ -47,8 +46,8 @@ export function SummarySidebar({
   return (
     <div className="ume-sidebar-body">
       <div className="ume-stat-grid">
-        <StatCard label={t('umodelExplorer.sidebar.nodes')} value={stats.nodes} />
-        <StatCard label={t('umodelExplorer.sidebar.links')} value={stats.links} />
+        <StatCard label={t('umodelExplorer.sidebar.nodes', 'Nodes')} value={stats.nodes} />
+        <StatCard label={t('umodelExplorer.sidebar.links', 'Links')} value={stats.links} />
       </div>
 
       {diffTotal > 0 && (
@@ -59,36 +58,36 @@ export function SummarySidebar({
           type="button"
           title={
             focusableDiffCount > 0
-              ? t('umodelExplorer.sidebar.focusDraftChanges')
-              : t('umodelExplorer.sidebar.deletedCannotFocus')
+              ? t('umodelExplorer.sidebar.focusDraftChanges', 'Focus added and modified draft elements')
+              : t('umodelExplorer.sidebar.deletedCannotFocus', 'Deleted elements cannot be focused')
           }
         >
           <span className="ume-diff-card-heading">
             <CircleDashed size={14} />
-            <strong>{t('umodelExplorer.sidebar.draft.title')}</strong>
+            <strong>{t('umodelExplorer.sidebar.draft.title', 'Unsaved draft UModel')}</strong>
             <DraftHelpTooltip />
           </span>
           <span className="ume-diff-card-counts">
             {diff.added.length > 0 && (
               <code className="added">
-                +{diff.added.length} {t('umodelExplorer.sidebar.draft.added')}
+                +{diff.added.length} {t('umodelExplorer.sidebar.draft.added', 'Added')}
               </code>
             )}
             {diff.modified.length > 0 && (
               <code className="modified">
-                ~{diff.modified.length} {t('umodelExplorer.sidebar.draft.modified')}
+                ~{diff.modified.length} {t('umodelExplorer.sidebar.draft.modified', 'Modified')}
               </code>
             )}
             {diff.deleted.length > 0 && (
               <code className="deleted">
-                -{diff.deleted.length} {t('umodelExplorer.sidebar.draft.deleted')}
+                -{diff.deleted.length} {t('umodelExplorer.sidebar.draft.deleted', 'Deleted')}
               </code>
             )}
           </span>
         </button>
       )}
 
-      <SectionTitle>{t('umodelExplorer.sidebar.byType')}</SectionTitle>
+      <SectionTitle>{t('umodelExplorer.sidebar.byType', 'By Type')}</SectionTitle>
       <div className="ume-filter-list">
         {nodeKindEntries.map(([kind, count]) => {
           const color = colorForKind(kind);
@@ -122,7 +121,11 @@ export function SummarySidebar({
               style={{ '--row-bg': color.bg, '--row-text': color.text } as CSSProperties}
               type="button"
               disabled={disabled}
-              title={disabled ? t('umodelExplorer.sidebar.linkFiltersTableOnly') : undefined}
+              title={
+                disabled
+                  ? t('umodelExplorer.sidebar.linkFiltersTableOnly', 'Link filters are available in table view')
+                  : undefined
+              }
             >
               <span className="ume-filter-label">
                 <span className="ume-kind-line" style={{ background: color.dot }} />
@@ -134,7 +137,7 @@ export function SummarySidebar({
         })}
       </div>
 
-      <SectionTitle>{t('umodelExplorer.sidebar.byDomain')}</SectionTitle>
+      <SectionTitle>{t('umodelExplorer.sidebar.byDomain', 'By Domain')}</SectionTitle>
       <div className="ume-filter-list">
         {stats.domainEntries.slice(0, 12).map(([domain, count]) => {
           const active = domainFilters.includes(domain);
@@ -147,7 +150,7 @@ export function SummarySidebar({
             >
               <span className="ume-filter-label">
                 <span className="ume-domain-dot" />
-                {domain === 'unknown' ? t('umodelExplorer.misc.unknown') : domain}
+                {domain === 'unknown' ? t('umodelExplorer.misc.unknown', 'unknown') : domain}
               </span>
               <strong>{count}</strong>
             </button>
@@ -159,7 +162,6 @@ export function SummarySidebar({
 }
 
 function DraftHelpTooltip() {
-  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement | null>(null);
   const rect = ref.current?.getBoundingClientRect();
@@ -196,13 +198,21 @@ function DraftHelpTooltip() {
         rect &&
         ReactDOM.createPortal(
           <div className="ume-diff-help-panel" style={{ left, top, width: panelWidth } as CSSProperties}>
-            <strong>{t('umodelExplorer.sidebar.draft.focusTitle')}</strong>
-            <p>{t('umodelExplorer.sidebar.draft.focusHelp1')}</p>
-            <p>{t('umodelExplorer.sidebar.draft.focusHelp2')}</p>
+            <strong>{t('umodelExplorer.sidebar.draft.focusTitle', 'Draft focus')}</strong>
             <p>
-              {t.rich('umodelExplorer.sidebar.draft.focusHelp3', {
-                strong: (chunks) => <b>{chunks}</b>,
-              })}
+              {t(
+                'umodelExplorer.sidebar.draft.focusHelp1',
+                'Click this card to focus all added and modified draft nodes or links.'
+              )}
+            </p>
+            <p>
+              {t(
+                'umodelExplorer.sidebar.draft.focusHelp2',
+                'Deleted items cannot be focused here and only contribute to the count.'
+              )}
+            </p>
+            <p>
+              <Trans i18nKey="umodelExplorer.sidebar.draft.focusHelp3" components={{ strong: <b /> }} />
             </p>
           </div>,
           document.body
@@ -226,17 +236,16 @@ export function SettingsSidebar({
   onEntitySetLinkDisplayChange: (value: EntitySetLinkDisplay) => void;
   onForceFullModeChange: (value: boolean) => void;
 }) {
-  const { t } = useI18n();
   return (
     <div className="ume-sidebar-body">
-      <SectionTitle>{t('umodelExplorer.settings.canvas')}</SectionTitle>
+      <SectionTitle>{t('umodelExplorer.settings.canvas', 'Canvas')}</SectionTitle>
       <div className="ume-settings-options">
         {(
           [
-            { label: t('umodelExplorer.settings.plain'), value: 'none' },
-            { label: t('umodelExplorer.settings.dots'), value: 'dots' },
-            { label: t('umodelExplorer.settings.lines'), value: 'lines' },
-            { label: t('umodelExplorer.settings.grid'), value: 'cross' },
+            { label: t('umodelExplorer.settings.plain', 'Plain'), value: 'none' },
+            { label: t('umodelExplorer.settings.dots', 'Dots'), value: 'dots' },
+            { label: t('umodelExplorer.settings.lines', 'Lines'), value: 'lines' },
+            { label: t('umodelExplorer.settings.grid', 'Grid'), value: 'cross' },
           ] as const
         ).map((option) => (
           <button
@@ -249,23 +258,23 @@ export function SettingsSidebar({
           </button>
         ))}
       </div>
-      <SectionTitle>{t('umodelExplorer.settings.relations')}</SectionTitle>
+      <SectionTitle>{t('umodelExplorer.settings.relations', 'Relations')}</SectionTitle>
       <select
         className="ume-settings-select"
         value={entitySetLinkDisplay}
         onChange={(event) => onEntitySetLinkDisplayChange(event.target.value as EntitySetLinkDisplay)}
       >
-        <option value="absolute_node">{t('umodelExplorer.settings.connectionsOnly')}</option>
-        <option value="relative_link">{t('umodelExplorer.settings.bridgeNodes')}</option>
+        <option value="absolute_node">{t('umodelExplorer.settings.connectionsOnly', 'Connections only')}</option>
+        <option value="relative_link">{t('umodelExplorer.settings.bridgeNodes', 'Bridge nodes')}</option>
       </select>
-      <SectionTitle>{t('umodelExplorer.settings.display')}</SectionTitle>
+      <SectionTitle>{t('umodelExplorer.settings.display', 'Display')}</SectionTitle>
       <label className="ume-settings-check">
         <input
           checked={forceFullMode}
           onChange={(event) => onForceFullModeChange(event.target.checked)}
           type="checkbox"
         />
-        {t('umodelExplorer.settings.alwaysRenderEveryItem')}
+        {t('umodelExplorer.settings.alwaysRenderEveryItem', 'Always render every item')}
       </label>
     </div>
   );
@@ -319,8 +328,9 @@ export function FilterBar({
   onClearFocus: () => void;
   onToggleStacking: () => void;
 }) {
-  const { t } = useI18n();
-  if (activeCount === 0) {return null;}
+  if (activeCount === 0) {
+    return null;
+  }
   const hasFocus = focusIds.length > 0;
   const dimmed = hasFocus && !filterStacking;
   const focusItems = focusIds.map((id) => {
@@ -330,10 +340,15 @@ export function FilterBar({
   return (
     <div className="ume-filter-bar">
       <InfoTooltip>
-        <strong>{t('umodelExplorer.filter.help.title')}</strong>
-        <p>{t('umodelExplorer.filter.help.line1')}</p>
-        <p>{t('umodelExplorer.filter.help.line2')}</p>
-        <p>{t('umodelExplorer.filter.help.line3')}</p>
+        <strong>{t('umodelExplorer.filter.help.title', 'Filtering')}</strong>
+        <p>{t('umodelExplorer.filter.help.line1', 'Focus shows selected items and nearby related items.')}</p>
+        <p>
+          {t(
+            'umodelExplorer.filter.help.line2',
+            'Stack filters narrows that focused view with search, type, or domain filters.'
+          )}
+        </p>
+        <p>{t('umodelExplorer.filter.help.line3', 'Clear filters to return to the full result.')}</p>
       </InfoTooltip>
       {hasFocus && <FocusChip items={focusItems} onClear={onClearFocus} onRemove={onRemoveFocus} />}
       {hasFocus && (
@@ -347,7 +362,7 @@ export function FilterBar({
             <span>
               <i />
             </span>
-            {t('umodelExplorer.filter.stack')}
+            {t('umodelExplorer.filter.stack', 'Stack filters')}
           </button>
         </>
       )}
@@ -358,7 +373,7 @@ export function FilterBar({
         <ActiveFilterChip
           key={`search-${value}`}
           label={value}
-          prefix={t('umodelExplorer.filter.searchPrefix')}
+          prefix={t('umodelExplorer.filter.searchPrefix', 'Search:')}
           dimmed={dimmed}
           onRemove={() => onRemoveFullText(value)}
         />
@@ -373,7 +388,7 @@ export function FilterBar({
             accentColor={color.text}
             suffix={
               currentView === 'graph' && !kindActsAsGraphNode(kind, entitySetLinkDisplay)
-                ? t('umodelExplorer.filter.tableOnly')
+                ? t('umodelExplorer.filter.tableOnly', 'table only')
                 : undefined
             }
             dimmed={dimmed || (currentView === 'graph' && !kindActsAsGraphNode(kind, entitySetLinkDisplay))}
@@ -384,8 +399,8 @@ export function FilterBar({
       {domainFilters.map((domain) => (
         <ActiveFilterChip
           key={domain}
-          label={domain === 'unknown' ? t('umodelExplorer.misc.unknown') : domain}
-          prefix={t('umodelExplorer.filter.domainPrefix')}
+          label={domain === 'unknown' ? t('umodelExplorer.misc.unknown', 'unknown') : domain}
+          prefix={t('umodelExplorer.filter.domainPrefix', 'Domain:')}
           dimmed={dimmed}
           onRemove={() => onRemoveDomain(domain)}
         />
@@ -393,7 +408,7 @@ export function FilterBar({
       <span className="ume-filter-grow" />
       <button className="ume-filter-clear" onClick={onClear} type="button">
         <Trash2 size={12} />
-        {t('umodelExplorer.action.clearAll')}
+        {t('umodelExplorer.action.clearAll', 'Clear all')}
       </button>
     </div>
   );
@@ -440,7 +455,6 @@ function FocusChip({
   onClear: () => void;
   onRemove: (id: string) => void;
 }) {
-  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -449,18 +463,24 @@ function FocusChip({
   const top = rect ? rect.bottom + 4 : 0;
 
   const openPanel = () => {
-    if (timerRef.current) {window.clearTimeout(timerRef.current);}
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
     timerRef.current = null;
     setOpen(true);
   };
   const closePanelDelayed = () => {
-    if (timerRef.current) {window.clearTimeout(timerRef.current);}
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+    }
     timerRef.current = window.setTimeout(() => setOpen(false), 180);
   };
 
   useEffect(
     () => () => {
-      if (timerRef.current) {window.clearTimeout(timerRef.current);}
+      if (timerRef.current) {
+        window.clearTimeout(timerRef.current);
+      }
     },
     []
   );
@@ -469,7 +489,7 @@ function FocusChip({
     <>
       <span ref={ref} className="ume-filter-focus" onMouseEnter={openPanel} onMouseLeave={closePanelDelayed}>
         <Crosshair size={12} />
-        {t('umodelExplorer.filter.focus')} ({items.length})
+        {t('umodelExplorer.filter.focus', 'Focus')} ({items.length})
         <button
           onClick={(event) => {
             event.stopPropagation();
@@ -477,7 +497,7 @@ function FocusChip({
             setOpen(false);
           }}
           type="button"
-          title={t('umodelExplorer.action.clearFocus')}
+          title={t('umodelExplorer.action.clearFocus', 'Clear focus')}
         >
           <X size={10} />
         </button>
@@ -492,7 +512,9 @@ function FocusChip({
             style={{ left, top } as CSSProperties}
           >
             <div className="ume-focus-panel-header">
-              <strong>{t('umodelExplorer.filter.focusItems', { count: items.length })}</strong>
+              <strong>
+                {t('umodelExplorer.filter.focusItems', 'Focus items ({{count}})', { count: items.length })}
+              </strong>
               <button
                 onClick={() => {
                   onClear();
@@ -500,7 +522,7 @@ function FocusChip({
                 }}
                 type="button"
               >
-                {t('umodelExplorer.action.clearAll')}
+                {t('umodelExplorer.action.clearAll', 'Clear all')}
               </button>
             </div>
             {items.map((item) => (
@@ -512,7 +534,7 @@ function FocusChip({
                 <button
                   onClick={() => onRemove(item.id)}
                   type="button"
-                  title={t('umodelExplorer.action.removeFocusItem')}
+                  title={t('umodelExplorer.action.removeFocusItem', 'Remove focus item')}
                 >
                   <X size={10} />
                 </button>

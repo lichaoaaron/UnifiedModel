@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react';
 import { useTheme2 } from '@grafana/ui';
-import { useI18n, type TFunction } from '../../../i18n';
+import { t, type TFunction } from '@grafana/i18n';
 import { CosmosEngine } from './cosmosEngine';
 import { CosmosLabels } from './cosmosLabels';
 import type {
@@ -46,13 +46,19 @@ function areLayoutOptionsEqual(left: LayoutOptions, right: LayoutOptions): boole
     const leftValue = (left as any)[key];
     const rightValue = (right as any)[key];
     if (Array.isArray(leftValue) && Array.isArray(rightValue)) {
-      if (leftValue.length !== rightValue.length) {return false;}
+      if (leftValue.length !== rightValue.length) {
+        return false;
+      }
       for (let i = 0; i < leftValue.length; i += 1) {
-        if (leftValue[i] !== rightValue[i]) {return false;}
+        if (leftValue[i] !== rightValue[i]) {
+          return false;
+        }
       }
       continue;
     }
-    if (leftValue !== rightValue) {return false;}
+    if (leftValue !== rightValue) {
+      return false;
+    }
   }
   return true;
 }
@@ -60,8 +66,12 @@ function areLayoutOptionsEqual(left: LayoutOptions, right: LayoutOptions): boole
 function buildNeighborSubgraph(data: TopoData, centerId: string): TopoData {
   const ids = new Set<string>([centerId]);
   data.edges.forEach((e) => {
-    if (e.source === centerId) {ids.add(e.target);}
-    if (e.target === centerId) {ids.add(e.source);}
+    if (e.source === centerId) {
+      ids.add(e.target);
+    }
+    if (e.target === centerId) {
+      ids.add(e.source);
+    }
   });
   return {
     nodes: data.nodes.filter((n) => ids.has(n.id)),
@@ -216,7 +226,7 @@ function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'T
   return {
     role,
     title: node?.title || raw?.title || raw?.data?.title || raw?.data?.name || nodeId,
-    typeLabel: node?.subTitle || raw?.data?.subTitle || cluster || t('entityTopoExplorer.detail.entity'),
+    typeLabel: node?.subTitle || raw?.data?.subTitle || cluster || t('entityTopoExplorer.detail.entity', 'Entity'),
     domain: cluster.split('@')[0] || undefined,
     color: node?.iconFill || visual.iconFill,
     iconClass: node?.iconClass || visual.iconClass,
@@ -228,14 +238,20 @@ function getEntityInfo(engine: CosmosEngine, nodeId: string, role: 'Source' | 'T
 }
 
 function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine, t: TFunction): HoverPanelInfo | null {
-  if (hover.lockedNodeId || hover.lockedLinkIndex !== undefined) {return null;}
+  if (hover.lockedNodeId || hover.lockedLinkIndex !== undefined) {
+    return null;
+  }
   const pos = hover.screenPosition;
-  if (!pos || hover.hoverProgress <= 0) {return null;}
+  if (!pos || hover.hoverProgress <= 0) {
+    return null;
+  }
 
   if (hover.hoveredNodeId) {
     const node = engine.getNodeById().get(hover.hoveredNodeId);
     const raw = engine.getRawNode(hover.hoveredNodeId);
-    if (!node) {return null;}
+    if (!node) {
+      return null;
+    }
     const degree = engine.getNeighbors().get(hover.hoveredNodeId)?.size ?? node.degree ?? 0;
     const entity = getEntityInfo(engine, hover.hoveredNodeId, 'Source', t);
     return {
@@ -253,22 +269,24 @@ function buildHoverPanelInfo(hover: HoverState, engine: CosmosEngine, t: TFuncti
       typeLabel: entity.typeLabel,
       domain: entity.domain,
       rows: [
-        [t('entityTopoExplorer.detail.degree'), String(degree)],
-        [t('entityTopoExplorer.detail.id'), raw?.data?.id ? String(raw.data.id) : node.id],
+        [t('entityTopoExplorer.detail.degree', 'Degree'), String(degree)],
+        [t('entityTopoExplorer.detail.id', 'ID'), raw?.data?.id ? String(raw.data.id) : node.id],
       ],
     };
   }
 
   if (hover.hoveredLinkIndex !== undefined) {
     const focused = engine.getFocusedEdges(1)[0];
-    if (!focused) {return null;}
+    if (!focused) {
+      return null;
+    }
     return {
       kind: 'edge',
       x: pos[0],
       y: pos[1],
       title: focused.label,
       color: 'var(--om-indigo)',
-      typeLabel: t('entityTopoExplorer.detail.relationTitle'),
+      typeLabel: t('entityTopoExplorer.detail.relationTitle', 'Relation'),
       source: getEntityInfo(engine, focused.sourceId, 'Source', t),
       target: getEntityInfo(engine, focused.targetId, 'Target', t),
     };
@@ -494,7 +512,9 @@ function CosmosVectorIconOverlay({ engine, tick }: { engine: CosmosEngine | null
   // the rule flags it as "unnecessary" but that subscription is the point.
   const icons = useMemo<CosmosVectorIconOverlayItem[]>(() => engine?.getVectorIconOverlays() ?? [], [engine, tick]);
 
-  if (!icons.length) {return null;}
+  if (!icons.length) {
+    return null;
+  }
 
   return (
     <div style={vectorIconLayerStyle} aria-hidden="true" data-cosmos-vector-icon-overlay="true">
@@ -533,11 +553,10 @@ function CosmosVectorIconOverlay({ engine, tick }: { engine: CosmosEngine | null
 }
 
 function HoverEntityBlock({ entity }: { entity: HoverEntityInfo }) {
-  const { t } = useI18n();
   const roleLabel =
     entity.role === 'Source'
-      ? t('entityTopoExplorer.detail.sourceEntity')
-      : t('entityTopoExplorer.detail.targetEntity');
+      ? t('entityTopoExplorer.detail.sourceEntity', 'Source entity')
+      : t('entityTopoExplorer.detail.targetEntity', 'Target entity');
 
   return (
     <div
@@ -552,7 +571,9 @@ function HoverEntityBlock({ entity }: { entity: HoverEntityInfo }) {
         background: 'var(--om-surface-subtle)',
       }}
     >
-      <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.2, color: 'var(--om-text-muted)', marginBottom: 6 }}>
+      <div
+        style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.2, color: 'var(--om-text-muted)', marginBottom: 6 }}
+      >
         {roleLabel}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
@@ -600,13 +621,14 @@ function HoverEntityBlock({ entity }: { entity: HoverEntityInfo }) {
 }
 
 function CosmosHoverPanel({ info }: { info: HoverPanelInfo | null }) {
-  if (!info) {return null;}
+  if (!info) {
+    return null;
+  }
 
   return <CosmosHoverPanelContent info={info} />;
 }
 
 function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
-  const { t } = useI18n();
   const panelRef = useRef<HTMLDivElement | null>(null);
 
   const width = info.kind === 'edge' ? 338 : 312;
@@ -618,11 +640,15 @@ function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
   const [position, setPosition] = useState({ left: preferredLeft, top: preferredTop });
   const typeLabel =
     info.typeLabel ||
-    (info.kind === 'edge' ? t('entityTopoExplorer.detail.relationTitle') : t('entityTopoExplorer.detail.entity'));
+    (info.kind === 'edge'
+      ? t('entityTopoExplorer.detail.relationTitle', 'Relation')
+      : t('entityTopoExplorer.detail.entity', 'Entity'));
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
-    if (!panel) {return;}
+    if (!panel) {
+      return;
+    }
 
     const parent = panel.parentElement;
     const parentWidth = parent?.clientWidth || (typeof window !== 'undefined' ? window.innerWidth : width);
@@ -635,7 +661,9 @@ function CosmosHoverPanelContent({ info }: { info: HoverPanelInfo }) {
     const nextTop = Math.min(Math.max(HOVER_PANEL_MARGIN, preferredTop), maxTop);
 
     setPosition((current) => {
-      if (current.left === nextLeft && current.top === nextTop) {return current;}
+      if (current.left === nextLeft && current.top === nextTop) {
+        return current;
+      }
       return { left: nextLeft, top: nextTop };
     });
   }, [preferredLeft, preferredTop, width, info]);
@@ -779,12 +807,13 @@ function CosmosNodeActionMenu({
   tick: number;
   onIsolate: (nodeId: string) => void;
 }) {
-  const { t } = useI18n();
   const [hoveredAction, setHoveredAction] = useState<string | null>(null);
   // `tick` re-reads the engine's locked-node action each frame (see above).
   const info = useMemo<CosmosNodeActionInfo | null>(() => engine?.getLockedNodeAction() ?? null, [engine, tick]);
 
-  if (!info) {return null;}
+  if (!info) {
+    return null;
+  }
 
   const actionSize = Math.max(16, Math.min(22, info.size * 0.42));
   const iconSize = Math.max(10, actionSize * 0.58);
@@ -792,7 +821,7 @@ function CosmosNodeActionMenu({
   const actions = [
     {
       key: 'focus',
-      label: t('entityTopoExplorer.filter.focus'),
+      label: t('entityTopoExplorer.filter.focus', 'Focus'),
       angle: -90,
       onClick: () => onIsolate(info.nodeId),
       icon: (
@@ -958,15 +987,23 @@ const miniMapStyle: React.CSSProperties = {
 };
 
 function buildMiniMapData(engine: CosmosEngine | null): MiniMapData | null {
-  if (!engine) {return null;}
+  if (!engine) {
+    return null;
+  }
   const graph = engine.getGraph();
-  if (!graph) {return null;}
+  if (!graph) {
+    return null;
+  }
 
   const nodes = engine.getNodes() as any[];
-  if (!nodes.length) {return null;}
+  if (!nodes.length) {
+    return null;
+  }
 
   const positions = engine.getPointPositionsForRender();
-  if (!positions || !positions.length) {return null;}
+  if (!positions || !positions.length) {
+    return null;
+  }
 
   const maxPoints = 1400;
   const stride = Math.max(1, Math.ceil(nodes.length / maxPoints));
@@ -979,12 +1016,16 @@ function buildMiniMapData(engine: CosmosEngine | null): MiniMapData | null {
   for (let i = 0; i < nodes.length; i += 1) {
     const x = positions[i * 2];
     const y = positions[i * 2 + 1];
-    if (!Number.isFinite(x) || !Number.isFinite(y)) {continue;}
+    if (!Number.isFinite(x) || !Number.isFinite(y)) {
+      continue;
+    }
     minX = Math.min(minX, x);
     maxX = Math.max(maxX, x);
     minY = Math.min(minY, y);
     maxY = Math.max(maxY, y);
-    if (i % stride === 0) {points.push({ x, y, color: nodes[i].iconFill || nodes[i].color || '#2563eb' });}
+    if (i % stride === 0) {
+      points.push({ x, y, color: nodes[i].iconFill || nodes[i].color || '#2563eb' });
+    }
   }
 
   const container = (engine as any).container as HTMLDivElement | undefined;
@@ -1013,7 +1054,9 @@ function buildMiniMapData(engine: CosmosEngine | null): MiniMapData | null {
     });
   }
 
-  if (!Number.isFinite(minX) || !Number.isFinite(maxX) || minX === maxX || minY === maxY) {return null;}
+  if (!Number.isFinite(minX) || !Number.isFinite(maxX) || minX === maxX || minY === maxY) {
+    return null;
+  }
 
   const w = MINI_MAP_WIDTH;
   const h = MINI_MAP_HEIGHT;
@@ -1029,7 +1072,6 @@ function buildMiniMapData(engine: CosmosEngine | null): MiniMapData | null {
 }
 
 function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: number }) {
-  const { t } = useI18n();
   // Rebuild the minimap at most every 5 engine ticks (throttle); the derived
   // Math.floor(tick/5) expression in the deps is intentional.
   const data = useMemo(() => buildMiniMapData(engine), [engine, Math.floor(tick / 5)]);
@@ -1038,7 +1080,9 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
 
   const moveView = useCallback(
     (event: React.PointerEvent<HTMLDivElement>, duration: number) => {
-      if (!data || !engine || !mapRef.current) {return;}
+      if (!data || !engine || !mapRef.current) {
+        return;
+      }
       const rect = mapRef.current.getBoundingClientRect();
       const x = Math.max(MINI_MAP_PAD, Math.min(MINI_MAP_WIDTH - MINI_MAP_PAD, event.clientX - rect.left));
       const y = Math.max(MINI_MAP_PAD, Math.min(MINI_MAP_HEIGHT - MINI_MAP_PAD, event.clientY - rect.top));
@@ -1064,7 +1108,9 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
 
   const handlePointerMove = useCallback(
     (event: React.PointerEvent<HTMLDivElement>) => {
-      if (!draggingRef.current) {return;}
+      if (!draggingRef.current) {
+        return;
+      }
       moveView(event, 40);
     },
     [moveView]
@@ -1077,7 +1123,9 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
     event.stopPropagation();
   }, []);
 
-  if (!data) {return null;}
+  if (!data) {
+    return null;
+  }
 
   const viewportPath =
     data.viewport.length === 4
@@ -1100,7 +1148,7 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
         height={MINI_MAP_HEIGHT}
         viewBox={`0 0 ${MINI_MAP_WIDTH} ${MINI_MAP_HEIGHT}`}
         role="img"
-        aria-label={t('entityTopoExplorer.graph.miniMap')}
+        aria-label={t('entityTopoExplorer.graph.miniMap', 'Topology minimap')}
       >
         {/* fill comes from `.eto-cosmos-minimap rect` (themed via --om-surface); SVG attrs can't read var() */}
         <rect x="0" y="0" width={MINI_MAP_WIDTH} height={MINI_MAP_HEIGHT} />
@@ -1119,7 +1167,6 @@ function CosmosMiniMap({ engine, tick }: { engine: CosmosEngine | null; tick: nu
    ═══════════════════════════════════════════════════════════ */
 
 export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'type'>>((props, ref) => {
-  const { t } = useI18n();
   // WebGL canvas cannot read CSS variables, so the cosmos.gl background color
   // is injected from the Grafana theme. A ref keeps the latest value without
   // rebuilding the engine on every theme read (engine rebuilds only on data).
@@ -1178,10 +1225,14 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
   }, []);
 
   const requestTick = useCallback(() => {
-    if (!mountedRef.current || tickRafRef.current !== null) {return;}
+    if (!mountedRef.current || tickRafRef.current !== null) {
+      return;
+    }
     tickRafRef.current = window.requestAnimationFrame(() => {
       tickRafRef.current = null;
-      if (mountedRef.current) {setTick((c) => c + 1);}
+      if (mountedRef.current) {
+        setTick((c) => c + 1);
+      }
     });
   }, []);
 
@@ -1195,7 +1246,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
   const finishRendering = useCallback((seq = renderSeqRef.current) => {
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
-        if (!mountedRef.current || renderSeqRef.current !== seq) {return;}
+        if (!mountedRef.current || renderSeqRef.current !== seq) {
+          return;
+        }
         setRendering(false);
       });
     });
@@ -1203,7 +1256,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
 
   /* Derived data (isolation) */
   const renderData = useMemo<TopoData>(() => {
-    if (!isolatedNodeId) {return data;}
+    if (!isolatedNodeId) {
+      return data;
+    }
     return buildNeighborSubgraph(data, isolatedNodeId);
   }, [data, isolatedNodeId]);
   renderDataRef.current = renderData;
@@ -1221,7 +1276,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
   useEffect(() => {
     if (props.layout) {
       const next = { ...layoutRef.current, ...props.layout };
-      if (areLayoutOptionsEqual(layoutRef.current, next)) {return;}
+      if (areLayoutOptionsEqual(layoutRef.current, next)) {
+        return;
+      }
       const seq = beginRendering();
       layoutRef.current = next;
       setLayout(next);
@@ -1236,7 +1293,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
   useEffect(() => {
     const host = hostRef.current;
     const initialRenderData = renderDataRef.current;
-    if (!host || initialRenderData.nodes.length === 0) {return;}
+    if (!host || initialRenderData.nodes.length === 0) {
+      return;
+    }
 
     const engine = new CosmosEngine(host, {
       backgroundColor: bgColorRef.current,
@@ -1257,7 +1316,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
           requestTick();
         },
         onHoverChange: (hover) => {
-          if (!mountedRef.current) {return;}
+          if (!mountedRef.current) {
+            return;
+          }
           setHoverPanel(buildHoverPanelInfo(hover, engine as any, tRef.current));
         },
       },
@@ -1297,7 +1358,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
       finishRendering();
       return;
     }
-    if (lastLoadedDataRef.current === renderData) {return;}
+    if (lastLoadedDataRef.current === renderData) {
+      return;
+    }
     const seq = renderSeqRef.current;
     engine.setRuntimeLayout(withFocusedDetailLayout(layoutRef.current, renderData, isolatedNodeIdRef.current));
     engine.updateData(renderData);
@@ -1316,7 +1379,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
     const seq = renderSeqRef.current;
     engineRef.current.updateLayout(withFocusedDetailLayout(layout, renderDataRef.current, isolatedNodeIdRef.current));
     finishRendering(seq);
-  }, [finishRendering, layout.enableDrag]);  
+  }, [finishRendering, layout.enableDrag]);
 
   /* ── Filter sync ── */
   useEffect(() => {
@@ -1336,7 +1399,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
   /* ── Build cluster summaries for filter API ── */
   const clusterInfo = useMemo(() => {
     const engine = engineRef.current;
-    if (!engine) {return [] as any[];}
+    if (!engine) {
+      return [] as any[];
+    }
     return engine.getClusters().map((c) => ({
       key: c.key,
       label: c.label,
@@ -1349,7 +1414,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
         fallbackColor: c.iconFill,
       }),
     }));
-  }, [renderData]);  
+  }, [renderData]);
 
   const clusterKeys = useMemo(() => clusterInfo.map((c) => c.key), [clusterInfo]);
 
@@ -1374,7 +1439,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
 
   /* ── TopoGraphApi imperative API ── */
   const getGraphApi = useCallback((): TopoGraphApi => {
-    if (graphApiRef.current) {return graphApiRef.current;}
+    if (graphApiRef.current) {
+      return graphApiRef.current;
+    }
 
     const api: TopoGraphApi = {
       setData: (next: TopoData, _opts?: TopoDataUpdateOptions) => {
@@ -1412,7 +1479,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
 
       focusNodeView: (nodeId: string) => {
         const engine = engineRef.current;
-        if (!engine) {return;}
+        if (!engine) {
+          return;
+        }
         engine.lockNode(nodeId);
       },
       resetView: () => {
@@ -1469,7 +1538,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
       toggleFilterKey: (key: string) => {
         const seq = beginRendering();
         setSelectedFilterKeys((cur) => {
-          if (cur.includes(key)) {return cur.filter((k) => k !== key);}
+          if (cur.includes(key)) {
+            return cur.filter((k) => k !== key);
+          }
           return [...cur, key];
         });
         finishRendering(seq);
@@ -1507,7 +1578,9 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
             withFocusedDetailLayout(layoutRef.current, renderDataRef.current, isolatedNodeIdRef.current)
           );
         }
-        if (seq !== null) {finishRendering(seq);}
+        if (seq !== null) {
+          finishRendering(seq);
+        }
       },
 
       on: () => api,
@@ -1517,7 +1590,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
 
     graphApiRef.current = api;
     return api;
-  }, [clusterKeys, selectedFilterKeys]);  
+  }, [clusterKeys, selectedFilterKeys]);
 
   useImperativeHandle(
     ref,
@@ -1536,7 +1609,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
           <div style={graphRenderingOverlayStyle}>
             <div style={graphRenderingPillStyle}>
               <span style={graphRenderingSpinnerStyle} />
-              <span>{t('entityTopoExplorer.graph.rendering')}</span>
+              <span>{t('entityTopoExplorer.graph.rendering', 'Rendering topology...')}</span>
             </div>
           </div>
         </>
@@ -1565,7 +1638,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
       {layout.showMiniMap !== false && <CosmosMiniMap engine={engineRef.current} tick={tick} />}
       {isolatedNodeId && (
         <div style={isolationBarStyle}>
-          <span style={{ fontWeight: 500 }}>{t('entityTopoExplorer.graph.focusView')}</span>
+          <span style={{ fontWeight: 500 }}>{t('entityTopoExplorer.graph.focusView', 'Focus view')}</span>
           <span style={{ color: 'var(--om-text-muted)' }}>|</span>
           <span style={{ color: 'var(--om-text)' }}>{isolatedNodeId}</span>
           <button
@@ -1578,7 +1651,7 @@ export const CosmosTopoGraph = forwardRef<TopoGraphRef, Omit<TopoGraphProps, 'ty
               finishRendering(seq);
             }}
           >
-            {t('entityTopoExplorer.action.exit')}
+            {t('entityTopoExplorer.action.exit', 'Exit')}
           </button>
         </div>
       )}

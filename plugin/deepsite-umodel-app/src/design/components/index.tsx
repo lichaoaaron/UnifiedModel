@@ -6,6 +6,7 @@ import React, {
   type TextareaHTMLAttributes,
 } from 'react';
 import { X } from 'lucide-react';
+import { t } from '@grafana/i18n';
 import '../components.css';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'subtle';
@@ -204,7 +205,7 @@ export function Modal({
       <div className="om-modal" role="dialog" aria-modal="true" aria-label={title}>
         <div className="om-panel-header">
           <strong>{title}</strong>
-          <IconButton label="Close" onClick={onClose}>
+          <IconButton label={t('common.close', 'Close')} onClick={onClose}>
             <X size={16} />
           </IconButton>
         </div>

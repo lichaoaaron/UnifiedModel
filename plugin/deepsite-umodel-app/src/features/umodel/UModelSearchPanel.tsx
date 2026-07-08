@@ -2,7 +2,7 @@ import React, { useEffect, useState, type CSSProperties, type ReactNode } from '
 import { createPortal } from 'react-dom';
 import { Boxes, Check, Globe2, Info, List, Search, X } from 'lucide-react';
 import type { UModelElement } from '../../api/types';
-import { useI18n } from '../../i18n';
+import { t } from '@grafana/i18n';
 import {
   colorForKind,
   countEntries,
@@ -43,7 +43,6 @@ export function SearchPanel({
   onClose: () => void;
   onFocusElement: (element: UModelElement) => void;
 }) {
-  const { t } = useI18n();
   const [resultKindFilter, setResultKindFilter] = useState<string[]>([]);
   const hasQuery = query.trim().length > 0;
   const allResults = hasQuery ? searchIndexSearch(index, query, 200) : [];
@@ -73,7 +72,10 @@ export function SearchPanel({
   const panel = (
     <div className="ume-search-panel" style={style} onMouseDown={(event) => event.preventDefault()}>
       {hasQuery && (
-        <SearchSection title={t('umodelExplorer.search.exactFullTextFilter')} icon={<Search size={13} />}>
+        <SearchSection
+          title={t('umodelExplorer.search.exactFullTextFilter', 'Exact full-text filter')}
+          icon={<Search size={13} />}
+        >
           <button
             className="ume-search-fulltext"
             onClick={() => {
@@ -91,7 +93,7 @@ export function SearchPanel({
 
       {hasQuery && allResults.length > 0 && (
         <SearchSection
-          title={t('umodelExplorer.search.matchedResults')}
+          title={t('umodelExplorer.search.matchedResults', 'Matched results')}
           icon={<List size={13} />}
           extra={
             <div className="ume-search-kind-filter">
@@ -100,7 +102,7 @@ export function SearchPanel({
                 onClick={() => setResultKindFilter([])}
                 type="button"
               >
-                {t('umodelExplorer.search.all')}
+                {t('umodelExplorer.search.all', 'All')}
               </button>
               {resultKinds.map(([kind, count]) => {
                 const color = colorForKind(kind);
@@ -131,7 +133,7 @@ export function SearchPanel({
               {resultKindFilter.length > 0 && (
                 <button className="clear" onClick={() => setResultKindFilter([])} type="button">
                   <X size={9} />
-                  {t('umodelExplorer.action.clear')}
+                  {t('umodelExplorer.action.clear', 'Clear')}
                 </button>
               )}
             </div>
@@ -150,21 +152,25 @@ export function SearchPanel({
               />
             ))}
             {visibleResults.length === 0 && (
-              <span className="ume-empty-search">{t('umodelExplorer.empty.matchingResultsForType')}</span>
+              <span className="ume-empty-search">
+                {t('umodelExplorer.empty.matchingResultsForType', 'No matching results for this type.')}
+              </span>
             )}
           </div>
         </SearchSection>
       )}
 
       {hasQuery && allResults.length === 0 && (
-        <SearchSection title={t('umodelExplorer.search.matchedResults')} icon={<List size={13} />}>
-          <span className="ume-empty-search">{t('umodelExplorer.empty.matchingElementsFilter')}</span>
+        <SearchSection title={t('umodelExplorer.search.matchedResults', 'Matched results')} icon={<List size={13} />}>
+          <span className="ume-empty-search">
+            {t('umodelExplorer.empty.matchingElementsFilter', 'No matching elements. Apply it as a full-text filter.')}
+          </span>
         </SearchSection>
       )}
 
       {!hasQuery && (
         <>
-          <SearchSection title={t('umodelExplorer.search.byType')} icon={<Boxes size={13} />}>
+          <SearchSection title={t('umodelExplorer.search.byType', 'By type')} icon={<Boxes size={13} />}>
             <div className="ume-search-hints">
               {orderedKinds.map(([kind, count]) => {
                 const color = colorForKind(kind);
@@ -191,7 +197,7 @@ export function SearchPanel({
               })}
             </div>
           </SearchSection>
-          <SearchSection title={t('umodelExplorer.search.byDomain')} icon={<Globe2 size={13} />}>
+          <SearchSection title={t('umodelExplorer.search.byDomain', 'By domain')} icon={<Globe2 size={13} />}>
             <div className="ume-search-hints">
               {orderedDomains.map(([domain, count]) => (
                 <button
@@ -203,7 +209,7 @@ export function SearchPanel({
                   }}
                   type="button"
                 >
-                  {domain === 'unknown' ? t('umodelExplorer.misc.unknown') : domain}
+                  {domain === 'unknown' ? t('umodelExplorer.misc.unknown', 'unknown') : domain}
                   <strong>{count}</strong>
                 </button>
               ))}
@@ -211,7 +217,7 @@ export function SearchPanel({
           </SearchSection>
           <div className="ume-search-footer">
             <Info size={13} />
-            {t('umodelExplorer.search.footer')}
+            {t('umodelExplorer.search.footer', 'Type keywords to search, or filter by type and domain.')}
           </div>
         </>
       )}
@@ -263,7 +269,9 @@ function SearchResultButton({ entry, query, onClick }: { entry: SearchEntry; que
 
 function HighlightText({ text, query }: { text: string; query: string }) {
   const needles = [...new Set(splitWords(query))].filter((needle) => needle.length > 0).slice(0, 8);
-  if (needles.length === 0) {return <>{text}</>;}
+  if (needles.length === 0) {
+    return <>{text}</>;
+  }
   const matcher = new RegExp(`(${needles.map(escapeRegExp).join('|')})`, 'ig');
   return (
     <>

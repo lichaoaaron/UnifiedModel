@@ -1,0 +1,795 @@
+{
+  "apiDebugger": {
+    "api": {
+      "agentDiscover": {
+        "description": "读取 Agent 客户端可用的工具、资源和建议动作。",
+        "title": "发现 Agent 能力"
+      },
+      "agentResource": {
+        "description": "按 URI 读取安全的元数据资源。",
+        "title": "读取 Agent 资源"
+      },
+      "agentTool": {
+        "description": "执行已启用的 Agent 工具。",
+        "title": "执行 Agent 工具"
+      },
+      "entitiesExpire": {
+        "description": "手动过期指定实体 ID。",
+        "title": "手动过期实体"
+      },
+      "entitiesWrite": {
+        "description": "写入 CMS 2.0 实体记录。",
+        "title": "写入实体"
+      },
+      "health": {
+        "description": "检查服务和图存储是否可用。",
+        "title": "健康检查"
+      },
+      "queryExecute": {
+        "description": "执行 .umodel、.entity、.topo 或支持的图查询。",
+        "title": "执行查询"
+      },
+      "queryExplain": {
+        "description": "返回查询来源、执行方、下推计划、限制和回退信息。",
+        "title": "解释查询"
+      },
+      "relationsExpire": {
+        "description": "手动过期指定关系稳定 ID。",
+        "title": "手动过期关系"
+      },
+      "relationsWrite": {
+        "description": "写入 CMS 2.0 拓扑关系记录。",
+        "title": "写入关系"
+      },
+      "sampleImport": {
+        "description": "向当前工作区导入内置示例。",
+        "title": "导入示例数据"
+      },
+      "umodelDelete": {
+        "description": "按 ID 删除 UModel 元素。",
+        "title": "删除元素"
+      },
+      "umodelImport": {
+        "description": "从服务端可读的文件或目录路径导入 YAML/JSON 元素。",
+        "title": "导入 UModel"
+      },
+      "umodelValidate": {
+        "description": "校验 UModel 元素载荷，不写入数据。",
+        "title": "校验元素"
+      },
+      "umodelWrite": {
+        "description": "创建或更新 UModel 元素。",
+        "title": "写入元素"
+      },
+      "workspaceCreate": {
+        "description": "创建工作区元数据并初始化存储。",
+        "title": "创建工作区"
+      },
+      "workspaceDelete": {
+        "description": "软删除工作区元数据，并为该 ID 保留 tombstone 标记。",
+        "title": "删除工作区"
+      },
+      "workspaceGet": {
+        "description": "读取单个工作区元数据记录。",
+        "title": "获取工作区"
+      },
+      "workspaceList": {
+        "description": "列出可选择的工作区元数据。",
+        "title": "工作区列表"
+      },
+      "workspaceUpdate": {
+        "description": "更新工作区名称、描述、标签或自定义配置。",
+        "title": "更新工作区"
+      }
+    },
+    "apiCount": "{{count}} 个 API",
+    "call": "调用",
+    "description": "说明",
+    "doc": {
+      "activeDeletedOrConflicted": "active、deleted 或 conflicted。",
+      "activeGraphstoreProvider": "当前启用的图存储提供方。",
+      "allowPartialAcceptanceWhenSomeRowsFail": "当部分记录失败时，允许其余记录继续被接受。",
+      "backingGraphstoreProvider": "底层图存储提供方。",
+      "bundledSampleName": "内置示例名称。",
+      "callableToolMetadata": "可调用工具的元数据。",
+      "columnNames": "列名。",
+      "creationTimestamp": "创建时间。",
+      "cursorForTheNextPage": "下一页游标。",
+      "customConfigToMergeOrReplace": "需要合并或替换的自定义配置。",
+      "displayName": "展示名称。",
+      "effectiveLimit": "实际生效的限制数量。",
+      "elementIdsToDelete": "需要删除的元素 ID。",
+      "elementsToValidate": "需要校验的元素。",
+      "elementsToWrite": "需要写入的元素。",
+      "entityRowsToWrite": "需要写入的实体记录。",
+      "entityWriteResult": "实体写入结果。",
+      "executedToolName": "已执行的工具名称。",
+      "graphstoreHealthStatus": "图存储健康状态。",
+      "groupedCustomConfiguration": "分组的自定义配置。",
+      "importedElementCount": "已导入的元素数量。",
+      "importedElementsWhenReturned": "接口返回时包含的已导入元素。",
+      "importedEntityCount": "已导入的实体数量。",
+      "importedRelationCount": "已导入的关系数量。",
+      "importSourcePath": "导入来源路径。",
+      "labelsToMergeOrReplace": "需要合并或替换的标签。",
+      "lastUpdateTimestamp": "最后更新时间。",
+      "maximumItemsReturnedByThisPage": "本页最多返回的条目数量。",
+      "namedQueryParameters": "命名查询参数。",
+      "newDescription": "新的描述。",
+      "newDisplayName": "新的展示名称。",
+      "numberOfAcceptedItems": "已接受的条目数量。",
+      "numberOfRejectedItems": "已拒绝的条目数量。",
+      "operationsEvaluatedOutsideProviderPushdown": "未下推、在提供方外部执行的操作。",
+      "operationsPushedIntoTheProvider": "已下推到提供方执行的操作。",
+      "optimisticConcurrencyVersion": "乐观并发版本。",
+      "optionalAuditReason": "可选的审计原因。",
+      "optionalCommonSchemaPacks": "可选的通用 schema 包。",
+      "optionalDescription": "可选描述。",
+      "optionalExecutionTimeout": "可选的执行超时时间。",
+      "optionalFromToTimestamps": "可选的 from/to 时间戳。",
+      "optionalFromToTimestampsForTemporalEntityAndTopologyReads": "实体与拓扑时序读取使用的可选 from/to 时间戳。",
+      "optionalIdempotencyKey": "可选的幂等键。",
+      "optionalOptimisticConcurrencyVersion": "可选的乐观并发版本。",
+      "optionalResultLimit": "可选的结果数量限制。",
+      "optionalWorkspaceDescription": "可选的工作区描述。",
+      "overallServerStatus": "服务整体状态。",
+      "paginationCursorReturnedByAPreviousResponse": "上一次响应返回的分页游标。",
+      "perItemResultDetailsIncludingValidationErrorsWhenPresent": "逐条结果详情，存在校验错误时会包含错误信息。",
+      "plannedSourceSuchAsUmodelEntityOrTopo": "规划后的查询来源，例如 .umodel、.entity 或 .topo。",
+      "providerHealthDetailWhenAvailable": "可用时返回的提供方健康详情。",
+      "providerResponseStatus": "提供方响应状态。",
+      "queryProvider": "查询提供方。",
+      "readableMetadataResources": "可读取的元数据资源。",
+      "relationRowsToWrite": "需要写入的关系记录。",
+      "relationWriteResult": "关系写入结果。",
+      "resourcePayload": "资源载荷。",
+      "resourceUri": "资源 URI。",
+      "resourceUriFromDiscovery": "来自 discovery 的资源 URI。",
+      "responseCode": "响应码。",
+      "responseMessage": "响应消息。",
+      "returnedContentMimeType": "返回内容的 MIME 类型。",
+      "rowsAsMatricesAlignedWithHeader": "按 header 对齐的矩阵行数据。",
+      "sampleName": "示例名称。",
+      "serverReadableFileOrDirectoryPath": "服务端可读取的文件或目录路径。",
+      "serverSideStoragePaths": "服务端存储路径。",
+      "setTrueToIncludeConflictedWorkspaceIdentities": "设为 true 时包含存在冲突的工作区身份。",
+      "setTrueToIncludeTombstonedWorkspaces": "设为 true 时包含已 tombstone 的工作区。",
+      "skippedElementCount": "跳过的元素数量。",
+      "splQueryText": "SPL 查询文本。",
+      "stableEntityIdsToExpire": "需要过期的实体稳定 ID。",
+      "stableRelationIdsToExpire": "需要过期的关系稳定 ID。",
+      "stringKeyValueLabels": "字符串键值标签。",
+      "suggestedActions": "建议动作。",
+      "toolArgumentsMatchingItsInputSchema": "与工具 input_schema 匹配的参数。",
+      "toolErrorPayload": "工具错误载荷。",
+      "toolNameFromDiscovery": "来自 discovery 的工具名称。",
+      "toolOutput": "工具输出。",
+      "umodelImportResult": "UModel 导入结果。",
+      "validationDetails": "校验详情。",
+      "validationOrImportErrors": "校验或导入错误。",
+      "whenTrueReplaceAllCustomConfigInsteadOfMerging": "为 true 时替换全部自定义配置，而不是合并。",
+      "whenTrueReplaceAllLabelsInsteadOfMerging": "为 true 时替换全部标签，而不是合并。",
+      "whetherAllElementsAreValid": "所有元素是否都有效。",
+      "whetherExecutionSucceeded": "执行是否成功。",
+      "whetherTheQueryCompletedSuccessfully": "查询是否成功完成。",
+      "workspaceId": "工作区 ID。",
+      "workspaceIdentifier": "工作区标识。",
+      "workspaceIdFilledFromCurrentWorkspace": "工作区 ID。调试器会默认填入当前工作区。",
+      "workspaceIdMustMatchTheServerIdPattern": "工作区 ID，必须匹配服务端 ID 规则。",
+      "workspaceRecords": "工作区记录。"
+    },
+    "field": "字段",
+    "group": {
+      "agent": "Agent",
+      "entityStore": "实体与拓扑",
+      "query": "查询",
+      "samples": "示例",
+      "system": "系统",
+      "umodel": "UModel",
+      "workspace": "工作区"
+    },
+    "noPathParams": "无路径参数",
+    "noQueryParams": "无 Query 参数",
+    "outputFields": "输出字段",
+    "pathParams": "路径参数",
+    "queryParams": "Query 参数",
+    "requestBody": "请求体",
+    "required": "必填",
+    "response": "响应",
+    "responseEmpty": "调用后显示响应体和状态。",
+    "responseRequired": "必返",
+    "risk": {
+      "danger": "高风险",
+      "read": "只读",
+      "write": "写入"
+    },
+    "searchPlaceholder": "搜索 API",
+    "status": {
+      "error": "错误",
+      "ok": "成功"
+    },
+    "title": "API 调试",
+    "type": "类型"
+  },
+  "appConfig": {
+    "apiKey": {
+      "description": "UModel 服务器的可选 Bearer 令牌。可留空——服务器当前未启用鉴权。",
+      "label": "API Key",
+      "placeholder": "你的 API 密钥"
+    },
+    "apiUrl": {
+      "description": "UModel 服务器（cmd/umodel-server）的基础 URL。必须能从 Grafana 服务器访问——当 Grafana 运行在 Docker 中时切勿使用 localhost（本地开发可用 http://host.docker.internal:8080）。",
+      "label": "API URL",
+      "placeholder": "例如：http://host.docker.internal:8080"
+    },
+    "diagnosisUrl": {
+      "description": "可选。诊断页（SSE）所用诊断服务的基础 URL。需能从 Grafana 服务器访问，与 API URL 相同（例如 http://host.docker.internal:18000）。若不使用诊断页可留空。",
+      "label": "诊断 URL",
+      "placeholder": "例如：http://host.docker.internal:18000"
+    },
+    "fieldSet": {
+      "apiSettings": "API 设置"
+    },
+    "submit": "保存 API 设置"
+  },
+  "common": {
+    "cancel": "取消",
+    "close": "关闭",
+    "create": "创建",
+    "deleteFailed": "删除失败",
+    "done": "完成",
+    "health": {
+      "unknown": "未知"
+    },
+    "loading": "加载中...",
+    "loadWorkspaceFailed": "加载工作区失败",
+    "noWorkspace": {
+      "detail": "从右上角选择器选择一个工作区开始。若列表为空，请打开插件配置页并设置 UModel 服务地址（apiUrl）。",
+      "title": "未选择工作区"
+    },
+    "refresh": "刷新",
+    "reloadWorkspaces": "重新加载工作区",
+    "requestFailed": "请求失败",
+    "save": "保存",
+    "saveFailed": "保存失败",
+    "selectWorkspace": "选择工作区",
+    "status": {
+      "connected": "已连接",
+      "notConnected": "未连接"
+    },
+    "workspaceDeleted": "工作区已删除",
+    "workspaceSaved": "工作区已保存"
+  },
+  "diagnosis": {
+    "placeholder": "描述故障现象（API 路径、时间、症状）..."
+  },
+  "entityTopoExplorer": {
+    "action": {
+      "all": "全部",
+      "clear": "清空",
+      "clearFilters": "清空筛选",
+      "clearFocus": "清除聚焦",
+      "close": "关闭",
+      "execute": "执行",
+      "exit": "退出",
+      "fitView": "适配视图",
+      "focusNeighbors": "聚焦一度邻居",
+      "importingSample": "正在导入示例...",
+      "importQuickstartSample": "导入快速开始示例",
+      "removeFilter": "移除 {{label}}",
+      "removeFocusItem": "移除 {{label}}",
+      "resetView": "重置视图",
+      "retry": "重试"
+    },
+    "detail": {
+      "degree": "度数",
+      "entity": "实体",
+      "id": "ID",
+      "inbound": "入向",
+      "noProperties": "暂无属性。",
+      "outbound": "出向",
+      "relation": "关系",
+      "relationTitle": "关系",
+      "source": "源实体",
+      "sourceEntity": "源实体",
+      "target": "目标实体",
+      "targetEntity": "目标实体",
+      "total": "总计"
+    },
+    "empty": {
+      "noData": {
+        "detail": "导入内置的多域示例，查看匹配的 DevOps、k8s、汽车制造、游戏、供应商以及跨域关系。",
+        "title": "暂无拓扑数据"
+      },
+      "noMatching": {
+        "detail": "清空筛选或扩大搜索范围。",
+        "title": "没有匹配实体"
+      },
+      "queryFailed": "拓扑查询失败"
+    },
+    "filter": {
+      "domainPrefix": "域",
+      "focus": "聚焦",
+      "focusedEntities": "聚焦实体 ({{count}})",
+      "help": {
+        "focusLabel": "聚焦筛选",
+        "line1": "展示选中实体及其附近实体。",
+        "line2": "叠加筛选会在聚焦范围内继续应用搜索、类型、域或关系筛选。",
+        "line3": "清空筛选即可回到完整结果。",
+        "title": "筛选逻辑"
+      },
+      "noActive": "暂无激活筛选",
+      "relationPrefix": "关系",
+      "searchPrefix": "搜索",
+      "stack": "叠加筛选"
+    },
+    "graph": {
+      "focusView": "聚焦视图",
+      "miniMap": "拓扑缩略图",
+      "rendering": "正在渲染拓扑..."
+    },
+    "loading": {
+      "refreshing": "正在刷新",
+      "topology": "正在加载拓扑..."
+    },
+    "search": {
+      "command": "搜索「{{query}}」",
+      "entities": "实体",
+      "noMatchingEntities": "没有匹配实体",
+      "placeholder": "搜索实体、类型、域...",
+      "types": "类型"
+    },
+    "settings": {
+      "display": "显示",
+      "dragEntities": "拖拽移动实体",
+      "entityLabels": "实体标签",
+      "force": "力导向",
+      "forceDesc": "适合局部探索的弹性拓扑图。",
+      "grouped": "分组",
+      "groupedDesc": "按实体类型分组，便于总览。",
+      "groupLabels": "分组标签",
+      "groupLabelsDisabled": "分组标签仅在分组布局中可用。",
+      "overviewMap": "缩略图",
+      "view": "视图"
+    },
+    "sidebar": {
+      "domains": "域",
+      "entityTypes": "实体类型",
+      "relations": "关系",
+      "showMore": "再显示 {{count}} 项"
+    },
+    "stat": {
+      "entities": "实体",
+      "filteredOf": "共 {{count}}",
+      "relations": "关系"
+    },
+    "status": {
+      "entities": "实体",
+      "limit": "限制 {{limit}}",
+      "relations": "关系"
+    },
+    "tabs": {
+      "display": "显示",
+      "summary": "概览"
+    },
+    "time": {
+      "from": "开始时间",
+      "to": "结束时间",
+      "toSeparator": "至"
+    }
+  },
+  "imports": {
+    "action": {
+      "expire": "过期",
+      "put": "写入",
+      "validate": "校验",
+      "write": "写入"
+    },
+    "field": {
+      "entities": "实体 JSON",
+      "ids": "ID JSON",
+      "kind": "类型",
+      "relations": "关系 JSON",
+      "umodelElements": "UModel 元素 JSON"
+    },
+    "kind": {
+      "entity": "实体",
+      "relation": "关系"
+    },
+    "mode": {
+      "entity": "实体与拓扑",
+      "expire": "手动过期",
+      "umodel": "UModel"
+    },
+    "operation": "操作",
+    "result": {
+      "empty": {
+        "detail": "执行当前模块操作后查看 API 响应",
+        "title": "暂无响应。"
+      },
+      "latest": "当前模块最近一次操作响应",
+      "title": "响应"
+    },
+    "status": {
+      "received": "已收到"
+    }
+  },
+  "language": {
+    "english": "English",
+    "label": "语言",
+    "simplifiedChinese": "简体中文"
+  },
+  "nav": {
+    "apiMap": "API 调试",
+    "collapseSidebar": "收起侧边栏",
+    "diagnosis": "智能诊断",
+    "entityTopo": "EntityTopo 探索",
+    "expandSidebar": "展开侧边栏",
+    "imports": "导入与写入",
+    "query": "查询",
+    "settings": "设置",
+    "umodel": "UModel 探索",
+    "workspaces": "工作区"
+  },
+  "query": {
+    "action": {
+      "clear": "清空",
+      "close": "关闭",
+      "execute": "执行",
+      "explain": "解释"
+    },
+    "chart": {
+      "empty": {
+        "detail": "执行拓扑查询以渲染图表。",
+        "title": "暂无图表"
+      },
+      "filter": "筛选",
+      "noMatching": {
+        "detail": "清空搜索或筛选条件。",
+        "title": "没有匹配节点"
+      },
+      "search": {
+        "clear": "清空搜索",
+        "placeholder": "搜索"
+      },
+      "type": "类型",
+      "unavailable": {
+        "detail": "当查询结果包含源实体和目标实体的拓扑行时，才可使用图表视图。",
+        "title": "图表不可用"
+      }
+    },
+    "detail": {
+      "inbound": "入向",
+      "noProperties": "暂无属性。",
+      "outbound": "出向",
+      "relation": "关系",
+      "source": "源实体",
+      "target": "目标实体",
+      "total": "总计"
+    },
+    "examples": {
+      "cypher": "Cypher",
+      "direct": "direct",
+      "entity": ".entity",
+      "entitySetDatasets": "EntitySet 数据集",
+      "entitySetLogs": "EntitySet 日志",
+      "entitySetMethods": "EntitySet 方法",
+      "entitySetMetrics": "EntitySet 指标",
+      "neighbors": "neighbors",
+      "placeholder": "选择示例",
+      "title": "示例",
+      "topo": ".topo",
+      "umodel": ".umodel"
+    },
+    "explain": {
+      "panelLabel": "查询解释面板"
+    },
+    "preview": {
+      "close": "关闭预览",
+      "row": "第 {{row}} 行"
+    },
+    "result": {
+      "empty": {
+        "detail": "执行查询以查看结果行。",
+        "title": "暂无结果"
+      },
+      "title": "结果"
+    },
+    "table": {
+      "nextPage": "下一页",
+      "noRows": {
+        "detail": "查询已完成，但没有返回行。",
+        "title": "暂无行"
+      },
+      "pageSize": "{{size}} 行/页",
+      "previousPage": "上一页",
+      "totalRows": "共 <strong>{{count}}</strong> 行",
+      "viewCell": "查看"
+    },
+    "time": {
+      "all": "全部",
+      "from": "开始时间",
+      "to": "结束时间",
+      "toSeparator": "至"
+    },
+    "unit": {
+      "column": "列",
+      "columns": "列",
+      "row": "行",
+      "rows": "行"
+    },
+    "view": {
+      "chart": "图表",
+      "table": "表格"
+    }
+  },
+  "settings": {
+    "configJson": {
+      "description": "按分组填写自定义配置，例如 { \"runtime\": { \"mode\": \"demo\" } }。默认合并到已有配置；勾选“替换配置”会整体覆盖。",
+      "invalidJson": "自定义配置不是有效的 JSON，请检查逗号、引号和括号。",
+      "invalidShape": "自定义配置需要是分组对象。示例：{ \"runtime\": { \"mode\": \"demo\" } }。",
+      "label": "自定义配置 JSON"
+    },
+    "deleteConfirm": {
+      "confirm": "删除工作区",
+      "detail": "确认删除工作区“{{workspace}}”？",
+      "title": "确认删除",
+      "tombstone": "删除会为该工作区 ID 写入 tombstone，之后不能用同一个 ID 重建。"
+    },
+    "deleteWorkspace": "删除工作区",
+    "description": "描述",
+    "labelsJson": {
+      "description": "填写字符串键值对，例如 { \"env\": \"local\" }。默认合并到已有标签；勾选“替换标签”会整体覆盖。",
+      "invalidJson": "标签不是有效的 JSON，请检查逗号、引号和括号。",
+      "invalidShape": "标签需要是字符串键值对象。示例：{ \"env\": \"local\" }。",
+      "label": "标签 JSON"
+    },
+    "language": {
+      "description": "该偏好会立即应用到当前工作区界面。"
+    },
+    "metadata": {
+      "label": "元数据",
+      "notLoaded": "工作区元数据尚未加载。"
+    },
+    "name": "名称",
+    "preferences": "偏好设置",
+    "replaceConfig": "替换配置",
+    "replaceLabels": "替换标签",
+    "saved": "已保存",
+    "title": "工作区设置"
+  },
+  "umodelExplorer": {
+    "action": {
+      "add": "新增",
+      "addToDraft": "添加到草稿",
+      "applyToDraft": "应用到草稿",
+      "chooseFile": "选择文件",
+      "clear": "清空",
+      "clearAll": "清空全部",
+      "clearFocus": "清除聚焦",
+      "close": "关闭",
+      "confirmSubmit": "确认并提交",
+      "connectTo": "连接到...",
+      "copyNode": "复制节点",
+      "copyWithEdges": "复制并包含出入边",
+      "createCount": "创建 ({{count}})",
+      "createLink": "创建链接",
+      "createNode": "创建新节点",
+      "delete": "删除",
+      "deleteLink": "删除链接",
+      "deleteNode": "删除节点",
+      "deleteWithEdges": "删除并包含出入边",
+      "focusInGraph": "在图中聚焦",
+      "focusNode": "聚焦节点",
+      "importQuickstartSample": "导入快速开始示例",
+      "redo": "重做",
+      "refreshResetDraft": "刷新并重置草稿",
+      "removeFocusItem": "移除聚焦项",
+      "reviewDiffSubmit": "预览差异并提交",
+      "submit": "提交",
+      "submitting": "提交中...",
+      "undo": "撤销",
+      "uploadYamlJson": "上传 YAML/JSON"
+    },
+    "aria": {
+      "operations": "操作",
+      "resizeDetailPanel": "调整详情面板宽度"
+    },
+    "dialog": {
+      "connect": {
+        "description": "选择源节点和目标节点以创建链接。",
+        "fromSource": "从 {{name}} 创建链接",
+        "newLink": "新建链接",
+        "selectSource": "选择源节点",
+        "source": "源节点",
+        "sourceWithName": "源节点：{{name}}",
+        "stepSource": "1. 源节点",
+        "stepTarget": "2. 目标节点",
+        "targetsSelected": "已选择 {{count}} 个目标节点",
+        "targetsSelectedOther": "已选择 {{count}} 个目标节点"
+      },
+      "create": {
+        "description": "选择类型，编辑 JSON，然后在草稿中创建。",
+        "json": "JSON",
+        "title": "新建 UModel 节点",
+        "type": "类型"
+      },
+      "diff": {
+        "added": "新增",
+        "deleted": "删除",
+        "description": "写入 UModel API 前先检查草稿差异。",
+        "modified": "修改",
+        "title": "提交预览",
+        "type": {
+          "added": "新增",
+          "deleted": "删除",
+          "modified": "修改"
+        }
+      },
+      "upload": {
+        "description": "将元素导入本地草稿。已存在的 ID 只会在草稿中被覆盖。",
+        "duplicateIds": "{{count}} 个已有 ID 将在草稿中被覆盖。",
+        "duplicateIdsOther": "{{count}} 个已有 ID 将在草稿中被覆盖。",
+        "title": "上传 YAML/JSON"
+      }
+    },
+    "empty": {
+      "diffSelected": "未选择差异",
+      "draftChanges": "暂无草稿变更",
+      "elements": {
+        "detail": "导入内置的多域 UModel，以及匹配的 DevOps、k8s、汽车制造、游戏和供应商实体。",
+        "title": "暂无 UModel 元素"
+      },
+      "matchingElementsFilter": "没有匹配元素。可将其作为全文筛选条件应用。",
+      "matchingModels": "没有匹配模型",
+      "matchingNodes": "没有匹配节点",
+      "matchingResultsForType": "该类型下没有匹配结果。"
+    },
+    "filter": {
+      "domainPrefix": "域：",
+      "focus": "聚焦",
+      "focusItems": "聚焦项 ({{count}})",
+      "help": {
+        "line1": "聚焦会展示选中项及其附近关联项。",
+        "line2": "叠加筛选会在聚焦范围内继续叠加搜索、类型或域筛选。",
+        "line3": "清空筛选即可回到完整结果。",
+        "title": "筛选"
+      },
+      "searchPrefix": "搜索：",
+      "stack": "叠加筛选",
+      "tableOnly": "仅表格"
+    },
+    "flow": {
+      "controlPanel": "控制面板",
+      "fitView": "适配视图",
+      "miniMap": "缩略图",
+      "zoomIn": "放大",
+      "zoomOut": "缩小"
+    },
+    "loading": {
+      "arrangingView": "正在排列视图",
+      "graph": "正在加载 UModel 图...",
+      "refreshingApi": "正在刷新 API"
+    },
+    "message": {
+      "createdDraftElement": "已创建草稿元素：{{name}}",
+      "createdDraftLinks": "已从 {{name}} 创建 {{count}} 条草稿链接",
+      "createdDraftLinksOther": "已从 {{name}} 创建 {{count}} 条草稿链接",
+      "deletedDraftElement": "已删除草稿元素",
+      "deletedDraftNodeLinks": "已删除草稿节点及相关链接",
+      "importedSample": "已导入示例：{{umodel}} 个 UModel 元素，{{entities}} 个实体，{{relations}} 条关系。",
+      "redoDraftChange": "已重做草稿变更",
+      "submitted": "已提交 {{upserts}} 个更新和 {{deletes}} 个删除。",
+      "undoDraftChange": "已撤销草稿变更",
+      "uploadedDraftElements": "已上传 {{count}} 个草稿元素",
+      "uploadedDraftElementsOther": "已上传 {{count}} 个草稿元素"
+    },
+    "misc": {
+      "unknown": "未知"
+    },
+    "nodeMenu": {
+      "connectTo": "连接到...",
+      "copyNode": "复制节点",
+      "copyWithEdges": "复制并包含出入边",
+      "deleteNode": "删除节点",
+      "deleteWithEdges": "删除并包含出入边"
+    },
+    "search": {
+      "all": "全部",
+      "allDomains": "全部域",
+      "allTypes": "全部类型",
+      "byDomain": "按域",
+      "byType": "按类型",
+      "exactFullTextFilter": "精确全文筛选",
+      "footer": "输入关键词搜索，也可以按类型和域筛选。",
+      "matchedResults": "匹配结果",
+      "placeholder": "搜索 UModel..."
+    },
+    "settings": {
+      "alwaysRenderEveryItem": "始终渲染全部项",
+      "bridgeNodes": "逻辑视图",
+      "canvas": "画布",
+      "connectionsOnly": "真实视图",
+      "display": "显示",
+      "dots": "点状",
+      "grid": "交叉",
+      "lines": "直线",
+      "plain": "不显示",
+      "relations": "关系"
+    },
+    "sidebar": {
+      "byDomain": "按域",
+      "byType": "按类型",
+      "deletedCannotFocus": "删除项无法聚焦",
+      "draft": {
+        "added": "新增",
+        "deleted": "删除",
+        "focusHelp1": "点击此卡片会聚焦所有新增和修改的草稿节点或链接。",
+        "focusHelp2": "删除项无法在这里聚焦，只参与变更数量统计。",
+        "focusHelp3": "变更只会在 <strong>确认并提交</strong> 后生效。",
+        "focusTitle": "草稿聚焦",
+        "modified": "修改",
+        "title": "未保存的 UModel 草稿"
+      },
+      "focusDraftChanges": "聚焦新增和修改的草稿元素",
+      "linkFiltersTableOnly": "链接筛选仅在表格视图中可用",
+      "links": "链接",
+      "nodes": "节点"
+    },
+    "status": {
+      "items": "{{count}} 项",
+      "limit": "限制 {{limit}}",
+      "links": "链接",
+      "nodes": "节点",
+      "page": "第 {{page}}/{{total}} 页",
+      "totalItems": "共 {{count}} 项",
+      "totalItemsRich": "共 <strong>{{count}}</strong> 项"
+    },
+    "submitFailure": {
+      "moreItems": "还有 {{count}} 个失败项未展示。",
+      "noItemDetails": "API 未返回逐项失败详情。",
+      "noMessage": "未返回失败原因。",
+      "operation": {
+        "delete": "删除",
+        "upsert": "写入"
+      },
+      "unexpected": "提交请求未完成。",
+      "unknownItem": "<未知项>",
+      "validation": "校验失败，请修复下列问题后再提交。",
+      "writeResult": "{{operation}}成功 {{accepted}} 项，失败 {{failed}} 项。"
+    },
+    "table": {
+      "action": "操作",
+      "description": "描述",
+      "detail": "详情",
+      "domain": "域",
+      "name": "名称",
+      "pageSize": "{{size}} / 页",
+      "type": "类型"
+    },
+    "tabs": {
+      "settings": "设置",
+      "summary": "概览"
+    },
+    "unit": {
+      "fields": "个字段",
+      "metrics": "个指标"
+    },
+    "validation": {
+      "duplicateElement": "元素已存在：{{id}}",
+      "elementLabel": "UModel 元素",
+      "elementsLabel": "UModel 元素",
+      "failed": "校验失败",
+      "missingDomain": "元素 {{id}} 缺少 domain。",
+      "missingKind": "元素 {{id}} 缺少 kind。",
+      "missingName": "元素 {{id}} 缺少 name。",
+      "noElementsFound": "未找到 UModel 元素。",
+      "payloadMustContain": "YAML/JSON 必须包含一个 UModel 元素、数组，或带 elements/items/rows 的对象。",
+      "rowObjectRequired": "每个 UModel 元素都必须是对象。"
+    },
+    "view": {
+      "graph": "图形视图",
+      "table": "表格视图"
+    }
+  }
+}

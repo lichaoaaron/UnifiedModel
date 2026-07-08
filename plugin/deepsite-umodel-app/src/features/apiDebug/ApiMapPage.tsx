@@ -3,7 +3,7 @@ import { CodeEditor } from '@grafana/ui';
 import { AlertCircle, BookOpen, Braces, Play, Search, ServerCog } from 'lucide-react';
 import { UModelApi } from '../../api/client';
 import { Badge, Button, TextInput } from '../../design/components';
-import { useI18n, type MessageKey, type TFunction } from '../../i18n';
+import { t, type TFunction } from '@grafana/i18n';
 import { stringify } from '../../lib/json';
 import './apiDebugger.css';
 
@@ -31,10 +31,10 @@ interface FieldDoc {
 interface ApiSpec {
   id: string;
   group: ApiGroup;
-  titleKey: MessageKey;
+  titleKey: string;
   method: HttpMethod;
   path: string;
-  descriptionKey: MessageKey;
+  descriptionKey: string;
   risk: RiskLevel;
   params: ApiParam[];
   bodyFields?: FieldDoc[];
@@ -66,9 +66,9 @@ const groupLabelKeys = {
   samples: 'apiDebugger.group.samples',
   entityStore: 'apiDebugger.group.entityStore',
   agent: 'apiDebugger.group.agent',
-} as const satisfies Record<ApiGroup, MessageKey>;
+} as const satisfies Record<ApiGroup, string>;
 
-const docDescriptionKeys: Record<string, MessageKey> = {
+const docDescriptionKeys: Record<string, string> = {
   'Active graphstore provider.': 'apiDebugger.doc.activeGraphstoreProvider',
   'Allow partial acceptance when some rows fail.': 'apiDebugger.doc.allowPartialAcceptanceWhenSomeRowsFail',
   'Backing graphstore provider.': 'apiDebugger.doc.backingGraphstoreProvider',
@@ -595,7 +595,6 @@ const apiSpecs: ApiSpec[] = [
 ];
 
 export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: string }) {
-  const { t } = useI18n();
   const [selectedId, setSelectedId] = useState(apiSpecs[0].id);
   const [filter, setFilter] = useState('');
   const [pathParams, setPathParams] = useState<Record<string, string>>({});
@@ -606,14 +605,14 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
   const [busy, setBusy] = useState(false);
 
   const selected = apiSpecs.find((spec) => spec.id === selectedId) || apiSpecs[0];
-  const filteredSpecs = useMemo(() => filterSpecs(apiSpecs, filter, t), [filter, t]);
+  const filteredSpecs = useMemo(() => filterSpecs(apiSpecs, filter, t), [filter]);
   const requestPath = buildPath(selected.path, pathParams);
   const requestUrl = buildUrl(requestPath, selected.params, queryParams);
   const pathDocs = selected.params.filter((param) => param.in === 'path');
   const queryDocs = selected.params.filter((param) => param.in === 'query');
   const hasBody = Boolean(selected.bodyFields);
-  const selectedTitle = t(selected.titleKey);
-  const selectedDescription = t(selected.descriptionKey);
+  const selectedTitle = t(selected.titleKey, selected.titleKey);
+  const selectedDescription = t(selected.descriptionKey, selected.descriptionKey);
 
   useEffect(() => {
     const draft = buildInitialDraft(selected, workspaceId);
@@ -661,8 +660,8 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
       <header className="api-debug-head">
         <div className="api-debug-title">
           <ServerCog size={17} />
-          <strong>{t('apiDebugger.title')}</strong>
-          <Badge tone="indigo">{t('apiDebugger.apiCount', { count: apiSpecs.length })}</Badge>
+          <strong>{t('apiDebugger.title', 'API Debugger')}</strong>
+          <Badge tone="indigo">{t('apiDebugger.apiCount', '{{count}} APIs', { count: apiSpecs.length })}</Badge>
         </div>
         <div className="api-debug-head-actions">
           <span className="api-debug-endpoint">
@@ -671,7 +670,7 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
           </span>
           <Button className="api-debug-run" variant="primary" onClick={() => void run()} disabled={busy}>
             <Play size={14} />
-            {t('apiDebugger.call')}
+            {t('apiDebugger.call', 'Call')}
           </Button>
         </div>
       </header>
@@ -690,13 +689,13 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
             <input
               value={filter}
               onChange={(event) => setFilter(event.target.value)}
-              placeholder={t('apiDebugger.searchPlaceholder')}
+              placeholder={t('apiDebugger.searchPlaceholder', 'Search APIs')}
             />
           </div>
           <div className="api-debug-list">
             {groupSpecs(filteredSpecs).map(([group, specs]) => (
               <section key={group} className="api-debug-group">
-                <div className="api-debug-group-title">{t(groupLabelKeys[group])}</div>
+                <div className="api-debug-group-title">{t(groupLabelKeys[group], groupLabelKeys[group])}</div>
                 {specs.map((spec) => (
                   <button
                     key={spec.id}
@@ -706,7 +705,7 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
                   >
                     <span>
                       <MethodBadge method={spec.method} compact />
-                      <strong>{t(spec.titleKey)}</strong>
+                      <strong>{t(spec.titleKey, spec.titleKey)}</strong>
                     </span>
                     <small>{spec.path}</small>
                   </button>
@@ -731,31 +730,35 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
           </div>
 
           <ParamEditor
-            title={t('apiDebugger.pathParams')}
-            empty={t('apiDebugger.noPathParams')}
+            title={t('apiDebugger.pathParams', 'Path parameters')}
+            empty={t('apiDebugger.noPathParams', 'No path parameters')}
             params={pathDocs}
             values={pathParams}
             t={t}
-            requiredLabel={t('apiDebugger.required')}
+            requiredLabel={t('apiDebugger.required', 'required')}
             onChange={(name, value) => setPathParams((current) => ({ ...current, [name]: value }))}
           />
           <ParamEditor
-            title={t('apiDebugger.queryParams')}
-            empty={t('apiDebugger.noQueryParams')}
+            title={t('apiDebugger.queryParams', 'Query parameters')}
+            empty={t('apiDebugger.noQueryParams', 'No query parameters')}
             params={queryDocs}
             values={queryParams}
             t={t}
-            requiredLabel={t('apiDebugger.required')}
+            requiredLabel={t('apiDebugger.required', 'required')}
             onChange={(name, value) => setQueryParams((current) => ({ ...current, [name]: value }))}
           />
 
           {hasBody && (
             <section className="api-debug-section api-debug-body-section">
-              <SectionTitle icon={<Braces size={14} />} title={t('apiDebugger.requestBody')} />
+              <SectionTitle icon={<Braces size={14} />} title={t('apiDebugger.requestBody', 'Request body')} />
               <div className="api-debug-request-json">
                 <MonacoBlock value={bodyText} language="json" height="100%" onChange={setBodyText} />
               </div>
-              <FieldDocTable fields={selected.bodyFields || []} t={t} requiredLabel={t('apiDebugger.required')} />
+              <FieldDocTable
+                fields={selected.bodyFields || []}
+                t={t}
+                requiredLabel={t('apiDebugger.required', 'required')}
+              />
             </section>
           )}
         </section>
@@ -763,16 +766,16 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
         <section className="api-debug-response">
           <div className="api-debug-card-header">
             <div>
-              <strong>{t('apiDebugger.response')}</strong>
+              <strong>{t('apiDebugger.response', 'Response')}</strong>
               <span>
                 {result
                   ? `${result.status} ${result.statusText || ''} · ${result.durationMs}ms`
-                  : t('apiDebugger.responseEmpty')}
+                  : t('apiDebugger.responseEmpty', 'Run an API call to inspect the response body and status.')}
               </span>
             </div>
             {result && (
               <Badge tone={result.ok ? 'success' : 'danger'}>
-                {result.ok ? t('apiDebugger.status.ok') : t('apiDebugger.status.error')}
+                {result.ok ? t('apiDebugger.status.ok', 'OK') : t('apiDebugger.status.error', 'Error')}
               </Badge>
             )}
           </div>
@@ -782,8 +785,12 @@ export function ApiMapPage({ api, workspaceId }: { api: UModelApi; workspaceId: 
           </div>
 
           <section className="api-debug-section api-debug-output-section">
-            <SectionTitle icon={<BookOpen size={14} />} title={t('apiDebugger.outputFields')} />
-            <FieldDocTable fields={selected.responseFields} t={t} requiredLabel={t('apiDebugger.responseRequired')} />
+            <SectionTitle icon={<BookOpen size={14} />} title={t('apiDebugger.outputFields', 'Output fields')} />
+            <FieldDocTable
+              fields={selected.responseFields}
+              t={t}
+              requiredLabel={t('apiDebugger.responseRequired', 'Always returned')}
+            />
           </section>
         </section>
       </div>
@@ -843,9 +850,9 @@ function FieldDocTable({ fields, t, requiredLabel }: { fields: FieldDoc[]; t: TF
       <table className="om-table api-debug-doc-table">
         <thead>
           <tr>
-            <th>{t('apiDebugger.field')}</th>
-            <th>{t('apiDebugger.type')}</th>
-            <th>{t('apiDebugger.description')}</th>
+            <th>{t('apiDebugger.field', 'Field')}</th>
+            <th>{t('apiDebugger.type', 'Type')}</th>
+            <th>{t('apiDebugger.description', 'Description')}</th>
           </tr>
         </thead>
         <tbody>
@@ -881,14 +888,18 @@ function MethodBadge({ method, compact = false }: { method: HttpMethod; compact?
 }
 
 function RiskBadge({ risk, t }: { risk: RiskLevel; t: TFunction }) {
-  if (risk === 'read') {return <Badge>{t('apiDebugger.risk.read')}</Badge>;}
-  if (risk === 'write') {return <Badge tone="warning">{t('apiDebugger.risk.write')}</Badge>;}
-  return <Badge tone="danger">{t('apiDebugger.risk.danger')}</Badge>;
+  if (risk === 'read') {
+    return <Badge>{t('apiDebugger.risk.read', 'Read')}</Badge>;
+  }
+  if (risk === 'write') {
+    return <Badge tone="warning">{t('apiDebugger.risk.write', 'Write')}</Badge>;
+  }
+  return <Badge tone="danger">{t('apiDebugger.risk.danger', 'Danger')}</Badge>;
 }
 
 function docDescription(t: TFunction, description: string) {
   const key = docDescriptionKeys[description];
-  return key ? t(key) : description;
+  return key ? t(key, key) : description;
 }
 
 function MonacoBlock({
@@ -915,7 +926,9 @@ function MonacoBlock({
         showLineNumbers
         showMiniMap={false}
         onChange={(nextValue) => {
-          if (!readOnly) {onChange?.(nextValue ?? '');}
+          if (!readOnly) {
+            onChange?.(nextValue ?? '');
+          }
         }}
         monacoOptions={{
           accessibilitySupport: 'off',
@@ -946,8 +959,12 @@ function buildInitialDraft(spec: ApiSpec, workspaceId: string) {
   const query: Record<string, string> = {};
   for (const param of spec.params) {
     const value = param.name === 'workspace' ? workspaceId : param.defaultValue || '';
-    if (param.in === 'path') {path[param.name] = value;}
-    if (param.in === 'query') {query[param.name] = value;}
+    if (param.in === 'path') {
+      path[param.name] = value;
+    }
+    if (param.in === 'query') {
+      query[param.name] = value;
+    }
   }
   return {
     path,
@@ -963,9 +980,13 @@ function buildPath(template: string, params: Record<string, string>) {
 function buildUrl(path: string, params: ApiParam[], values: Record<string, string>) {
   const search = new URLSearchParams();
   for (const param of params) {
-    if (param.in !== 'query') {continue;}
+    if (param.in !== 'query') {
+      continue;
+    }
     const value = values[param.name];
-    if (value !== undefined && value !== '') {search.set(param.name, value);}
+    if (value !== undefined && value !== '') {
+      search.set(param.name, value);
+    }
   }
   const query = search.toString();
   return query ? `${path}?${query}` : path;
@@ -973,11 +994,17 @@ function buildUrl(path: string, params: ApiParam[], values: Record<string, strin
 
 function filterSpecs(specs: ApiSpec[], filter: string, t: TFunction) {
   const normalized = filter.trim().toLowerCase();
-  if (!normalized) {return specs;}
+  if (!normalized) {
+    return specs;
+  }
   return specs.filter((spec) => {
-    return [t(spec.titleKey), t(groupLabelKeys[spec.group]), spec.method, spec.path, t(spec.descriptionKey)].some(
-      (value) => value.toLowerCase().includes(normalized)
-    );
+    return [
+      t(spec.titleKey, spec.titleKey),
+      t(groupLabelKeys[spec.group], groupLabelKeys[spec.group]),
+      spec.method,
+      spec.path,
+      t(spec.descriptionKey, spec.descriptionKey),
+    ].some((value) => value.toLowerCase().includes(normalized));
   });
 }
 

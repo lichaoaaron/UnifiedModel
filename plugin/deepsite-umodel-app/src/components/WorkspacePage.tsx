@@ -3,7 +3,7 @@ import { PluginPage } from '@grafana/runtime';
 import { Alert } from '@grafana/ui';
 import { useWorkspace } from '../context/WorkspaceContext';
 import { UModelRoot } from '../design/ThemeBridge';
-import { useI18n } from '../i18n';
+import { t } from '@grafana/i18n';
 import { WorkspaceSelect } from './WorkspaceSelect';
 
 // Shared page shell: wraps content in a Grafana PluginPage with the workspace
@@ -11,7 +11,6 @@ import { WorkspaceSelect } from './WorkspaceSelect';
 // page content on a selected workspace so child pages can assume one exists.
 export function WorkspacePage({ children }: { children?: React.ReactNode }) {
   const { workspace } = useWorkspace();
-  const { t } = useI18n();
 
   return (
     <PluginPage actions={<WorkspaceSelect />}>
@@ -19,8 +18,11 @@ export function WorkspacePage({ children }: { children?: React.ReactNode }) {
         {workspace ? (
           children
         ) : (
-          <Alert title={t('common.noWorkspace.title')} severity="info">
-            {t('common.noWorkspace.detail')}
+          <Alert title={t('common.noWorkspace.title', 'No workspace selected')} severity="info">
+            {t(
+              'common.noWorkspace.detail',
+              'Pick a workspace from the selector in the top-right to begin. If the list is empty, open the plugin Configuration page and set the UModel server URL (apiUrl).'
+            )}
           </Alert>
         )}
       </UModelRoot>

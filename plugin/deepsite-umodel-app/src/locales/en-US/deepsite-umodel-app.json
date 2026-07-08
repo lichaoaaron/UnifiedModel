@@ -1,0 +1,795 @@
+{
+  "apiDebugger": {
+    "api": {
+      "agentDiscover": {
+        "description": "Read available tools, resources, and next actions for agent clients.",
+        "title": "Discover agent surface"
+      },
+      "agentResource": {
+        "description": "Read a safe metadata resource by URI.",
+        "title": "Read agent resource"
+      },
+      "agentTool": {
+        "description": "Execute an enabled agent tool.",
+        "title": "Execute agent tool"
+      },
+      "entitiesExpire": {
+        "description": "Expire entity IDs manually.",
+        "title": "Expire entities"
+      },
+      "entitiesWrite": {
+        "description": "Write CMS 2.0 entity records.",
+        "title": "Write entities"
+      },
+      "health": {
+        "description": "Check server and graphstore availability.",
+        "title": "Health check"
+      },
+      "queryExecute": {
+        "description": "Execute .umodel, .entity, .topo, or supported graph-call queries.",
+        "title": "Execute query"
+      },
+      "queryExplain": {
+        "description": "Return query source, provider, pushdown plan, limits, and fallback information.",
+        "title": "Explain query"
+      },
+      "relationsExpire": {
+        "description": "Expire relation stable IDs manually.",
+        "title": "Expire relations"
+      },
+      "relationsWrite": {
+        "description": "Write CMS 2.0 topology relation records.",
+        "title": "Write relations"
+      },
+      "sampleImport": {
+        "description": "Import a bundled sample into the workspace.",
+        "title": "Import sample data"
+      },
+      "umodelDelete": {
+        "description": "Delete UModel elements by ID.",
+        "title": "Delete elements"
+      },
+      "umodelImport": {
+        "description": "Import YAML or JSON elements from a server-readable file or directory path.",
+        "title": "Import UModel"
+      },
+      "umodelValidate": {
+        "description": "Validate UModel element payloads without writing them.",
+        "title": "Validate elements"
+      },
+      "umodelWrite": {
+        "description": "Create or update UModel elements.",
+        "title": "Write elements"
+      },
+      "workspaceCreate": {
+        "description": "Create workspace metadata and initialize workspace storage.",
+        "title": "Create workspace"
+      },
+      "workspaceDelete": {
+        "description": "Soft-delete workspace metadata and create a tombstone for the ID.",
+        "title": "Delete workspace"
+      },
+      "workspaceGet": {
+        "description": "Load a single workspace metadata record.",
+        "title": "Get workspace"
+      },
+      "workspaceList": {
+        "description": "List selectable workspace metadata.",
+        "title": "List workspaces"
+      },
+      "workspaceUpdate": {
+        "description": "Update workspace name, description, labels, or custom config.",
+        "title": "Update workspace"
+      }
+    },
+    "apiCount": "{{count}} APIs",
+    "call": "Call",
+    "description": "Description",
+    "doc": {
+      "activeDeletedOrConflicted": "active, deleted, or conflicted.",
+      "activeGraphstoreProvider": "Active graphstore provider.",
+      "allowPartialAcceptanceWhenSomeRowsFail": "Allow partial acceptance when some rows fail.",
+      "backingGraphstoreProvider": "Backing graphstore provider.",
+      "bundledSampleName": "Bundled sample name.",
+      "callableToolMetadata": "Callable tool metadata.",
+      "columnNames": "Column names.",
+      "creationTimestamp": "Creation timestamp.",
+      "cursorForTheNextPage": "Cursor for the next page.",
+      "customConfigToMergeOrReplace": "Custom config to merge or replace.",
+      "displayName": "Display name.",
+      "effectiveLimit": "Effective limit.",
+      "elementIdsToDelete": "Element IDs to delete.",
+      "elementsToValidate": "Elements to validate.",
+      "elementsToWrite": "Elements to write.",
+      "entityRowsToWrite": "Entity rows to write.",
+      "entityWriteResult": "Entity write result.",
+      "executedToolName": "Executed tool name.",
+      "graphstoreHealthStatus": "Graphstore health status.",
+      "groupedCustomConfiguration": "Grouped custom configuration.",
+      "importedElementCount": "Imported element count.",
+      "importedElementsWhenReturned": "Imported elements when returned.",
+      "importedEntityCount": "Imported entity count.",
+      "importedRelationCount": "Imported relation count.",
+      "importSourcePath": "Import source path.",
+      "labelsToMergeOrReplace": "Labels to merge or replace.",
+      "lastUpdateTimestamp": "Last update timestamp.",
+      "maximumItemsReturnedByThisPage": "Maximum items returned by this page.",
+      "namedQueryParameters": "Named query parameters.",
+      "newDescription": "New description.",
+      "newDisplayName": "New display name.",
+      "numberOfAcceptedItems": "Number of accepted items.",
+      "numberOfRejectedItems": "Number of rejected items.",
+      "operationsEvaluatedOutsideProviderPushdown": "Operations evaluated outside provider pushdown.",
+      "operationsPushedIntoTheProvider": "Operations pushed into the provider.",
+      "optimisticConcurrencyVersion": "Optimistic concurrency version.",
+      "optionalAuditReason": "Optional audit reason.",
+      "optionalCommonSchemaPacks": "Optional common schema packs.",
+      "optionalDescription": "Optional description.",
+      "optionalExecutionTimeout": "Optional execution timeout.",
+      "optionalFromToTimestamps": "Optional from/to timestamps.",
+      "optionalFromToTimestampsForTemporalEntityAndTopologyReads": "Optional from/to timestamps for temporal entity and topology reads.",
+      "optionalIdempotencyKey": "Optional idempotency key.",
+      "optionalOptimisticConcurrencyVersion": "Optional optimistic concurrency version.",
+      "optionalResultLimit": "Optional result limit.",
+      "optionalWorkspaceDescription": "Optional workspace description.",
+      "overallServerStatus": "Overall server status.",
+      "paginationCursorReturnedByAPreviousResponse": "Pagination cursor returned by a previous response.",
+      "perItemResultDetailsIncludingValidationErrorsWhenPresent": "Per-item result details, including validation errors when present.",
+      "plannedSourceSuchAsUmodelEntityOrTopo": "Planned source such as .umodel, .entity, or .topo.",
+      "providerHealthDetailWhenAvailable": "Provider health detail when available.",
+      "providerResponseStatus": "Provider response status.",
+      "queryProvider": "Query provider.",
+      "readableMetadataResources": "Readable metadata resources.",
+      "relationRowsToWrite": "Relation rows to write.",
+      "relationWriteResult": "Relation write result.",
+      "resourcePayload": "Resource payload.",
+      "resourceUri": "Resource URI.",
+      "resourceUriFromDiscovery": "Resource URI from discovery.",
+      "responseCode": "Response code.",
+      "responseMessage": "Response message.",
+      "returnedContentMimeType": "Returned content MIME type.",
+      "rowsAsMatricesAlignedWithHeader": "Rows as matrices aligned with header.",
+      "sampleName": "Sample name.",
+      "serverReadableFileOrDirectoryPath": "Server-readable file or directory path.",
+      "serverSideStoragePaths": "Server-side storage paths.",
+      "setTrueToIncludeConflictedWorkspaceIdentities": "Set true to include conflicted workspace identities.",
+      "setTrueToIncludeTombstonedWorkspaces": "Set true to include tombstoned workspaces.",
+      "skippedElementCount": "Skipped element count.",
+      "splQueryText": "SPL query text.",
+      "stableEntityIdsToExpire": "Stable entity IDs to expire.",
+      "stableRelationIdsToExpire": "Stable relation IDs to expire.",
+      "stringKeyValueLabels": "String key-value labels.",
+      "suggestedActions": "Suggested actions.",
+      "toolArgumentsMatchingItsInputSchema": "Tool arguments matching its input_schema.",
+      "toolErrorPayload": "Tool error payload.",
+      "toolNameFromDiscovery": "Tool name from discovery.",
+      "toolOutput": "Tool output.",
+      "umodelImportResult": "UModel import result.",
+      "validationDetails": "Validation details.",
+      "validationOrImportErrors": "Validation or import errors.",
+      "whenTrueReplaceAllCustomConfigInsteadOfMerging": "When true, replace all custom config instead of merging.",
+      "whenTrueReplaceAllLabelsInsteadOfMerging": "When true, replace all labels instead of merging.",
+      "whetherAllElementsAreValid": "Whether all elements are valid.",
+      "whetherExecutionSucceeded": "Whether execution succeeded.",
+      "whetherTheQueryCompletedSuccessfully": "Whether the query completed successfully.",
+      "workspaceId": "Workspace ID.",
+      "workspaceIdentifier": "Workspace identifier.",
+      "workspaceIdFilledFromCurrentWorkspace": "Workspace ID. The debugger fills it from the current workspace by default.",
+      "workspaceIdMustMatchTheServerIdPattern": "Workspace ID. Must match the server ID pattern.",
+      "workspaceRecords": "Workspace records."
+    },
+    "field": "Field",
+    "group": {
+      "agent": "Agent",
+      "entityStore": "EntityStore",
+      "query": "Query",
+      "samples": "Samples",
+      "system": "System",
+      "umodel": "UModel",
+      "workspace": "Workspace"
+    },
+    "noPathParams": "No path parameters",
+    "noQueryParams": "No query parameters",
+    "outputFields": "Output fields",
+    "pathParams": "Path parameters",
+    "queryParams": "Query parameters",
+    "requestBody": "Request body",
+    "required": "required",
+    "response": "Response",
+    "responseEmpty": "Run an API call to inspect the response body and status.",
+    "responseRequired": "Always returned",
+    "risk": {
+      "danger": "Danger",
+      "read": "Read",
+      "write": "Write"
+    },
+    "searchPlaceholder": "Search APIs",
+    "status": {
+      "error": "Error",
+      "ok": "OK"
+    },
+    "title": "API Debugger",
+    "type": "Type"
+  },
+  "appConfig": {
+    "apiKey": {
+      "description": "Optional bearer token for the UModel server. Leave empty — the server is currently unauthenticated.",
+      "label": "API Key",
+      "placeholder": "Your secret API key"
+    },
+    "apiUrl": {
+      "description": "Base URL of the UModel server (cmd/umodel-server). Must be reachable from the Grafana server — never use localhost when Grafana runs in Docker (e.g. http://host.docker.internal:8080 for local dev).",
+      "label": "API Url",
+      "placeholder": "E.g.: http://host.docker.internal:8080"
+    },
+    "diagnosisUrl": {
+      "description": "Optional. Base URL of the diagnosis service used by the Diagnosis page (SSE). Reachable from the Grafana server, same as API Url (e.g. http://host.docker.internal:18000). Leave empty if you don't use the Diagnosis page.",
+      "label": "Diagnosis Url",
+      "placeholder": "E.g.: http://host.docker.internal:18000"
+    },
+    "fieldSet": {
+      "apiSettings": "API Settings"
+    },
+    "submit": "Save API settings"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create",
+    "deleteFailed": "Delete failed",
+    "done": "Done",
+    "health": {
+      "unknown": "unknown"
+    },
+    "loading": "Loading...",
+    "loadWorkspaceFailed": "Failed to load workspace",
+    "noWorkspace": {
+      "detail": "Pick a workspace from the selector in the top-right to begin. If the list is empty, open the plugin Configuration page and set the UModel server URL (apiUrl).",
+      "title": "No workspace selected"
+    },
+    "refresh": "Refresh",
+    "reloadWorkspaces": "Reload workspaces",
+    "requestFailed": "Request failed",
+    "save": "Save",
+    "saveFailed": "Save failed",
+    "selectWorkspace": "Select workspace",
+    "status": {
+      "connected": "connected",
+      "notConnected": "not connected"
+    },
+    "workspaceDeleted": "Workspace deleted",
+    "workspaceSaved": "Workspace saved"
+  },
+  "diagnosis": {
+    "placeholder": "Describe the fault (API path, time, symptoms)..."
+  },
+  "entityTopoExplorer": {
+    "action": {
+      "all": "All",
+      "clear": "Clear",
+      "clearFilters": "Clear filters",
+      "clearFocus": "Clear focus",
+      "close": "Close",
+      "execute": "Execute",
+      "exit": "Exit",
+      "fitView": "Fit view",
+      "focusNeighbors": "Focus one-hop neighbors",
+      "importingSample": "Importing sample...",
+      "importQuickstartSample": "Import quickstart sample",
+      "removeFilter": "Remove {{label}}",
+      "removeFocusItem": "Remove {{label}}",
+      "resetView": "Reset view",
+      "retry": "Retry"
+    },
+    "detail": {
+      "degree": "Degree",
+      "entity": "Entity",
+      "id": "ID",
+      "inbound": "inbound",
+      "noProperties": "No properties.",
+      "outbound": "outbound",
+      "relation": "relation",
+      "relationTitle": "Relation",
+      "source": "Source",
+      "sourceEntity": "Source entity",
+      "target": "Target",
+      "targetEntity": "Target entity",
+      "total": "total"
+    },
+    "empty": {
+      "noData": {
+        "detail": "Import the bundled multi-domain sample to get matching DevOps, k8s, automaker, game, supplier, and cross-domain relations.",
+        "title": "No topology data"
+      },
+      "noMatching": {
+        "detail": "Clear filters or broaden the search.",
+        "title": "No matching entities"
+      },
+      "queryFailed": "Topology query failed"
+    },
+    "filter": {
+      "domainPrefix": "domain",
+      "focus": "Focus",
+      "focusedEntities": "Focused entities ({{count}})",
+      "help": {
+        "focusLabel": "Focus",
+        "line1": "shows selected entities and nearby entities.",
+        "line2": "Stack filters narrows the focused view with search, type, domain, or relation filters.",
+        "line3": "Clear filters to return to the full result.",
+        "title": "Filtering"
+      },
+      "noActive": "No active filters",
+      "relationPrefix": "relation",
+      "searchPrefix": "search",
+      "stack": "Stack filters"
+    },
+    "graph": {
+      "focusView": "Focus view",
+      "miniMap": "Topology minimap",
+      "rendering": "Rendering topology..."
+    },
+    "loading": {
+      "refreshing": "Refreshing",
+      "topology": "Loading topology..."
+    },
+    "search": {
+      "command": "Search \"{{query}}\"",
+      "entities": "Entities",
+      "noMatchingEntities": "No matching entities",
+      "placeholder": "Search entity, type, domain...",
+      "types": "Types"
+    },
+    "settings": {
+      "display": "Display",
+      "dragEntities": "Move entities by dragging",
+      "entityLabels": "Entity labels",
+      "force": "Force",
+      "forceDesc": "Flexible map for local exploration.",
+      "grouped": "Grouped",
+      "groupedDesc": "Group entities by type for an overview.",
+      "groupLabels": "Group labels",
+      "groupLabelsDisabled": "Group labels are available in Grouped layout.",
+      "overviewMap": "Overview map",
+      "view": "View"
+    },
+    "sidebar": {
+      "domains": "Domains",
+      "entityTypes": "Entity Types",
+      "relations": "Relations",
+      "showMore": "Show {{count}} more"
+    },
+    "stat": {
+      "entities": "Entities",
+      "filteredOf": "of {{count}}",
+      "relations": "Relations"
+    },
+    "status": {
+      "entities": "entities",
+      "limit": "limit {{limit}}",
+      "relations": "relations"
+    },
+    "tabs": {
+      "display": "Display",
+      "summary": "Summary"
+    },
+    "time": {
+      "from": "From time",
+      "to": "To time",
+      "toSeparator": "to"
+    }
+  },
+  "imports": {
+    "action": {
+      "expire": "Expire",
+      "put": "Put",
+      "validate": "Validate",
+      "write": "Write"
+    },
+    "field": {
+      "entities": "Entities JSON",
+      "ids": "IDs JSON",
+      "kind": "Kind",
+      "relations": "Relations JSON",
+      "umodelElements": "UModel elements JSON"
+    },
+    "kind": {
+      "entity": "entity",
+      "relation": "relation"
+    },
+    "mode": {
+      "entity": "Entities & Topology",
+      "expire": "Manual Expire",
+      "umodel": "UModel"
+    },
+    "operation": "Operation",
+    "result": {
+      "empty": {
+        "detail": "Run an operation in this mode to inspect the API response",
+        "title": "No response yet."
+      },
+      "latest": "Latest response for this mode",
+      "title": "Response"
+    },
+    "status": {
+      "received": "Received"
+    }
+  },
+  "language": {
+    "english": "English",
+    "label": "Language",
+    "simplifiedChinese": "简体中文"
+  },
+  "nav": {
+    "apiMap": "API Debugger",
+    "collapseSidebar": "Collapse sidebar",
+    "diagnosis": "Diagnosis",
+    "entityTopo": "EntityTopo Explorer",
+    "expandSidebar": "Expand sidebar",
+    "imports": "Imports & Writes",
+    "query": "Query",
+    "settings": "Settings",
+    "umodel": "UModel Explorer",
+    "workspaces": "Workspaces"
+  },
+  "query": {
+    "action": {
+      "clear": "Clear",
+      "close": "Close",
+      "execute": "Execute",
+      "explain": "Explain"
+    },
+    "chart": {
+      "empty": {
+        "detail": "Execute a topology query to render a chart.",
+        "title": "No chart yet"
+      },
+      "filter": "Filter",
+      "noMatching": {
+        "detail": "Clear the search or filter.",
+        "title": "No matching nodes"
+      },
+      "search": {
+        "clear": "Clear search",
+        "placeholder": "Search"
+      },
+      "type": "Type",
+      "unavailable": {
+        "detail": "Chart view is available when the result contains topology rows with source and destination entities.",
+        "title": "Chart unavailable"
+      }
+    },
+    "detail": {
+      "inbound": "inbound",
+      "noProperties": "No properties.",
+      "outbound": "outbound",
+      "relation": "relation",
+      "source": "Source",
+      "target": "Target",
+      "total": "total"
+    },
+    "examples": {
+      "cypher": "Cypher",
+      "direct": "Direct",
+      "entity": ".entity",
+      "entitySetDatasets": "EntitySet Datasets",
+      "entitySetLogs": "EntitySet Logs",
+      "entitySetMethods": "EntitySet Methods",
+      "entitySetMetrics": "EntitySet Metrics",
+      "neighbors": "Neighbors",
+      "placeholder": "Select example",
+      "title": "Examples",
+      "topo": ".topo",
+      "umodel": ".umodel"
+    },
+    "explain": {
+      "panelLabel": "Explain panel"
+    },
+    "preview": {
+      "close": "Close preview",
+      "row": "Row {{row}}"
+    },
+    "result": {
+      "empty": {
+        "detail": "Execute a query to inspect rows.",
+        "title": "No result yet"
+      },
+      "title": "Result"
+    },
+    "table": {
+      "nextPage": "Next page",
+      "noRows": {
+        "detail": "The query completed without returning rows.",
+        "title": "No rows"
+      },
+      "pageSize": "{{size}} / page",
+      "previousPage": "Previous page",
+      "totalRows": "Total <strong>{{count}}</strong> rows",
+      "viewCell": "View"
+    },
+    "time": {
+      "all": "All",
+      "from": "From time",
+      "to": "To time",
+      "toSeparator": "to"
+    },
+    "unit": {
+      "column": "column",
+      "columns": "columns",
+      "row": "row",
+      "rows": "rows"
+    },
+    "view": {
+      "chart": "Chart",
+      "table": "Table"
+    }
+  },
+  "settings": {
+    "configJson": {
+      "description": "Enter grouped custom config, for example { \"runtime\": { \"mode\": \"demo\" } }. By default it merges with existing config; turn on \"replace config\" to overwrite everything.",
+      "invalidJson": "Custom config is not valid JSON. Check commas, quotes, and brackets.",
+      "invalidShape": "Custom config must be a grouped object. Example: { \"runtime\": { \"mode\": \"demo\" } }.",
+      "label": "Custom Config JSON"
+    },
+    "deleteConfirm": {
+      "confirm": "Delete workspace",
+      "detail": "Delete workspace \"{{workspace}}\"?",
+      "title": "Confirm deletion",
+      "tombstone": "This creates a tombstone for the workspace ID, so the same ID cannot be recreated later."
+    },
+    "deleteWorkspace": "Delete workspace",
+    "description": "Description",
+    "labelsJson": {
+      "description": "Enter string key-value pairs, for example { \"env\": \"local\" }. By default it merges with existing labels; turn on \"replace labels\" to overwrite everything.",
+      "invalidJson": "Labels are not valid JSON. Check commas, quotes, and brackets.",
+      "invalidShape": "Labels must be a string key-value object. Example: { \"env\": \"local\" }.",
+      "label": "Labels JSON"
+    },
+    "language": {
+      "description": "This preference applies immediately across the workspace UI."
+    },
+    "metadata": {
+      "label": "Metadata",
+      "notLoaded": "Workspace metadata is not loaded."
+    },
+    "name": "Name",
+    "preferences": "Preferences",
+    "replaceConfig": "replace config",
+    "replaceLabels": "replace labels",
+    "saved": "Saved",
+    "title": "Workspace Settings"
+  },
+  "umodelExplorer": {
+    "action": {
+      "add": "Add",
+      "addToDraft": "Add to Draft",
+      "applyToDraft": "Apply to Draft",
+      "chooseFile": "Choose file",
+      "clear": "Clear",
+      "clearAll": "Clear all",
+      "clearFocus": "Clear focus",
+      "close": "Close",
+      "confirmSubmit": "Confirm & Submit",
+      "connectTo": "Connect to...",
+      "copyNode": "Copy node",
+      "copyWithEdges": "Copy with edges",
+      "createCount": "Create ({{count}})",
+      "createLink": "Create link",
+      "createNode": "Create node",
+      "delete": "Delete",
+      "deleteLink": "Delete link",
+      "deleteNode": "Delete node",
+      "deleteWithEdges": "Delete with edges",
+      "focusInGraph": "Focus in graph",
+      "focusNode": "Focus node",
+      "importQuickstartSample": "Import quickstart sample",
+      "redo": "Redo",
+      "refreshResetDraft": "Refresh and reset draft",
+      "removeFocusItem": "Remove focus item",
+      "reviewDiffSubmit": "Review diff and submit",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "undo": "Undo",
+      "uploadYamlJson": "Upload YAML/JSON"
+    },
+    "aria": {
+      "operations": "Operations",
+      "resizeDetailPanel": "Resize detail panel"
+    },
+    "dialog": {
+      "connect": {
+        "description": "Select a source node and target node to create a link.",
+        "fromSource": "Create links from {{name}}",
+        "newLink": "New Link",
+        "selectSource": "Select a source node",
+        "source": "Source",
+        "sourceWithName": "Source: {{name}}",
+        "stepSource": "1. Source",
+        "stepTarget": "2. Target",
+        "targetsSelected": "{{count}} target selected",
+        "targetsSelectedOther": "{{count}} targets selected"
+      },
+      "create": {
+        "description": "Select a type, edit JSON, then create it in draft.",
+        "json": "JSON",
+        "title": "New UModel Node",
+        "type": "Type"
+      },
+      "diff": {
+        "added": "Added",
+        "deleted": "Deleted",
+        "description": "Review draft diff before writing to UModel API.",
+        "modified": "Modified",
+        "title": "Submit Preview",
+        "type": {
+          "added": "added",
+          "deleted": "deleted",
+          "modified": "modified"
+        }
+      },
+      "upload": {
+        "description": "Import elements into the local draft. Existing ids are overwritten in draft only.",
+        "duplicateIds": "{{count}} existing id will be overwritten in draft.",
+        "duplicateIdsOther": "{{count}} existing ids will be overwritten in draft.",
+        "title": "Upload YAML/JSON"
+      }
+    },
+    "empty": {
+      "diffSelected": "No diff selected",
+      "draftChanges": "No draft changes",
+      "elements": {
+        "detail": "Import the bundled multi-domain UModel plus matching DevOps, k8s, automaker, game, and supplier entities.",
+        "title": "No UModel elements"
+      },
+      "matchingElementsFilter": "No matching elements. Apply it as a full-text filter.",
+      "matchingModels": "No matching models",
+      "matchingNodes": "No matching nodes",
+      "matchingResultsForType": "No matching results for this type."
+    },
+    "filter": {
+      "domainPrefix": "Domain:",
+      "focus": "Focus",
+      "focusItems": "Focus items ({{count}})",
+      "help": {
+        "line1": "Focus shows selected items and nearby related items.",
+        "line2": "Stack filters narrows that focused view with search, type, or domain filters.",
+        "line3": "Clear filters to return to the full result.",
+        "title": "Filtering"
+      },
+      "searchPrefix": "Search:",
+      "stack": "Stack filters",
+      "tableOnly": "table only"
+    },
+    "flow": {
+      "controlPanel": "Control panel",
+      "fitView": "Fit view",
+      "miniMap": "Mini map",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out"
+    },
+    "loading": {
+      "arrangingView": "Arranging view",
+      "graph": "Loading UModel graph...",
+      "refreshingApi": "Refreshing API"
+    },
+    "message": {
+      "createdDraftElement": "Created draft element: {{name}}",
+      "createdDraftLinks": "Created {{count}} draft link from {{name}}",
+      "createdDraftLinksOther": "Created {{count}} draft links from {{name}}",
+      "deletedDraftElement": "Deleted draft element",
+      "deletedDraftNodeLinks": "Deleted draft node and related links",
+      "importedSample": "Imported sample: {{umodel}} UModel elements, {{entities}} entities, {{relations}} relations.",
+      "redoDraftChange": "Redo draft change",
+      "submitted": "Submitted {{upserts}} upserts and {{deletes}} deletes.",
+      "undoDraftChange": "Undo draft change",
+      "uploadedDraftElements": "Uploaded {{count}} draft element",
+      "uploadedDraftElementsOther": "Uploaded {{count}} draft elements"
+    },
+    "misc": {
+      "unknown": "unknown"
+    },
+    "nodeMenu": {
+      "connectTo": "Connect to...",
+      "copyNode": "Copy node",
+      "copyWithEdges": "Copy with edges",
+      "deleteNode": "Delete node",
+      "deleteWithEdges": "Delete with edges"
+    },
+    "search": {
+      "all": "All",
+      "allDomains": "All domains",
+      "allTypes": "All types",
+      "byDomain": "By domain",
+      "byType": "By type",
+      "exactFullTextFilter": "Exact full-text filter",
+      "footer": "Type keywords to search, or filter by type and domain.",
+      "matchedResults": "Matched results",
+      "placeholder": "Search UModel..."
+    },
+    "settings": {
+      "alwaysRenderEveryItem": "Always render every item",
+      "bridgeNodes": "Bridge nodes",
+      "canvas": "Canvas",
+      "connectionsOnly": "Connections only",
+      "display": "Display",
+      "dots": "Dots",
+      "grid": "Grid",
+      "lines": "Lines",
+      "plain": "Plain",
+      "relations": "Relations"
+    },
+    "sidebar": {
+      "byDomain": "By Domain",
+      "byType": "By Type",
+      "deletedCannotFocus": "Deleted elements cannot be focused",
+      "draft": {
+        "added": "Added",
+        "deleted": "Deleted",
+        "focusHelp1": "Click this card to focus all added and modified draft nodes or links.",
+        "focusHelp2": "Deleted items cannot be focused here and only contribute to the count.",
+        "focusHelp3": "Changes are applied only after <strong>Confirm & Submit</strong>.",
+        "focusTitle": "Draft focus",
+        "modified": "Modified",
+        "title": "Unsaved draft UModel"
+      },
+      "focusDraftChanges": "Focus added and modified draft elements",
+      "linkFiltersTableOnly": "Link filters are available in table view",
+      "links": "Links",
+      "nodes": "Nodes"
+    },
+    "status": {
+      "items": "{{count}} items",
+      "limit": "limit {{limit}}",
+      "links": "links",
+      "nodes": "nodes",
+      "page": "page {{page}}/{{total}}",
+      "totalItems": "Total {{count}} items",
+      "totalItemsRich": "Total <strong>{{count}}</strong> items"
+    },
+    "submitFailure": {
+      "moreItems": "{{count}} more failed item(s) not shown.",
+      "noItemDetails": "The API did not return per-item failure details.",
+      "noMessage": "No failure message returned.",
+      "operation": {
+        "delete": "Delete",
+        "upsert": "Upsert"
+      },
+      "unexpected": "Submit failed before the request completed.",
+      "unknownItem": "<unknown item>",
+      "validation": "Validation failed. Fix the listed issues before submitting.",
+      "writeResult": "{{operation}} accepted {{accepted}} item(s), failed {{failed}} item(s)."
+    },
+    "table": {
+      "action": "Action",
+      "description": "Description",
+      "detail": "Detail",
+      "domain": "Domain",
+      "name": "Name",
+      "pageSize": "{{size}} / page",
+      "type": "Type"
+    },
+    "tabs": {
+      "settings": "Settings",
+      "summary": "Summary"
+    },
+    "unit": {
+      "fields": "fields",
+      "metrics": "metrics"
+    },
+    "validation": {
+      "duplicateElement": "Element already exists: {{id}}",
+      "elementLabel": "UModel element",
+      "elementsLabel": "UModel elements",
+      "failed": "Validation failed",
+      "missingDomain": "Element {{id}} is missing domain.",
+      "missingKind": "Element {{id}} is missing kind.",
+      "missingName": "Element {{id}} is missing name.",
+      "noElementsFound": "No UModel elements found.",
+      "payloadMustContain": "YAML/JSON must contain one UModel element, an array, or an object with elements/items/rows.",
+      "rowObjectRequired": "Each UModel element must be an object."
+    },
+    "view": {
+      "graph": "Graph",
+      "table": "Table"
+    }
+  }
+}

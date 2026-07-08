@@ -4,7 +4,6 @@ import { AppRootProps } from '@grafana/data';
 import { LoadingPlaceholder } from '@grafana/ui';
 import { DEFAULT_ROUTE, ROUTES } from '../../constants';
 import { WorkspaceProvider } from '../../context/WorkspaceContext';
-import { I18nProvider } from '../../i18n';
 
 const UModelPage = React.lazy(() => import('../../pages/UModelPage'));
 const TopoPage = React.lazy(() => import('../../pages/TopoPage'));
@@ -16,23 +15,21 @@ const DiagnosisPage = React.lazy(() => import('../../pages/DiagnosisPage'));
 
 function App(_props: AppRootProps) {
   return (
-    <I18nProvider>
-      <WorkspaceProvider>
-        <Suspense fallback={<LoadingPlaceholder text="" />}>
-          <Routes>
-            <Route path={ROUTES.UModel} element={<UModelPage />} />
-            <Route path={ROUTES.Topo} element={<TopoPage />} />
-            <Route path={ROUTES.Query} element={<QueryPage />} />
-            <Route path={ROUTES.Imports} element={<ImportsPage />} />
-            <Route path={ROUTES.Settings} element={<SettingsPage />} />
-            <Route path={ROUTES.ApiDebug} element={<ApiDebugPage />} />
-            <Route path={ROUTES.Diagnosis} element={<DiagnosisPage />} />
-            {/* Default page */}
-            <Route path="*" element={<Navigate to={DEFAULT_ROUTE} replace />} />
-          </Routes>
-        </Suspense>
-      </WorkspaceProvider>
-    </I18nProvider>
+    <WorkspaceProvider>
+      <Suspense fallback={<LoadingPlaceholder text="" />}>
+        <Routes>
+          <Route path={ROUTES.UModel} element={<UModelPage />} />
+          <Route path={ROUTES.Topo} element={<TopoPage />} />
+          <Route path={ROUTES.Query} element={<QueryPage />} />
+          <Route path={ROUTES.Imports} element={<ImportsPage />} />
+          <Route path={ROUTES.Settings} element={<SettingsPage />} />
+          <Route path={ROUTES.ApiDebug} element={<ApiDebugPage />} />
+          <Route path={ROUTES.Diagnosis} element={<DiagnosisPage />} />
+          {/* Default page */}
+          <Route path="*" element={<Navigate to={DEFAULT_ROUTE} replace />} />
+        </Routes>
+      </Suspense>
+    </WorkspaceProvider>
   );
 }
 

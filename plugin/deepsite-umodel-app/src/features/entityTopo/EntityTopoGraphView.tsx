@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Crosshair, LocateFixed, RotateCcw } from 'lucide-react';
-import { useI18n } from '../../i18n';
+import { t } from '@grafana/i18n';
 import { CosmosTopoGraph } from './cosmosTopo/cosmosTopoGraph';
 import type { LayoutOptions, TopoData, TopoEdge, TopoGraphRef, TopoNode } from './cosmosTopo/types';
 import type {
@@ -37,7 +37,6 @@ export function EntityTopoGraphView({
   onFocusNode: (node: EntityTopoNode) => void;
   onZoomLevelChange: (level: TopoZoomLevel) => void;
 }) {
-  const { t } = useI18n();
   const graphRef = useRef<TopoGraphRef | null>(null);
   const topoData = useMemo(() => toCosmosTopoData(data), [data]);
   const validTopoEdges = useMemo(() => getValidTopoEdges(topoData), [topoData]);
@@ -55,7 +54,9 @@ export function EntityTopoGraphView({
 
   useEffect(() => {
     const graph = graphRef.current?.getGraph();
-    if (!graph) {return;}
+    if (!graph) {
+      return;
+    }
     if (selected?.kind === 'node') {
       graph.focusNodeView(selected.node.id);
     } else if (!selected) {
@@ -64,13 +65,17 @@ export function EntityTopoGraphView({
   }, [selected, selectedKey]);
 
   useEffect(() => {
-    if (zoomLevel !== 'full') {onZoomLevelChange('full');}
+    if (zoomLevel !== 'full') {
+      onZoomLevelChange('full');
+    }
   }, [onZoomLevelChange, zoomLevel]);
 
   const handleNodeClick = useCallback(
     (rawNode: TopoNode) => {
       const node = readEntityNode(rawNode);
-      if (node) {onSelect({ kind: 'node', node });}
+      if (node) {
+        onSelect({ kind: 'node', node });
+      }
     },
     [onSelect]
   );
@@ -82,7 +87,9 @@ export function EntityTopoGraphView({
           ? findTopoEdgeByEndpoints(topoData.edges, context.source, context.target)
           : validTopoEdges[context.edgeIndex]
       );
-      if (edge) {onSelect({ kind: 'edge', edge });}
+      if (edge) {
+        onSelect({ kind: 'edge', edge });
+      }
     },
     [onSelect, topoData.edges, validTopoEdges]
   );
@@ -94,7 +101,9 @@ export function EntityTopoGraphView({
         return;
       }
       const node = data.nodes.find((item) => item.id === nodeId);
-      if (node) {onFocusNode(node);}
+      if (node) {
+        onFocusNode(node);
+      }
     },
     [data.nodes, onFocusNode, onSelect]
   );
@@ -117,14 +126,14 @@ export function EntityTopoGraphView({
             <button
               type="button"
               onClick={() => void graphRef.current?.getGraph().fitView()}
-              title={t('entityTopoExplorer.action.fitView')}
+              title={t('entityTopoExplorer.action.fitView', 'Fit view')}
             >
               <LocateFixed size={14} />
             </button>
             <button
               type="button"
               onClick={() => graphRef.current?.getGraph().resetView()}
-              title={t('entityTopoExplorer.action.resetView')}
+              title={t('entityTopoExplorer.action.resetView', 'Reset view')}
             >
               <RotateCcw size={14} />
             </button>
@@ -132,7 +141,7 @@ export function EntityTopoGraphView({
               <button
                 type="button"
                 onClick={() => onFocusNode(selectedNode)}
-                title={t('entityTopoExplorer.action.focusNeighbors')}
+                title={t('entityTopoExplorer.action.focusNeighbors', 'Focus one-hop neighbors')}
               >
                 <Crosshair size={14} />
               </button>
@@ -221,19 +230,35 @@ function toCosmosTopoData(data: EntityTopoData): TopoData {
 }
 
 function edgeVisualForCount(edgeCount: number) {
-  if (edgeCount <= 20) {return { widthScale: 1.95, opacity: 0.82 };}
-  if (edgeCount <= 80) {return { widthScale: 1.65, opacity: 0.74 };}
-  if (edgeCount <= 240) {return { widthScale: 1.32, opacity: 0.64 };}
-  if (edgeCount <= 800) {return { widthScale: 1.08, opacity: 0.56 };}
+  if (edgeCount <= 20) {
+    return { widthScale: 1.95, opacity: 0.82 };
+  }
+  if (edgeCount <= 80) {
+    return { widthScale: 1.65, opacity: 0.74 };
+  }
+  if (edgeCount <= 240) {
+    return { widthScale: 1.32, opacity: 0.64 };
+  }
+  if (edgeCount <= 800) {
+    return { widthScale: 1.08, opacity: 0.56 };
+  }
   return { widthScale: 0.92, opacity: 0.48 };
 }
 
 function iconPresetForNode(node: EntityTopoNode) {
   const value = `${node.endpoint.entityType} ${node.title}`.toLowerCase();
-  if (value.includes('service')) {return 'service';}
-  if (value.includes('operation') || value.includes('http')) {return 'endpoint';}
-  if (value.includes('database') || value.includes('db')) {return 'database';}
-  if (value.includes('instance')) {return 'instance';}
+  if (value.includes('service')) {
+    return 'service';
+  }
+  if (value.includes('operation') || value.includes('http')) {
+    return 'endpoint';
+  }
+  if (value.includes('database') || value.includes('db')) {
+    return 'database';
+  }
+  if (value.includes('instance')) {
+    return 'instance';
+  }
   return 'default';
 }
 
@@ -243,7 +268,9 @@ function getValidTopoEdges(data: TopoData): TopoEdge[] {
 }
 
 function findTopoEdgeByEndpoints(edges: TopoEdge[], source?: string, target?: string) {
-  if (!source || !target) {return undefined;}
+  if (!source || !target) {
+    return undefined;
+  }
   return edges.find((edge) => edge.source === source && edge.target === target);
 }
 

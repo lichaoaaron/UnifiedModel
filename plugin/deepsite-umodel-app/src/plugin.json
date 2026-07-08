@@ -81,5 +81,6 @@
   "dependencies": {
     "grafanaDependency": ">=12.3.0",
     "plugins": []
-  }
+  },
+  "languages": ["en-US", "zh-Hans"]
 }

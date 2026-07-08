@@ -4,14 +4,14 @@ import { GrafanaTheme2, type IconName } from '@grafana/data';
 import { Button, Field, RadioButtonGroup, Stack, Tab, TabsBar, TextArea, useStyles2 } from '@grafana/ui';
 import { WorkspacePage } from '../components/WorkspacePage';
 import { useWorkspace } from '../context/WorkspaceContext';
-import { useI18n, type MessageKey } from '../i18n';
+import { t } from '@grafana/i18n';
 import { asArray, parseJson, stringify } from '../lib/json';
 import { notifyError, notifySuccess } from '../utils/notify';
 import { parseUModelElementsFromJson } from '../features/umodel/UModelPage';
 
 type ImportMode = 'umodel' | 'entity' | 'expire';
 
-const MODES: Array<{ value: ImportMode; labelKey: MessageKey; icon: IconName }> = [
+const MODES: Array<{ value: ImportMode; labelKey: string; icon: IconName }> = [
   { value: 'umodel', labelKey: 'imports.mode.umodel', icon: 'upload' },
   { value: 'entity', labelKey: 'imports.mode.entity', icon: 'database' },
   { value: 'expire', labelKey: 'imports.mode.expire', icon: 'check-circle' },
@@ -63,12 +63,11 @@ export default function ImportsPage() {
 
 function ImportsForm() {
   const { workspace, api } = useWorkspace();
-  const { t } = useI18n();
   const styles = useStyles2(getStyles);
 
   const expireKindOptions = [
-    { label: t('imports.kind.entity'), value: 'entity' as const },
-    { label: t('imports.kind.relation'), value: 'relation' as const },
+    { label: t('imports.kind.entity', 'entity'), value: 'entity' as const },
+    { label: t('imports.kind.relation', 'relation'), value: 'relation' as const },
   ];
 
   const [mode, setMode] = useState<ImportMode>('umodel');
@@ -115,9 +114,9 @@ function ImportsForm() {
             : await api.expireRelations(workspace, { ids })
         );
       }
-      notifySuccess(t('common.done'));
+      notifySuccess(t('common.done', 'Done'));
     } catch (err) {
-      notifyError(t('common.requestFailed'), err);
+      notifyError(t('common.requestFailed', 'Request failed'), err);
     } finally {
       setBusy(false);
     }
@@ -130,7 +129,7 @@ function ImportsForm() {
           {MODES.map((m) => (
             <Tab
               key={m.value}
-              label={t(m.labelKey)}
+              label={t(m.labelKey, m.labelKey)}
               icon={m.icon}
               active={mode === m.value}
               onChangeTab={() => setMode(m.value)}
@@ -140,7 +139,7 @@ function ImportsForm() {
 
         {mode === 'umodel' && (
           <>
-            <Field label={t('imports.field.umodelElements')}>
+            <Field label={t('imports.field.umodelElements', 'UModel elements JSON')}>
               <TextArea
                 rows={16}
                 value={elementsJson}
@@ -150,10 +149,10 @@ function ImportsForm() {
             </Field>
             <Stack direction="row" gap={1}>
               <Button variant="secondary" icon="check-circle" disabled={busy} onClick={() => run('validate')}>
-                {t('imports.action.validate')}
+                {t('imports.action.validate', 'Validate')}
               </Button>
               <Button variant="primary" icon="arrow-up" disabled={busy} onClick={() => run('write')}>
-                {t('imports.action.put')}
+                {t('imports.action.put', 'Put')}
               </Button>
             </Stack>
           </>
@@ -161,7 +160,7 @@ function ImportsForm() {
 
         {mode === 'entity' && (
           <>
-            <Field label={t('imports.field.entities')}>
+            <Field label={t('imports.field.entities', 'Entities JSON')}>
               <TextArea
                 rows={9}
                 value={entityJson}
@@ -169,7 +168,7 @@ function ImportsForm() {
                 className={styles.mono}
               />
             </Field>
-            <Field label={t('imports.field.relations')}>
+            <Field label={t('imports.field.relations', 'Relations JSON')}>
               <TextArea
                 rows={9}
                 value={relationJson}
@@ -179,7 +178,7 @@ function ImportsForm() {
             </Field>
             <Stack direction="row" gap={1}>
               <Button variant="primary" icon="database" disabled={busy} onClick={() => run('write')}>
-                {t('imports.action.write')}
+                {t('imports.action.write', 'Write')}
               </Button>
             </Stack>
           </>
@@ -187,14 +186,14 @@ function ImportsForm() {
 
         {mode === 'expire' && (
           <>
-            <Field label={t('imports.field.kind')}>
+            <Field label={t('imports.field.kind', 'Kind')}>
               <RadioButtonGroup
                 options={expireKindOptions}
                 value={expireKind}
                 onChange={(v) => setExpireKind(v ?? 'entity')}
               />
             </Field>
-            <Field label={t('imports.field.ids')}>
+            <Field label={t('imports.field.ids', 'IDs JSON')}>
               <TextArea
                 rows={6}
                 value={expireIds}
@@ -204,7 +203,7 @@ function ImportsForm() {
             </Field>
             <Stack direction="row" gap={1}>
               <Button variant="primary" icon="check-circle" disabled={busy} onClick={() => run('expire')}>
-                {t('imports.action.expire')}
+                {t('imports.action.expire', 'Expire')}
               </Button>
             </Stack>
           </>
@@ -212,8 +211,10 @@ function ImportsForm() {
       </div>
 
       <div className={styles.col}>
-        <h4 className={styles.heading}>{t('imports.result.title')}</h4>
-        <pre className={styles.pre}>{result ? stringify(result) : t('imports.result.empty.title')}</pre>
+        <h4 className={styles.heading}>{t('imports.result.title', 'Response')}</h4>
+        <pre className={styles.pre}>
+          {result ? stringify(result) : t('imports.result.empty.title', 'No response yet.')}
+        </pre>
       </div>
     </Stack>
   );

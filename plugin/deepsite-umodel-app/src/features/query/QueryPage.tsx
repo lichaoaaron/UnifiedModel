@@ -24,7 +24,7 @@ import type { editor as MonacoEditor } from 'monaco-editor';
 import type { QueryExplain, QueryRequest, QueryResult } from '../../api/types';
 import { UModelApi } from '../../api/client';
 import { Badge, Button, EmptyState, IconButton, SegmentedControl } from '../../design/components';
-import { useI18n, type MessageKey, type TFunction } from '../../i18n';
+import { t, Trans, type TFunction } from '@grafana/i18n';
 import { formatError, stringify } from '../../lib/json';
 import { EntityTopoGraphView } from '../entityTopo/EntityTopoGraphView';
 import {
@@ -125,10 +125,9 @@ const examples = [
     query:
       ".entity_set with(domain='devops', name='devops.service', ids=['10000000000000000000000000000101']) | entity-call get_metrics('devops', 'devops.metric.service', 'request_count', step='30s')",
   },
-] as const satisfies ReadonlyArray<{ labelKey: MessageKey; query: string }>;
+] as const satisfies ReadonlyArray<{ labelKey: string; query: string }>;
 
 export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: string }) {
-  const { t } = useI18n();
   const [query, setQuery] = useState<string>(examples[0].query);
   const [timeRange, setTimeRange] = useState({ from: '', to: '' });
   const [result, setResult] = useState<QueryResult | null>(null);
@@ -161,7 +160,9 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
       };
       const from = toIsoOrUndefined(timeRange.from);
       const to = toIsoOrUndefined(timeRange.to);
-      if (from || to) {request.time_range = { from, to };}
+      if (from || to) {
+        request.time_range = { from, to };
+      }
 
       if (kind === 'execute') {
         const [next, nextExplain] = await Promise.all([
@@ -202,7 +203,7 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
           <TimeRangeControl value={timeRange} onChange={setTimeRange} />
           <Button variant="secondary" onClick={() => void run('explain')} disabled={busy}>
             <SearchCode size={15} />
-            {t('query.action.explain')}
+            {t('query.action.explain', 'Explain')}
           </Button>
           <Button
             className="query-execute-button"
@@ -211,7 +212,7 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
             disabled={busy}
           >
             <Play size={14} />
-            {t('query.action.execute')}
+            {t('query.action.execute', 'Execute')}
           </Button>
         </div>
       </header>
@@ -236,11 +237,11 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
         <section className="query-results">
           <div className="query-result-header">
             <div>
-              <strong>{t('query.result.title')}</strong>
+              <strong>{t('query.result.title', 'Result')}</strong>
               <span>
                 {tableResult
                   ? formatResultSummary(t, tableResult.rows.length, resultColumns.length)
-                  : t('query.result.empty.title')}
+                  : t('query.result.empty.title', 'No result yet')}
               </span>
             </div>
             <SegmentedControl<ResultView>
@@ -248,8 +249,8 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
               value={resultView}
               onChange={setResultView}
               items={[
-                { value: 'table', label: t('query.view.table'), icon: <Table2 size={13} /> },
-                { value: 'chart', label: t('query.view.chart'), icon: <BarChart3 size={13} /> },
+                { value: 'table', label: t('query.view.table', 'Table'), icon: <Table2 size={13} /> },
+                { value: 'chart', label: t('query.view.chart', 'Chart'), icon: <BarChart3 size={13} /> },
               ]}
             />
           </div>
@@ -260,8 +261,8 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
                 <ResultTable result={tableResult} />
               ) : (
                 <QueryEmpty
-                  title={t('query.result.empty.title')}
-                  detail={t('query.result.empty.detail')}
+                  title={t('query.result.empty.title', 'No result yet')}
+                  detail={t('query.result.empty.detail', 'Execute a query to inspect rows.')}
                   icon={<Rows3 size={22} />}
                 />
               )
@@ -276,16 +277,16 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
         <div className="query-explain-drawer" role="presentation" onClick={() => setExplainOpen(false)}>
           <section
             className="query-explain-panel"
-            aria-label={t('query.explain.panelLabel')}
+            aria-label={t('query.explain.panelLabel', 'Explain panel')}
             onClick={(event) => event.stopPropagation()}
           >
             <div className="query-explain-title">
               <span>
-                <SearchCode size={13} /> {t('query.action.explain')}
+                <SearchCode size={13} /> {t('query.action.explain', 'Explain')}
               </span>
               <div className="query-explain-actions">
                 {explain?.provider && <Badge tone="indigo">{explain.provider}</Badge>}
-                <IconButton label={t('query.action.close')} size="sm" onClick={() => setExplainOpen(false)}>
+                <IconButton label={t('query.action.close', 'Close')} size="sm" onClick={() => setExplainOpen(false)}>
                   <X size={14} />
                 </IconButton>
               </div>
@@ -299,15 +300,18 @@ export function QueryPage({ api, workspaceId }: { api: UModelApi; workspaceId: s
 }
 
 function ExamplePicker({ value, onPick }: { value: string; onPick: (item: (typeof examples)[number]) => void }) {
-  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement | null>(null);
   const selected = examples.find((item) => item.query === value);
 
   useEffect(() => {
-    if (!open) {return;}
+    if (!open) {
+      return;
+    }
     const closeOnOutsidePointer = (event: PointerEvent) => {
-      if (!pickerRef.current?.contains(event.target as Node)) {setOpen(false);}
+      if (!pickerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
     };
     document.addEventListener('pointerdown', closeOnOutsidePointer);
     return () => document.removeEventListener('pointerdown', closeOnOutsidePointer);
@@ -315,7 +319,7 @@ function ExamplePicker({ value, onPick }: { value: string; onPick: (item: (typeo
 
   return (
     <div className="query-examples" ref={pickerRef}>
-      <div className="query-example-title">{t('query.examples.title')}</div>
+      <div className="query-example-title">{t('query.examples.title', 'Examples')}</div>
       <div className="query-example-control">
         <button
           className="query-example-trigger"
@@ -324,7 +328,9 @@ function ExamplePicker({ value, onPick }: { value: string; onPick: (item: (typeo
           onClick={() => setOpen((value) => !value)}
         >
           <Wand2 size={14} />
-          <span>{selected ? t(selected.labelKey) : t('query.examples.placeholder')}</span>
+          <span>
+            {selected ? t(selected.labelKey, selected.labelKey) : t('query.examples.placeholder', 'Select example')}
+          </span>
           <ChevronDown className="query-example-chevron" size={14} />
         </button>
         {open && (
@@ -342,7 +348,7 @@ function ExamplePicker({ value, onPick }: { value: string; onPick: (item: (typeo
                     setOpen(false);
                   }}
                 >
-                  <span>{t(item.labelKey)}</span>
+                  <span>{t(item.labelKey, item.labelKey)}</span>
                   {active && <Check size={14} />}
                 </button>
               );
@@ -361,26 +367,24 @@ function TimeRangeControl({
   value: { from: string; to: string };
   onChange: (value: { from: string; to: string }) => void;
 }) {
-  const { t } = useI18n();
-
   return (
     <div className="query-timebar">
       <CalendarClock size={14} />
       <input
-        aria-label={t('query.time.from')}
+        aria-label={t('query.time.from', 'From time')}
         type="datetime-local"
         value={value.from}
         onChange={(event) => onChange({ ...value, from: event.target.value })}
       />
-      <span>{t('query.time.toSeparator')}</span>
+      <span>{t('query.time.toSeparator', 'to')}</span>
       <input
-        aria-label={t('query.time.to')}
+        aria-label={t('query.time.to', 'To time')}
         type="datetime-local"
         value={value.to}
         onChange={(event) => onChange({ ...value, to: event.target.value })}
       />
       <button type="button" onClick={() => onChange({ from: '', to: '' })}>
-        {t('query.time.all')}
+        {t('query.time.all', 'All')}
       </button>
     </div>
   );
@@ -416,7 +420,9 @@ function MonacoBlock({
 
   const updateAutoHeight = (editor: MonacoEditor.IStandaloneCodeEditor) => {
     const { min, max, onChange: emitHeight } = autoHeightRef.current;
-    if (!emitHeight) {return;}
+    if (!emitHeight) {
+      return;
+    }
     const contentHeight = editor.getContentHeight();
     const nextHeight = Math.max(min ?? contentHeight, Math.min(max ?? contentHeight, contentHeight));
     emitHeight(Math.round(nextHeight));
@@ -444,7 +450,9 @@ function MonacoBlock({
           }
         }}
         onChange={(nextValue) => {
-          if (!readOnly) {onChange?.(nextValue ?? '');}
+          if (!readOnly) {
+            onChange?.(nextValue ?? '');
+          }
         }}
         monacoOptions={{
           accessibilitySupport: 'off',
@@ -473,7 +481,6 @@ function MonacoBlock({
 }
 
 function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canChart: boolean }) {
-  const { t } = useI18n();
   const [selected, setSelected] = useState<TopoSelection | null>(null);
   const [searchText, setSearchText] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
@@ -489,7 +496,9 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
     []
   );
   const filteredData = useMemo(() => {
-    if (!data) {return null;}
+    if (!data) {
+      return null;
+    }
     return filterEntityTopoData(data, {
       domains: [],
       types: selectedTypes,
@@ -506,22 +515,30 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
   }, [data]);
 
   useEffect(() => {
-    if (!data) {return;}
+    if (!data) {
+      return;
+    }
     const validTypes = new Set(data.clusters.map((cluster) => cluster.cluster));
     setSelectedTypes((current) => current.filter((item) => validTypes.has(item)));
   }, [data]);
 
   useEffect(() => {
-    if (!filteredData || !selected) {return;}
-    if (selected.kind === 'node' && !filteredData.nodes.some((node) => node.id === selected.node.id)) {setSelected(null);}
-    if (selected.kind === 'edge' && !filteredData.edges.some((edge) => edge.id === selected.edge.id)) {setSelected(null);}
+    if (!filteredData || !selected) {
+      return;
+    }
+    if (selected.kind === 'node' && !filteredData.nodes.some((node) => node.id === selected.node.id)) {
+      setSelected(null);
+    }
+    if (selected.kind === 'edge' && !filteredData.edges.some((edge) => edge.id === selected.edge.id)) {
+      setSelected(null);
+    }
   }, [filteredData, selected]);
 
   if (!data) {
     return (
       <QueryEmpty
-        title={t('query.chart.empty.title')}
-        detail={t('query.chart.empty.detail')}
+        title={t('query.chart.empty.title', 'No chart yet')}
+        detail={t('query.chart.empty.detail', 'Execute a topology query to render a chart.')}
         icon={<Network size={22} />}
       />
     );
@@ -530,8 +547,11 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
   if (!canChart) {
     return (
       <QueryEmpty
-        title={t('query.chart.unavailable.title')}
-        detail={t('query.chart.unavailable.detail')}
+        title={t('query.chart.unavailable.title', 'Chart unavailable')}
+        detail={t(
+          'query.chart.unavailable.detail',
+          'Chart view is available when the result contains topology rows with source and destination entities.'
+        )}
         icon={<Network size={22} />}
       />
     );
@@ -548,14 +568,14 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
           <input
             value={searchText}
             onChange={(event) => setSearchText(event.target.value)}
-            placeholder={t('query.chart.search.placeholder')}
+            placeholder={t('query.chart.search.placeholder', 'Search')}
           />
           {searchText && (
             <button
               className="eto-icon-button subtle query-chart-clear-search"
               type="button"
               onClick={() => setSearchText('')}
-              title={t('query.chart.search.clear')}
+              title={t('query.chart.search.clear', 'Clear search')}
             >
               <X size={13} />
             </button>
@@ -572,16 +592,16 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
             type="button"
           >
             <SlidersHorizontal size={14} />
-            <span>{t('query.chart.filter')}</span>
+            <span>{t('query.chart.filter', 'Filter')}</span>
             {selectedTypes.length > 0 && <strong>{selectedTypes.length}</strong>}
           </button>
           {filterOpen && (
             <div className="query-chart-filter-panel">
               <div className="query-chart-filter-title">
-                <strong>{t('query.chart.type')}</strong>
+                <strong>{t('query.chart.type', 'Type')}</strong>
                 {selectedTypes.length > 0 && (
                   <button type="button" onClick={() => setSelectedTypes([])}>
-                    {t('query.action.clear')}
+                    {t('query.action.clear', 'Clear')}
                   </button>
                 )}
               </div>
@@ -624,8 +644,8 @@ function QueryTopoChart({ data, canChart }: { data: EntityTopoData | null; canCh
         />
       ) : (
         <QueryEmpty
-          title={t('query.chart.noMatching.title')}
-          detail={t('query.chart.noMatching.detail')}
+          title={t('query.chart.noMatching.title', 'No matching nodes')}
+          detail={t('query.chart.noMatching.detail', 'Clear the search or filter.')}
           icon={<Network size={22} />}
         />
       )}
@@ -643,9 +663,9 @@ function QueryTopoDetailPanel({
   data: EntityTopoData;
   onClose: () => void;
 }) {
-  const { t } = useI18n();
-
-  if (!selection) {return null;}
+  if (!selection) {
+    return null;
+  }
   const nodeById = new Map(data.nodes.map((node) => [node.id, node]));
 
   if (selection.kind === 'edge') {
@@ -654,7 +674,7 @@ function QueryTopoDetailPanel({
       <aside className="eto-detail-panel open query-chart-detail-panel">
         <QueryDetailHeader
           title={edge.relationType}
-          subtitle={t('query.detail.relation')}
+          subtitle={t('query.detail.relation', 'relation')}
           icon={<ArrowRight size={16} />}
           onClose={onClose}
         />
@@ -679,13 +699,13 @@ function QueryTopoDetailPanel({
       <div className="eto-detail-body">
         <div className="eto-detail-summary">
           <span>
-            <strong>{node.inDegree}</strong> {t('query.detail.inbound')}
+            <strong>{node.inDegree}</strong> {t('query.detail.inbound', 'inbound')}
           </span>
           <span>
-            <strong>{node.outDegree}</strong> {t('query.detail.outbound')}
+            <strong>{node.outDegree}</strong> {t('query.detail.outbound', 'outbound')}
           </span>
           <span>
-            <strong>{node.relationCount}</strong> {t('query.detail.total')}
+            <strong>{node.relationCount}</strong> {t('query.detail.total', 'total')}
           </span>
         </div>
         <QueryDetailTable
@@ -716,8 +736,6 @@ function QueryDetailHeader({
   color?: string;
   onClose: () => void;
 }) {
-  const { t } = useI18n();
-
   return (
     <header className="eto-detail-header">
       <div className="eto-detail-icon" style={{ color, background: `${color}14`, borderColor: `${color}33` }}>
@@ -727,7 +745,12 @@ function QueryDetailHeader({
         <strong>{title}</strong>
         <code>{subtitle}</code>
       </div>
-      <button className="eto-icon-button subtle" onClick={onClose} type="button" title={t('query.action.close')}>
+      <button
+        className="eto-icon-button subtle"
+        onClick={onClose}
+        type="button"
+        title={t('query.action.close', 'Close')}
+      >
         <X size={15} />
       </button>
     </header>
@@ -743,9 +766,9 @@ function QueryEdgeRoute({
   source?: EntityTopoNode;
   target?: EntityTopoNode;
 }) {
-  const { t } = useI18n();
-
-  if (!source || !target) {return null;}
+  if (!source || !target) {
+    return null;
+  }
   return (
     <div className="eto-edge-route">
       <div className="query-route-node">
@@ -755,7 +778,7 @@ function QueryEdgeRoute({
         <span>
           <b>{source.title}</b>
           <small>
-            {t('query.detail.source')} · {endpointLabel(source.endpoint)}
+            {t('query.detail.source', 'Source')} · {endpointLabel(source.endpoint)}
           </small>
         </span>
       </div>
@@ -769,7 +792,7 @@ function QueryEdgeRoute({
         <span>
           <b>{target.title}</b>
           <small>
-            {t('query.detail.target')} · {endpointLabel(target.endpoint)}
+            {t('query.detail.target', 'Target')} · {endpointLabel(target.endpoint)}
           </small>
         </span>
       </div>
@@ -778,9 +801,9 @@ function QueryEdgeRoute({
 }
 
 function QueryDetailTable({ rows }: { rows: Array<[string, unknown]> }) {
-  const { t } = useI18n();
-
-  if (rows.length === 0) {return <div className="eto-detail-empty">{t('query.detail.noProperties')}</div>;}
+  if (rows.length === 0) {
+    return <div className="eto-detail-empty">{t('query.detail.noProperties', 'No properties.')}</div>;
+  }
   return (
     <table className="eto-detail-table">
       <tbody>
@@ -812,7 +835,6 @@ function QueryEmpty({ title, detail, icon }: { title: string; detail: string; ic
 }
 
 export function ResultTable({ result }: { result: QueryResult }) {
-  const { t } = useI18n();
   const columns = useMemo(
     () => (result.columns.length > 0 ? result.columns : result.rows[0] ? Object.keys(result.rows[0]) : []),
     [result.columns, result.rows]
@@ -837,11 +859,19 @@ export function ResultTable({ result }: { result: QueryResult }) {
   }, [result]);
 
   useEffect(() => {
-    if (page !== safePage) {setPage(safePage);}
+    if (page !== safePage) {
+      setPage(safePage);
+    }
   }, [page, safePage]);
 
-  if (result.rows.length === 0)
-    {return <EmptyState title={t('query.table.noRows.title')} detail={t('query.table.noRows.detail')} />;}
+  if (result.rows.length === 0) {
+    return (
+      <EmptyState
+        title={t('query.table.noRows.title', 'No rows')}
+        detail={t('query.table.noRows.detail', 'The query completed without returning rows.')}
+      />
+    );
+  }
 
   return (
     <div className={preview ? 'query-table-region with-preview' : 'query-table-region'}>
@@ -904,18 +934,20 @@ export function ResultTable({ result }: { result: QueryResult }) {
                                 <span className="query-cell-actionbar">
                                   <button
                                     type="button"
-                                    aria-label={t('query.table.viewCell')}
+                                    aria-label={t('query.table.viewCell', 'View')}
                                     onClick={() =>
                                       setPreview({
                                         title: column,
-                                        subtitle: t('query.preview.row', { row: rowNumber.toLocaleString() }),
+                                        subtitle: t('query.preview.row', 'Row {{row}}', {
+                                          row: rowNumber.toLocaleString(),
+                                        }),
                                         value: presentation.full,
                                         language: presentation.language,
                                       })
                                     }
                                   >
                                     <Eye size={13} />
-                                    <span>{t('query.table.viewCell')}</span>
+                                    <span>{t('query.table.viewCell', 'View')}</span>
                                   </button>
                                 </span>
                                 <span className="query-cell-value multiline complex code">{presentation.display}</span>
@@ -959,7 +991,7 @@ export function ResultTable({ result }: { result: QueryResult }) {
               disabled={safePage <= 1}
               onClick={() => setPage((value) => Math.max(1, value - 1))}
               type="button"
-              title={t('query.table.previousPage')}
+              title={t('query.table.previousPage', 'Previous page')}
             >
               <ChevronLeft size={14} />
             </button>
@@ -983,7 +1015,7 @@ export function ResultTable({ result }: { result: QueryResult }) {
               disabled={safePage >= pageCount}
               onClick={() => setPage((value) => Math.min(pageCount, value + 1))}
               type="button"
-              title={t('query.table.nextPage')}
+              title={t('query.table.nextPage', 'Next page')}
             >
               <ChevronRight size={14} />
             </button>
@@ -991,16 +1023,16 @@ export function ResultTable({ result }: { result: QueryResult }) {
           <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))}>
             {resultPageSizes.map((size) => (
               <option key={size} value={size}>
-                {t('query.table.pageSize', { size })}
+                {t('query.table.pageSize', '{{size}} / page', { size })}
               </option>
             ))}
           </select>
           <span>
-            {t.rich(
-              'query.table.totalRows',
-              { strong: (chunks) => <strong>{chunks}</strong> },
-              { count: result.rows.length.toLocaleString() }
-            )}
+            <Trans
+              i18nKey="query.table.totalRows"
+              components={{ strong: <strong /> }}
+              values={{ count: result.rows.length.toLocaleString() }}
+            />
           </span>
         </footer>
       </div>
@@ -1014,8 +1046,8 @@ export function ResultTable({ result }: { result: QueryResult }) {
             <button
               type="button"
               onClick={() => setPreview(null)}
-              title={t('query.preview.close')}
-              aria-label={t('query.preview.close')}
+              title={t('query.preview.close', 'Close preview')}
+              aria-label={t('query.preview.close', 'Close preview')}
             >
               <X size={15} />
             </button>
@@ -1099,12 +1131,16 @@ function getCellPresentation(value: unknown, columnWidth?: number): CellPresenta
 }
 
 function canWrappedTextShowFull(text: string, columnWidth?: number) {
-  if (!columnWidth) {return false;}
+  if (!columnWidth) {
+    return false;
+  }
   return estimateWrappedLineCount(text, inlineTextContentWidth(columnWidth)) <= wrappedTextLineClamp;
 }
 
 function estimateWrappedLineCount(text: string, lineWidth: number) {
-  if (lineWidth <= 0) {return Number.POSITIVE_INFINITY;}
+  if (lineWidth <= 0) {
+    return Number.POSITIVE_INFINITY;
+  }
   const hardLines = text.split('\n');
   return hardLines.reduce(
     (lineCount, line) => lineCount + Math.max(1, Math.ceil(estimateInlineTextWidth(line) / lineWidth)),
@@ -1113,12 +1149,16 @@ function estimateWrappedLineCount(text: string, lineWidth: number) {
 }
 
 function isTextVisuallyOverflowed(text: string, columnWidth?: number) {
-  if (!columnWidth || text.includes('\n')) {return false;}
+  if (!columnWidth || text.includes('\n')) {
+    return false;
+  }
   return estimateInlineTextWidth(text) > inlineTextContentWidth(columnWidth);
 }
 
 function inlineTextLimit(columnWidth?: number) {
-  if (!columnWidth) {return 36;}
+  if (!columnWidth) {
+    return 36;
+  }
   return clamp(Math.floor(inlineTextContentWidth(columnWidth) / 7.2), 12, 36);
 }
 
@@ -1131,9 +1171,15 @@ function estimateInlineTextWidth(text: string) {
 }
 
 function estimateCharacterWidth(char: string) {
-  if (/[\u2e80-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(char)) {return 13;}
-  if (/\s/.test(char)) {return 4.2;}
-  if (/[A-Z]/.test(char)) {return 7.8;}
+  if (/[\u2e80-\u9fff\uac00-\ud7af\uff00-\uffef]/.test(char)) {
+    return 13;
+  }
+  if (/\s/.test(char)) {
+    return 4.2;
+  }
+  if (/[A-Z]/.test(char)) {
+    return 7.8;
+  }
   return 7.2;
 }
 
@@ -1143,7 +1189,9 @@ function useElementWidth<T extends HTMLElement>() {
 
   useEffect(() => {
     const element = ref.current;
-    if (!element) {return undefined;}
+    if (!element) {
+      return undefined;
+    }
 
     const updateWidth = () => setWidth(element.clientWidth);
     updateWidth();
@@ -1176,8 +1224,12 @@ function getColumnProfiles(columns: string[], rows: Array<Record<string, unknown
       maxTextLength = Math.max(maxTextLength, Math.min(presentation.display.length, 30));
     }
 
-    if (variant === 'code') {return { key: column, minWidth: 320, weight: 2.2, variant };}
-    if (variant === 'long-text') {return { key: column, minWidth: 220, weight: 1.25, variant };}
+    if (variant === 'code') {
+      return { key: column, minWidth: 320, weight: 2.2, variant };
+    }
+    if (variant === 'long-text') {
+      return { key: column, minWidth: 220, weight: 1.25, variant };
+    }
 
     return {
       key: column,
@@ -1189,7 +1241,9 @@ function getColumnProfiles(columns: string[], rows: Array<Record<string, unknown
 }
 
 function getTableLayout(columns: ColumnProfile[], availableWidth: number): TableLayout {
-  if (columns.length === 0) {return { columnWidths: [], mode: 'fill', tableWidth: Math.max(availableWidth, 0) };}
+  if (columns.length === 0) {
+    return { columnWidths: [], mode: 'fill', tableWidth: Math.max(availableWidth, 0) };
+  }
 
   const minWidths = columns.map((column) => column.minWidth);
   const totalMinWidth = minWidths.reduce((sum, width) => sum + width, 0);
@@ -1209,7 +1263,9 @@ function getTableLayout(columns: ColumnProfile[], availableWidth: number): Table
     Math.floor(width + (remainingWidth * columns[index].weight) / totalWeight)
   );
   const roundingGap = safeAvailableWidth - columnWidths.reduce((sum, width) => sum + width, 0);
-  if (roundingGap > 0) {columnWidths[columnWidths.length - 1] += roundingGap;}
+  if (roundingGap > 0) {
+    columnWidths[columnWidths.length - 1] += roundingGap;
+  }
 
   return {
     columnWidths,
@@ -1223,18 +1279,26 @@ function clamp(value: number, min: number, max: number) {
 }
 
 function middleEllipsis(value: string, maxLength = 36): string {
-  if (value.length <= maxLength) {return value;}
+  if (value.length <= maxLength) {
+    return value;
+  }
   const head = Math.ceil((maxLength - 1) * 0.6);
   const tail = Math.floor((maxLength - 1) * 0.4);
   return `${value.slice(0, head)}...${value.slice(value.length - tail)}`;
 }
 
 function normalizeStructuredValue(value: unknown): { structured: boolean; value: unknown } {
-  if (typeof value === 'object') {return { structured: true, value };}
-  if (typeof value !== 'string') {return { structured: false, value };}
+  if (typeof value === 'object') {
+    return { structured: true, value };
+  }
+  if (typeof value !== 'string') {
+    return { structured: false, value };
+  }
 
   const trimmed = value.trim();
-  if (!looksLikeJsonValue(trimmed)) {return { structured: false, value };}
+  if (!looksLikeJsonValue(trimmed)) {
+    return { structured: false, value };
+  }
   const parsed = parseJsonLike(trimmed);
   return parsed !== trimmed && typeof parsed === 'object' && parsed !== null
     ? { structured: true, value: parsed }
@@ -1245,9 +1309,9 @@ function formatResultSummary(t: TFunction, rows: number, columns: number) {
   return `${formatCountUnit(t, rows, 'query.unit.row', 'query.unit.rows')}, ${formatCountUnit(t, columns, 'query.unit.column', 'query.unit.columns')}`;
 }
 
-function formatCountUnit(t: TFunction, count: number, oneKey: MessageKey, otherKey: MessageKey) {
+function formatCountUnit(t: TFunction, count: number, oneKey: string, otherKey: string) {
   const key = count === 1 ? oneKey : otherKey;
-  return `${count.toLocaleString()} ${t(key)}`;
+  return `${count.toLocaleString()} ${t(key, key)}`;
 }
 
 function normalizeResultForTable(result: QueryResult): QueryResult {
@@ -1257,10 +1321,14 @@ function normalizeResultForTable(result: QueryResult): QueryResult {
 
 function expandHeaderDataResult(result: QueryResult): QueryResult | null {
   const nestedRows = result.rows.map((row) => extractHeaderDataRows(row));
-  if (nestedRows.length === 0 || nestedRows.some((item) => !item)) {return null;}
+  if (nestedRows.length === 0 || nestedRows.some((item) => !item)) {
+    return null;
+  }
 
   const columns = uniqueStrings(nestedRows.flatMap((item) => item?.columns || []));
-  if (columns.length === 0) {return null;}
+  if (columns.length === 0) {
+    return null;
+  }
 
   return {
     ...result,
@@ -1272,11 +1340,15 @@ function expandHeaderDataResult(result: QueryResult): QueryResult | null {
 function extractHeaderDataRows(
   row: Record<string, unknown>
 ): { columns: string[]; rows: Array<Record<string, unknown>> } | null {
-  if (!('header' in row) || !('data' in row)) {return null;}
+  if (!('header' in row) || !('data' in row)) {
+    return null;
+  }
 
   const columns = readStringArray(row.header);
   const rawData = parseJsonLike(row.data);
-  if (!columns || !Array.isArray(rawData)) {return null;}
+  if (!columns || !Array.isArray(rawData)) {
+    return null;
+  }
 
   const rows = rawData
     .map((item) => dataItemToRow(columns, item))
@@ -1286,11 +1358,17 @@ function extractHeaderDataRows(
 
 function dataItemToRow(columns: string[], item: unknown): Record<string, unknown> | null {
   const rawItem = parseJsonLike(item);
-  if (Array.isArray(rawItem)) {return valuesToRow(columns, rawItem);}
-  if (!rawItem || typeof rawItem !== 'object') {return null;}
+  if (Array.isArray(rawItem)) {
+    return valuesToRow(columns, rawItem);
+  }
+  if (!rawItem || typeof rawItem !== 'object') {
+    return null;
+  }
 
   const record = rawItem as Record<string, unknown>;
-  if (Array.isArray(record.values)) {return valuesToRow(columns, record.values);}
+  if (Array.isArray(record.values)) {
+    return valuesToRow(columns, record.values);
+  }
   return record;
 }
 
@@ -1299,15 +1377,23 @@ function valuesToRow(columns: string[], values: unknown[]): Record<string, unkno
 }
 
 function parseCellValue(value: unknown): unknown {
-  if (typeof value !== 'string') {return value;}
+  if (typeof value !== 'string') {
+    return value;
+  }
   const trimmed = value.trim();
-  if (!trimmed) {return value;}
-  if (!looksLikeJsonValue(trimmed)) {return value;}
+  if (!trimmed) {
+    return value;
+  }
+  if (!looksLikeJsonValue(trimmed)) {
+    return value;
+  }
   return parseJsonLike(trimmed);
 }
 
 function parseJsonLike(value: unknown): unknown {
-  if (typeof value !== 'string') {return value;}
+  if (typeof value !== 'string') {
+    return value;
+  }
   try {
     return JSON.parse(value);
   } catch {
@@ -1317,7 +1403,9 @@ function parseJsonLike(value: unknown): unknown {
 
 function readStringArray(value: unknown): string[] | null {
   const parsed = parseJsonLike(value);
-  if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) {return null;}
+  if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== 'string')) {
+    return null;
+  }
   return parsed;
 }
 
@@ -1335,14 +1423,18 @@ function looksLikeJsonValue(value: string): boolean {
 function uniqueStrings(values: string[]) {
   const seen = new Set<string>();
   return values.filter((value) => {
-    if (seen.has(value)) {return false;}
+    if (seen.has(value)) {
+      return false;
+    }
     seen.add(value);
     return true;
   });
 }
 
 function toIsoOrUndefined(value: string) {
-  if (!value) {return undefined;}
+  if (!value) {
+    return undefined;
+  }
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
 }
@@ -1352,7 +1444,9 @@ function hasInlineTopoEntityProperties(result: QueryResult) {
 }
 
 function isEntityPropertyRecord(value: unknown) {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {return false;}
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
   const record = value as Record<string, unknown>;
   return Boolean(record.__domain__ && record.__entity_type__ && record.__entity_id__);
 }
@@ -1364,13 +1458,17 @@ async function loadTopoEntityRows(
   timeRange?: QueryRequest['time_range']
 ) {
   const topo = buildEntityTopoData(result, [], []);
-  if (topo.nodes.length === 0 || topo.edges.length === 0) {return [];}
+  if (topo.nodes.length === 0 || topo.edges.length === 0) {
+    return [];
+  }
 
   const idsByType = new Map<string, { domain: string; entityType: string; ids: string[] }>();
   topo.nodes.slice(0, 120).forEach((node) => {
     const key = `${node.endpoint.domain}\n${node.endpoint.entityType}`;
     const group = idsByType.get(key) || { domain: node.endpoint.domain, entityType: node.endpoint.entityType, ids: [] };
-    if (!group.ids.includes(node.endpoint.entityId)) {group.ids.push(node.endpoint.entityId);}
+    if (!group.ids.includes(node.endpoint.entityId)) {
+      group.ids.push(node.endpoint.entityId);
+    }
     idsByType.set(key, group);
   });
 
@@ -1391,11 +1489,19 @@ function escapeSPL(value: string): string {
 }
 
 function paginationItems(page: number, totalPages: number): Array<number | '...'> {
-  if (totalPages <= 7) {return Array.from({ length: totalPages }, (_, index) => index + 1);}
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, index) => index + 1);
+  }
   const items: Array<number | '...'> = [1];
-  if (page > 3) {items.push('...');}
-  for (let next = Math.max(2, page - 1); next <= Math.min(totalPages - 1, page + 1); next += 1) {items.push(next);}
-  if (page < totalPages - 2) {items.push('...');}
+  if (page > 3) {
+    items.push('...');
+  }
+  for (let next = Math.max(2, page - 1); next <= Math.min(totalPages - 1, page + 1); next += 1) {
+    items.push(next);
+  }
+  if (page < totalPages - 2) {
+    items.push('...');
+  }
   items.push(totalPages);
   return items;
 }

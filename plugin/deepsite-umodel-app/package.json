@@ -11,7 +11,8 @@
     "lint:fix": "npm run lint -- --fix && prettier --write --list-different .",
     "e2e": "playwright test",
     "server": "docker compose up --build",
-    "sign": "sign-plugin"
+    "sign": "sign-plugin",
+    "i18n-extract": "i18next-cli extract"
   },
   "author": "Deepsite",
   "license": "Apache-2.0",
@@ -44,6 +45,7 @@
     "eslint-webpack-plugin": "^5.0.0",
     "fork-ts-checker-webpack-plugin": "^9.1.0",
     "glob": "^11.1.0",
+    "i18next-cli": "^1.65.0",
     "identity-obj-proxy": "^3.0.0",
     "imports-loader": "^5.0.0",
     "jest": "^29.7.0",
@@ -73,8 +75,8 @@
     "@grafana/data": "12.3.1",
     "@grafana/i18n": "12.3.1",
     "@grafana/runtime": "12.3.1",
-    "@grafana/ui": "12.3.1",
     "@grafana/schema": "12.3.1",
+    "@grafana/ui": "12.3.1",
     "@hpcc-js/wasm-graphviz": "^1.7.0",
     "@xyflow/react": "^12.7.0",
     "js-yaml": "^4.1.1",

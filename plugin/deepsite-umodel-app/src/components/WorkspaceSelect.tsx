@@ -1,13 +1,12 @@
 import React from 'react';
 import { Combobox, type ComboboxOption, IconButton, Stack } from '@grafana/ui';
 import { useWorkspace } from '../context/WorkspaceContext';
-import { useI18n } from '../i18n';
+import { t } from '@grafana/i18n';
 
 // Workspace switcher rendered in the page header actions. Reads/writes the
 // shared WorkspaceContext; the list is loaded once by the provider.
 export function WorkspaceSelect() {
   const { workspace, setWorkspace, workspaces, loading, reload } = useWorkspace();
-  const { t } = useI18n();
 
   const options: Array<ComboboxOption<string>> = workspaces.map((w) => ({
     label: w.name || w.id,
@@ -19,14 +18,14 @@ export function WorkspaceSelect() {
     <Stack direction="row" alignItems="center" gap={1}>
       <Combobox<string>
         width={28}
-        placeholder={t('common.selectWorkspace')}
+        placeholder={t('common.selectWorkspace', 'Select workspace')}
         options={options}
         value={workspace}
         loading={loading}
         isClearable
         onChange={(opt) => setWorkspace(opt?.value ?? null)}
       />
-      <IconButton name="sync" tooltip={t('common.reloadWorkspaces')} onClick={() => reload()} />
+      <IconButton name="sync" tooltip={t('common.reloadWorkspaces', 'Reload workspaces')} onClick={() => reload()} />
     </Stack>
   );
 }

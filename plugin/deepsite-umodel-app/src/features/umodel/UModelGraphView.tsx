@@ -21,7 +21,7 @@ import {
   type NodeProps,
 } from '@xyflow/react';
 import type { UModelElement } from '../../api/types';
-import { useI18n } from '../../i18n';
+import { t } from '@grafana/i18n';
 import type { UModelEdgeData, UModelNodeData, GraphModel } from './graphModel';
 import {
   colorForKind,
@@ -58,7 +58,6 @@ export function GraphView({
   onNodesChange: (changes: Array<NodeChange<Node<UModelNodeData>>>) => void;
   onSelect: (element: UModelElement | null) => void;
 }) {
-  const { t } = useI18n();
   // React Flow's Background grid and MiniMap take colors as props (not CSS), so
   // pull them from the Grafana theme instead of hardcoded light-mode hex.
   const theme = useTheme2();
@@ -81,21 +80,26 @@ export function GraphView({
   );
   const ariaLabelConfig = useMemo(
     () => ({
-      'controls.ariaLabel': t('umodelExplorer.flow.controlPanel'),
-      'controls.zoomIn.ariaLabel': t('umodelExplorer.flow.zoomIn'),
-      'controls.zoomOut.ariaLabel': t('umodelExplorer.flow.zoomOut'),
-      'controls.fitView.ariaLabel': t('umodelExplorer.flow.fitView'),
-      'minimap.ariaLabel': t('umodelExplorer.flow.miniMap'),
+      'controls.ariaLabel': t('umodelExplorer.flow.controlPanel', 'Control panel'),
+      'controls.zoomIn.ariaLabel': t('umodelExplorer.flow.zoomIn', 'Zoom in'),
+      'controls.zoomOut.ariaLabel': t('umodelExplorer.flow.zoomOut', 'Zoom out'),
+      'controls.fitView.ariaLabel': t('umodelExplorer.flow.fitView', 'Fit view'),
+      'minimap.ariaLabel': t('umodelExplorer.flow.miniMap', 'Mini map'),
     }),
     [t]
   );
 
   useEffect(() => {
-    if (graph.nodes.length === 0 || layouting) {return;}
+    if (graph.nodes.length === 0 || layouting) {
+      return;
+    }
     const focusNodes = focusIds.length > 0 ? graph.nodes.filter((node) => focusIds.includes(node.id)) : [];
     const timer = window.setTimeout(() => {
-      if (focusNodes.length > 0) {fitView({ duration: 800, padding: 0.2, nodes: focusNodes });}
-      else {fitView({ duration: 800, padding: 0.2 });}
+      if (focusNodes.length > 0) {
+        fitView({ duration: 800, padding: 0.2, nodes: focusNodes });
+      } else {
+        fitView({ duration: 800, padding: 0.2 });
+      }
     }, 120);
     return () => window.clearTimeout(timer);
     // Refire on the derived focusKey/nodeIdsKey strings (stable across
@@ -127,7 +131,9 @@ export function GraphView({
               : viewport.zoom < 0.55
                 ? 'compact'
                 : 'full';
-          if (level !== zoomLevel) {onZoomLevelChange(level);}
+          if (level !== zoomLevel) {
+            onZoomLevelChange(level);
+          }
         }}
         ariaLabelConfig={ariaLabelConfig}
         nodesDraggable
@@ -144,9 +150,9 @@ export function GraphView({
         {backgroundStyle === 'cross' && (
           <Background variant={BackgroundVariant.Cross} gap={28} size={8} color={gridColor} />
         )}
-        <Controls showInteractive={false} aria-label={t('umodelExplorer.flow.controlPanel')} />
+        <Controls showInteractive={false} aria-label={t('umodelExplorer.flow.controlPanel', 'Control panel')} />
         <MiniMap
-          ariaLabel={t('umodelExplorer.flow.miniMap')}
+          ariaLabel={t('umodelExplorer.flow.miniMap', 'Mini map')}
           nodeStrokeWidth={3}
           pannable
           zoomable
@@ -154,13 +160,14 @@ export function GraphView({
           style={{ background: 'var(--ume-color-bg-subtle)' }}
         />
       </ReactFlow>
-      {layouting && <div className="ume-layout-badge">{t('umodelExplorer.loading.arrangingView')}</div>}
+      {layouting && (
+        <div className="ume-layout-badge">{t('umodelExplorer.loading.arrangingView', 'Arranging view')}</div>
+      )}
     </div>
   );
 }
 
 const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
-  const { t } = useI18n();
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuRect, setMenuRect] = useState<DOMRect | null>(null);
   const menuButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -178,9 +185,13 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
   }
 
   useEffect(() => {
-    if (!menuOpen) {return;}
+    if (!menuOpen) {
+      return;
+    }
     const updateRect = () => {
-      if (menuButtonRef.current) {setMenuRect(menuButtonRef.current.getBoundingClientRect());}
+      if (menuButtonRef.current) {
+        setMenuRect(menuButtonRef.current.getBoundingClientRect());
+      }
     };
     const close = () => setMenuOpen(false);
     updateRect();
@@ -210,15 +221,15 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
           >
             <button onClick={() => runMenuAction(() => data.actions.onConnect(data.element))} type="button">
               <Cable size={13} />
-              {t('umodelExplorer.nodeMenu.connectTo')}
+              {t('umodelExplorer.nodeMenu.connectTo', 'Connect to...')}
             </button>
             <button onClick={() => runMenuAction(() => data.actions.onCopy(data.element))} type="button">
               <Copy size={13} />
-              {t('umodelExplorer.nodeMenu.copyNode')}
+              {t('umodelExplorer.nodeMenu.copyNode', 'Copy node')}
             </button>
             <button onClick={() => runMenuAction(() => data.actions.onCopyCascade(data.element))} type="button">
               <GitBranch size={13} />
-              {t('umodelExplorer.nodeMenu.copyWithEdges')}
+              {t('umodelExplorer.nodeMenu.copyWithEdges', 'Copy with edges')}
             </button>
             <button
               className="danger"
@@ -226,7 +237,7 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
               type="button"
             >
               <Trash2 size={13} />
-              {t('umodelExplorer.nodeMenu.deleteNode')}
+              {t('umodelExplorer.nodeMenu.deleteNode', 'Delete node')}
             </button>
             <button
               className="danger"
@@ -234,7 +245,7 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
               type="button"
             >
               <GitBranch size={13} />
-              {t('umodelExplorer.nodeMenu.deleteWithEdges')}
+              {t('umodelExplorer.nodeMenu.deleteWithEdges', 'Delete with edges')}
             </button>
           </div>,
           document.body
@@ -275,7 +286,7 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
         <button
           onClick={() => data.actions.onFocus(data.element)}
           type="button"
-          title={t('umodelExplorer.action.focusNode')}
+          title={t('umodelExplorer.action.focusNode', 'Focus node')}
         >
           <Crosshair size={12} />
         </button>
@@ -308,13 +319,13 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
               <span className="ume-kind-tag" style={{ background: color.bg, color: color.text }}>
                 {color.label}
               </span>
-              <code>{data.domain || t('umodelExplorer.misc.unknown')}</code>
+              <code>{data.domain || t('umodelExplorer.misc.unknown', 'unknown')}</code>
               {data.draftStatus && (
                 <span className={`ume-node-draft ${data.draftStatus}`}>
                   <CircleDashed size={10} />
                   {data.draftStatus === 'added'
-                    ? t('umodelExplorer.dialog.diff.type.added')
-                    : t('umodelExplorer.dialog.diff.type.modified')}
+                    ? t('umodelExplorer.dialog.diff.type.added', 'added')
+                    : t('umodelExplorer.dialog.diff.type.modified', 'modified')}
                 </span>
               )}
               <button
@@ -325,7 +336,7 @@ const UModelNodeCard = memo(({ data }: NodeProps<Node<UModelNodeData>>) => {
                   setMenuOpen((value) => !value);
                 }}
                 type="button"
-                aria-label={t('umodelExplorer.aria.operations')}
+                aria-label={t('umodelExplorer.aria.operations', 'Operations')}
               >
                 <span aria-hidden="true">•••</span>
               </button>
@@ -393,7 +404,6 @@ function UModelEdge({
   targetPosition,
   data,
 }: EdgeProps<Edge<UModelEdgeData>>) {
-  const { t } = useI18n();
   let edgePath: string;
   let labelX: number;
   let labelY: number;
@@ -424,9 +434,9 @@ function UModelEdge({
     data?.kind === 'entity_set_link'
       ? entityLinkTypeForEdge(data.element)
       : data?.draftStatus === 'added'
-        ? t('umodelExplorer.dialog.diff.type.added')
+        ? t('umodelExplorer.dialog.diff.type.added', 'added')
         : data?.draftStatus === 'modified'
-          ? t('umodelExplorer.dialog.diff.type.modified')
+          ? t('umodelExplorer.dialog.diff.type.modified', 'modified')
           : undefined;
   return (
     <>
