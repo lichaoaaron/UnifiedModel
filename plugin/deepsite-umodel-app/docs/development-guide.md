@@ -42,14 +42,12 @@ plugin/deepsite-umodel-app/
 │  ├─ constants.ts                  ROUTES 枚举 + PLUGIN_BASE_URL
 │  ├─ declarations.d.ts             *.css 模块声明
 │  ├─ components/
-│  │  ├─ App/App.tsx                react-router <Routes>：各页路由 + 默认重定向 UModel + Suspense；外层 <I18nProvider>
+│  │  ├─ App/App.tsx                react-router <Routes>：各页路由 + 默认重定向 UModel + Suspense；外层 <WorkspaceProvider>
 │  │  ├─ AppConfig/AppConfig.tsx    配置页（jsonData.apiUrl + jsonData.diagnosisUrl + secureJsonData.apiKey）
 │  │  ├─ WorkspacePage.tsx          页面外壳：<PluginPage> + Workspace 选择器 + 未选门控 + UModelRoot
 │  │  └─ WorkspaceSelect.tsx        @grafana/ui Combobox 工作区选择器
 │  ├─ context/WorkspaceContext.tsx  工作区列表 + 选中态（localStorage 'openumodel.workspace'）+ 共享 UModelApi，经 Context 透传
-│  ├─ i18n/                         手写国际化（自 web 移植；见 §3.7）
-│  │  ├─ index.tsx                  I18nProvider + useI18n + t()/t.rich()；locale ← Grafana 用户语言
-│  │  └─ locales/{en-US,zh-CN}/     按命名空间分文件的中英词典（不含 landing）
+│  ├─ locales/{en-US,zh-Hans}/     @grafana/i18n JSON 词典 deepsite-umodel-app.json（见 §3.7）
 │  ├─ api/
 │  │  ├─ constants.ts               RESOURCE_BASE = /api/plugins/<id>/resources
 │  │  ├─ client.ts                  UModelApi：getBackendSrv().fetch 封装 + ApiError 归一化 + normalizeQueryResult 信封归一化 + 60s 超时 + rawRequest（API 调试器专用）
@@ -99,7 +97,7 @@ plugin/deepsite-umodel-app/
 | ② 页面怎么挂进 Grafana | 独立 SPA 自带路由/外壳/工作区门户页 | `AppPlugin` + `<PluginPage>` + `WorkspaceContext` | [§3.3](#33-路由与外壳) |
 | ③ 主题/样式从哪来 | 自研设计令牌，浅色硬编码 | **零硬编码，全部从 `GrafanaTheme2` 派生** | [§3.4](#34-主题适配的两条路径)–[§3.5](#35--没有-grafanaui-原生组件的部分怎么适配) |
 | ④ 移植代码过不了新 lint 规则 | —（web 无此约束） | 仅对移植目录域内放宽，新代码保持全严格 | [§3.6](#36-eslint-域内放宽移植代码的取舍) |
-| ⑤ 国际化 | web 自带语言切换器 + localStorage | 复用词典，locale 跟随 Grafana 用户语言 | [§3.7](#37-i18n跟随-grafana-用户语言) |
+| ⑤ 国际化 | web 自带语言切换器 + localStorage | @grafana/i18n + JSON 词典，locale 跟随 Grafana 用户语言 | [§3.7](#37-i18n跟随-grafana-用户语言) |
 
 ### 3.1 两个决策树：怎么移植、怎么取色
 
@@ -138,7 +136,7 @@ plugin/deepsite-umodel-app/
 
 ### 3.3 路由与外壳
 - [`module.tsx`](../src/module.tsx)：`AppPlugin().setRootPage(App).addConfigPage(...)`。
-- [`App.tsx`](../src/components/App/App.tsx)：react-router v6 `<Routes>`，每页一个 `<Route>`，`*` → `Navigate to /umodel`；外层包 `<I18nProvider>`。ROUTES 段与 web 的 `routes.ts` 对齐（`umodel`/`entity-topo`/`query`/`imports`/`settings`/`api-debug`/`diagnosis`）。**不采用** web 换用的 react-router v7 / BrowserRouter，插件仍用 AppPlugin + 自有 v6 路由。
+- [`App.tsx`](../src/components/App/App.tsx)：react-router v6 `<Routes>`，每页一个 `<Route>`，`*` → `Navigate to /umodel`；外层包 `<WorkspaceProvider>`（翻译初始化在 `module.tsx`，见 §3.7）。ROUTES 段与 web 的 `routes.ts` 对齐（`umodel`/`entity-topo`/`query`/`imports`/`settings`/`api-debug`/`diagnosis`）。**不采用** web 换用的 react-router v7 / BrowserRouter，插件仍用 AppPlugin + 自有 v6 路由。
 - 每页用 `<PluginPage>`（`@grafana/runtime`）拿 Grafana 页头/面包屑。
 - **工作区**：原 web 用"选 workspace 才进主界面"。这里下沉为 `WorkspaceContext`（列表+选中态，localStorage `'openumodel.workspace'`）+ `WorkspaceSelect`（Combobox，放在 `WorkspacePage` 的页头 actions）+ 未选时空态门控。[`plugin.json`](../src/plugin.json) 的 `includes` 与 `ROUTES` 一一对应。
 
@@ -190,11 +188,13 @@ plugin/deepsite-umodel-app/
 - **`query` / `apiDebug`（更像自研页面）** → **保持 error**。它确实还在抓真问题——如 `QueryPage` 结果表的 `columns` 派生就是被这条规则拦下、用 `useMemo` 正经修掉而非 disable 的。这两处的极少数故意违规仍逐行 `// eslint-disable-next-line` 并写明理由。
 
 ### 3.7 i18n（跟随 Grafana 用户语言）
-web 侧新增了一套**手写** i18n（`web/src/i18n/`：`I18nContext` + `useI18n()` → `{locale, t}`，`t(key,params)` 插值 + `t.rich()` 渲染内嵌标签，中英词典按命名空间分文件）。移植进插件（[`src/i18n/`](../src/i18n/)）时做两处**刻意差异**：
-- **locale 来源换成 Grafana**：`detectLocale()` 读 `config.bootData?.user?.language`（`@grafana/runtime`），`zh*` → `zh-CN`，否则 `en-US`。**去掉** web 的 `LanguageSelect` 切换器、`setLocale`、localStorage 持久化——语言归 Grafana 管。可选链承重：jest 里 `config.bootData` 为 `undefined`。
-- **不写 `document.documentElement.lang`**（文档属于 Grafana）。
-- 词典全量拷贝，**除 `landing.ts`**（工作区落地页不移植，两个 `index.ts` barrel 去掉它）。移植的 feature（含 `cosmosTopoGraph`）经 `useI18n()` 消费 `t`；插件自身 chrome（原生 Imports/Settings、WorkspacePage 空态）保持英文。
-- **`I18nProvider` 放在 `App.tsx` 最外层**（`WorkspaceProvider` 之上）。
+本插件用 Grafana 官方 [`@grafana/i18n`](https://grafana.com/developers/plugin-tools/how-to-guides/plugin-internationalization)：
+
+- **加载**：`plugin.json` 声明 `languages: ["en-US", "zh-Hans"]`；`module.tsx` 顶层 `await initPluginTranslations(pluginJson.id)` 加载 `src/locales/<lang>/deepsite-umodel-app.json`（webpack `**/*.json` 自动拷进 `dist/locales/`）。locale 由 Grafana 用户语言（Profile → Language）驱动，插件不带切换器、也不写 `document.documentElement.lang`。**坑**：Grafana 的简体中文 locale code 是 **`zh-Hans`**（繁体 `zh-Hant`），**不是** `zh-CN`——`languages` 数组、`src/locales/<lang>/` 目录名都必须用 Grafana 认的 code，否则用户切简体中文时 Grafana 去 fetch `locales/zh-Hans/…` 找不到、静默回退英文。（`HistoryPanel` 里 `toLocaleString('zh-CN')` 是 JS `Intl` 的日期 locale，与此无关，保持 `zh-CN`。）
+- **调用**：非 JSX 用 `t('key', '默认英文', params?)`（第二参数的默认英文既是运行时兜底，也是抽取回填主语言的来源）；JSX 内嵌标签用 `<Trans i18nKey=... components={{ strong: <b /> }} values={...} />`。key 走点分命名空间（`common.*`、`umodelExplorer.*` …），运行时按 `.` 嵌套解析；插值用 i18next 的 `{{name}}`。
+- **复数**：`count` 在本项目是纯插值（中文式「N 项」，无语法复数）；少数真正区分单复数的文案用显式 `key` / `keyOther` 两个 key + 三元选择，**不**走 i18next 复数机制。
+- **抽取**：`npm run i18n-extract`（[`i18next.config.ts`](../i18next.config.ts)）。JSON 词典是权威源、且含仅被动态引用的 key（如 API 调试器 spec 的 `titleKey`/`descriptionKey`、查询示例），故配 `removeUnusedKeys: false`（别删动态 key）+ `disablePlurals: true`（别把 `count` 调用复数化，否则空的 `_other` 变体会遮蔽真值）。
+- **ESLint**：启用两条规则——`no-translation-top-level`（翻译异步加载，禁止模块顶层 `t()`）与 `no-untranslated-strings`（用户可见字符串必须走 `t()`/`<Trans>`）。后者对三个目录 **opt-out**（`eslint.config.mjs` 里在规则启用**之后**再关，与上面 react-hooks 放宽同理）：`umodel`/`entityTopo`（vendored viz，规则多误报数据/符号字面量，包一层会与 `web/` 分叉）、`diagnosis`（中文-only 设计）。自研代码里的极少数数据误报（版本徽章 `v${…}`、两段 `t()` 拼接的 `body`）用行内 `// eslint-disable-next-line @grafana/i18n/no-untranslated-strings` + 理由豁免。规则**不支持**按内容忽略，符号/数据只能靠 opt-out 或行内 disable。
 
 ---
 
@@ -254,7 +254,7 @@ E2E_UMODEL_API_URL=http://host.docker.internal:8080 \  # 容器可达地址，�
 
 1. **@grafana/ui 重写型**：在 `src/pages/XxxPage.tsx` 用 `<WorkspacePage>` + `useWorkspace()` 取 `api/workspace`，用 `@grafana/ui` 组件实现；`useStyles2` 主题化。
 2. **移植重型可视化 / 重型页面型**（参考 UModel/Topology/Query/apiDebug）：
-   - `cp -r web/src/features/<feat> src/features/<feat>`（import 路径 `../../api`/`../../lib`/`../../design/components`/`../../i18n` 天然对齐）。
+   - `cp -r web/src/features/<feat> src/features/<feat>`（import 路径 `../../api`/`../../lib`/`../../design/components` 天然对齐；i18n 例外——web 的 `useI18n()` / `t.rich()` 要改成 `@grafana/i18n` 的 `t('key','默认英文',params)` / `<Trans>`，见 §3.7）。
    - 每个含 JSX 的 `.tsx` 补 `import React`（本插件经典 JSX runtime；与现有 `from 'react'` 合并避免 `no-duplicate-imports`）。
    - 删 `noUnusedLocals` 报的未用导入/死代码；`@monaco-editor/react` 的 `Editor` → `CodeEditor`（`options`→`monacoOptions`、`onMount`→`onEditorDidMount`、去 `theme="vs"`；DiffEditor → 并排双只读 CodeEditor + `.ume-diff-sxs`）；删 `disableMonacoEditContext`/`preloadMonaco` 引用；根路径静态资源 → `import`。
    - **剪掉不可达的死文件**：整目录拷贝会带进备用/未接入的组件，而 tsc/eslint 只报文件**内**的未用导入、**不报"整个文件没人 import"**——移植后从 `module.tsx` 用 import 说明符（含动态 `import()`）做**传递可达 BFS**，删掉不可达 `.tsx`（注意同名 type 可能仍被 live 代码引用，删组件不删 type）。诊断工作台曾借此删掉 10 个备用 UI 组件（`AgentChatPanel` 链）+ 脚手架残留 `Placeholder.tsx`/`utils.routing.ts`。
@@ -281,7 +281,7 @@ E2E_UMODEL_API_URL=http://host.docker.internal:8080 \  # 容器可达地址，�
 - **Monaco 只用 `@grafana/ui` CodeEditor**：web 经 `@monaco-editor/react` 从 CDN 拉 monaco，Grafana CSP 下会被拦；一律换 CodeEditor（Grafana 托管 worker）。**坑**：CodeEditor 会在 monaco 外再包一层只有 border 的 `height:auto` 容器 div，直接 `height="100%"` 会因「100% of auto = 0」塌成空框——每个 monaco wrapper 要加 `.xxx-monaco > div { height:100% }` 强制容器填满（见 query/apiDebug/umodel 的 CSS）。
 - **页面视口定高**：Grafana PluginPage 的内容区是**会被内容撑高的滚动容器**（`.page-scrollbar-content` 是 `min-height:100%`），所以 `height:100%`/`100vh` 都无法把页面约束到视口——[`ThemeBridge`](../src/design/ThemeBridge.tsx) 的 `UModelRoot` 用 JS 测量自身距视口顶的偏移，把根定为「到视口底」的像素高度（监听 resize）。填充型页面（UModel/Topology/Query/apiDebug）的根 `height:100%` 于是被约束、内部面板各自 `overflow:auto` 独立滚动；短表单页（Imports/Settings）不填满则自然。**移植的可视化页面根不要用 `100vh`**（会从页头下方起算而溢出）。
 - **写死浅色的隐蔽处**：web 单主题设计里除 `#hex` 外还有大量**半透明白底**（`background: rgba(255,255,255,0.9)` 毛玻璃面板）与固定深字（`#1f2937`/`#334155`），暗色下会成白块/隐形字——retheme 时 `rgba(255,…)` 面板背景一并改 `var(--om-surface)`，翻暗底后同处的深字改 `var(--om-text)`。CSS 里 `<code>` 受 Grafana 全局 `code{white-space:nowrap}` 影响不换行，文档表用 `table-layout:auto` + `overflow-wrap:anywhere` 自适应（勿写死列宽百分比）。
-- **i18n locale 跟随 Grafana**（`config.bootData.user.language`），插件不带语言切换器；`detectLocale` 的可选链承重（jest 下 `bootData` 为空）。
+- **i18n locale 跟随 Grafana**：用 `@grafana/i18n`，语言由 Grafana 用户偏好驱动，插件不带语言切换器（详见 §3.7）。
 - **诊断工作台（SSE 第二上游）**：只移植 `web/src/features/diagnosis/workbench/`（root 级同名文件是死代码副本，忽略）。它不查 umodel-server，而是接独立诊断服务——加 `jsonData.diagnosisUrl`（[`AppConfig`](../src/components/AppConfig/AppConfig.tsx) 字段 + provisioning，容器可达如 `http://host.docker.internal:18000`）；Go 后端 [`resources.go`](../pkg/plugin/resources.go) 的 `streamProxyTo` 把 `/diagnosis/*` **流式反代**到 diagnosisUrl：**每读一块上游 SSE 就 `w.Write`+`Flusher.Flush()`**（httpadapter 的 ResponseWriter 每次 Flush 发一个 CallResourceResponse 分块；用 `io.Copy` 会攒到结束才吐、破坏流式）。诊断专用 client `Timeout: 300s`（诊断可跑 ~2min，别用 60s 的 `proxyClient`）。前端保留原生 `fetch().body.getReader()`（getBackendSrv 不能流式），`BASE_URL=${RESOURCE_BASE}/diagnosis/api`。storm 模式走 bundled fixtures 离线回放，仅最终报告需后端。诊断页**中文-only**（症状识别正则等本就是中文逻辑）。
 - **诊断工作台的 Tailwind-utility-shim（retheme 大坑，非常规）**：诊断页 CSS **不是**手写 `.ume-*`/`.eto-*`，而是一套**手写 Tailwind 工具类 shim**——原 web 靠**运行时 Tailwind CDN（JIT）**生成工具类，Grafana CSP 下加载不了、插件也**无构建期 Tailwind**，所以 JSX 里写的每个工具类（`bg-blue-100`/`text-gray-500`/`hover:bg-[#f3f4f6]`…）都必须在 [`diagnosisWorkbench.css`](../src/features/diagnosis/workbench/diagnosisWorkbench.css) 里**手写一条 shim 规则**（任意值类走 `[class~="bg-[#hex]"]`、命名类走 `.cls`，值一律 `var(--om-*)`），**漏写即该元素无样式**（透明露底/继承色，明暗都错）。只需覆盖**可达组件**（从 `DiagnosisWorkbench` BFS 追 import 的 7 个：`DiagnosisWorkbench`+`DiagnosisReport`/`EmptyState`/`EventRow`/`EventStream`/`HistoryPanel`/`ServiceCallGraph`）——当年整目录拷进来的另一套备用 UI（`AgentChatPanel` 链，10 个组件）**已作为冗余删除**（见 §4 死文件剪枝）。检测法：提取 tsx 里的着色类，对 CSS 求 `.cls` 与 `[class~="cls"]` 两种形式的差集。
 - **批量 hex→token 替换会污染变体选择器（务必避免）**：盲目把 CSS 里的 `#hex` 全局替成 `var(--om-*)` 时，会连 **Tailwind 变体转义选择器**里的 hex 一起换——`.hover\:bg-\[\#f3f4f6\]:hover` 被改成 `.hover\:bg-\[\var(--om-surface-subtle)\]:hover`，成了**匹配不到任何真实类的死规则**（hover/disabled/group-hover 态静默失效，发送按钮曾因此在 light 下隐形）。`[class~="bg-[#hex]"]` 平选择器若加了 mask 尚能保住，变体转义选择器最易漏。**根治**：变体规则一律用健壮的 `[class~="hover:bg-[#f3f4f6]"]:hover` **属性选择器**形式（字符串内 `[`/`#` 无需转义、日后再做值级 retheme 也不会污染）。铁证检测：`grep '\var(' *.css`——真实声明值是 `var(` 不带前导反斜杠，命中 `\var(` 即选择器被污染。
